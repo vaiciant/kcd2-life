@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- Merged with the STORM root: adds sources to existing tasks, without replacing vanilla files. -->
+<storm>
+	<tasks>
+		<task name="abilities" class="abilities">
+			<source path="abilities\medieval_life.xml" />
+		</task>
+		<task name="appearance" class="appearance">
+			<source path="appearance\medieval_life.xml" />
+		</task>
+		<task name="roles" class="roles">
+			<source path="roles\medieval_life.xml" />
+		</task>
+		<task name="equipment" class="equipment">
+			<source path="equipment\medieval_life.xml" />
+		</task>
+	</tasks>
+</storm>

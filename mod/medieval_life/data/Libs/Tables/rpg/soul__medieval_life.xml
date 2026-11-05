@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="../database.xsd">
+	<!-- Soul of the new character: a full row, copied from player_henry. skald_character_name 26 is Henry's voice. -->
+	<souls version="2">
+		<soul brain_id="4cc6af89-b1fa-3b53-7853-e1bdb277308e" digestion_multiplier="1" enable_perk_point_gain="true" factionName="player" initial_clothing_dirt="0" skald_character_name="26" social_class_id="13" soul_archetype_id="13" soul_class_id="5" soul_id="e9f088ff-48e3-5fa1-b733-80504a56d1dc" soul_name="ml_player" soul_vip_class_id="0" unique="true" xp_multiplier="1" />
+		<!-- Models of the selector: copies of ordinary Zhelejov villagers. The so_dummyObject brain keeps them from walking away. -->
+		<!-- Host of the new life, at the tavern wall. Class 31 makes him untouchable: the offer must not be lost. -->
+		<soul brain_id="f61341b4-504b-54dc-b65b-77e08208d651" digestion_multiplier="0" factionName="trosecko_settlements_zelejov_commonFolk_tavern_guests" initial_clothing_dirt="0" skald_character_name="char_ml_host" social_class_id="60" soul_archetype_id="0" soul_id="37657ce6-03ca-5eac-9a17-5af46d318f1a" soul_name="ml_host" soul_vip_class_id="31" xp_multiplier="0" />
+	</souls>
+</database>

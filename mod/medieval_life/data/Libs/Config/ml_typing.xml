@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!-- Keys of the name screen (Scripts/MedievalLife/typing.lua). The map is only on while typing, over the dialog, with the
+     priority of the barber screen. ml_key_enye is the key to the right of L, the one of the Spanish keyboard. -->
+<actionmaps version="22">
+	<actionmap name="ml_typing" priority="minigames_over" exclusivity="1">
+		<include actionmap="open_pause_menu" />
+		<action name="ml_key_a" onPress="1" keyboard="a" />
+		<action name="ml_key_b" onPress="1" keyboard="b" />
+		<action name="ml_key_c" onPress="1" keyboard="c" />
+		<action name="ml_key_d" onPress="1" keyboard="d" />
+		<action name="ml_key_e" onPress="1" keyboard="e" />
+		<action name="ml_key_f" onPress="1" keyboard="f" />
+		<action name="ml_key_g" onPress="1" keyboard="g" />
+		<action name="ml_key_h" onPress="1" keyboard="h" />
+		<action name="ml_key_i" onPress="1" keyboard="i" />
+		<action name="ml_key_j" onPress="1" keyboard="j" />
+		<action name="ml_key_k" onPress="1" keyboard="k" />
+		<action name="ml_key_l" onPress="1" keyboard="l" />
+		<action name="ml_key_m" onPress="1" keyboard="m" />
+		<action name="ml_key_n" onPress="1" keyboard="n" />
+		<action name="ml_key_o" onPress="1" keyboard="o" />
+		<action name="ml_key_p" onPress="1" keyboard="p" />
+		<action name="ml_key_q" onPress="1" keyboard="q" />
+		<action name="ml_key_r" onPress="1" keyboard="r" />
+		<action name="ml_key_s" onPress="1" keyboard="s" />
+		<action name="ml_key_t" onPress="1" keyboard="t" />
+		<action name="ml_key_u" onPress="1" keyboard="u" />
+		<action name="ml_key_v" onPress="1" keyboard="v" />
+		<action name="ml_key_w" onPress="1" keyboard="w" />
+		<action name="ml_key_x" onPress="1" keyboard="x" />
+		<action name="ml_key_y" onPress="1" keyboard="y" />
+		<action name="ml_key_z" onPress="1" keyboard="z" />
+		<action name="ml_key_enye" onPress="1" keyboard="semicolon" />
+		<action name="ml_key_space" onPress="1" keyboard="space" />
+		<action name="ml_key_back" onPress="1" keyboard="backspace" />
+		<action name="ml_key_random" onPress="1" keyboard="f2" />
+		<action name="ml_key_enter" onPress="1" keyboard="enter" />
+		<action name="ml_key_enter" onPress="1" keyboard="np_enter" />
+	</actionmap>
+</actionmaps>

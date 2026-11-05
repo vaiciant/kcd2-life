@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<!DOCTYPE storm SYSTEM "../../storm.dtd">
+<!-- Base look of the new character, the same as Henry: the selector replaces each part. The models of the looks are in
+     KCD2 Female Framework and KCD2 Male Framework. -->
+<storm>
+	<rules>
+		<rule name="ml_player_look">
+			<selectors>
+				<hasName name="ml_player" />
+			</selectors>
+			<operations>
+				<setHead name="henry" />
+				<setHair name="m_hair_henry" />
+				<setUnderwear name="m_underwear01_m01" />
+				<setBody name="henry_body" />
+				<setBeard name="m_beard_00" />
+			</operations>
+		</rule>
+		<rule name="ml_host_look">
+			<selectors>
+				<hasName name="ml_host" />
+			</selectors>
+			<operations>
+				<setHead name="m_head_032" />
+				<setHair name="m_hair_006_dark_brown" />
+				<setBody name="m_body_tan_03" />
+				<setBeard name="m_beard_11" />
+			</operations>
+		</rule>
+	</rules>
+</storm>

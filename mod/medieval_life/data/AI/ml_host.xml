@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<BehaviorTrees>
+	<!-- Host of the new life. An NPC only opens a dialog if its tree reads dialogMailbox at least once a second, so this
+	     replaces the vanilla switch. The hold runs as an interrupt, and while it lasts the vanilla scheduler cannot walk
+	     him around. A dialog can end it, so the switch starts it again when it stops reporting, but never during a dialog:
+	     re-adding it while it runs would restart the animation. -->
+	<BehaviorTree name="ml_host_switch" is_function="0">
+		<Variables>
+			<Variable name="dialogRequest" type="dialogModule:onDialogRequest" values="" isPersistent="0" form="single" />
+			<Variable name="attackData" type="switch:interruptData:attack" values="" isPersistent="0" form="single" />
+			<Variable name="crimeInformation" type="information" values="" isPersistent="0" form="single" />
+			<Variable name="mrkev" type="_wuid" values="" isPersistent="0" form="single" />
+			<Variable name="needsHold" type="_bool" values="false" isPersistent="0" form="single" />
+		</Variables>
+		<Root OneTimeOnly="false" FailState="Recoverable" saveVersion="2">
+			<Behavior canSkip="1">
+				<SuppressFailure>
+					<Parallel successMode="Any" failureMode="Any">
+						<Loop count="-1">
+							<Sequence>
+								<SuppressFailure>
+									<ProcessMessage Atomic="false" timeout="'0ms'" timeType="GameTime" variable="$dialogRequest" senderInfo="" inbox="'dialogMailbox'" condition="" answerVar="">
+										<Function_switch_handleDialog dialogRequest="$dialogRequest" nodeLabel="93000001" />
+									</ProcessMessage>
+								</SuppressFailure>
+								<Wait duration="'300ms'" timeType="GameTime" doFail="false" variation="'100ms'" />
+							</Sequence>
+						</Loop>
+						<Loop count="-1">
+							<Sequence>
+								<ExecuteLua code="data.needsHold = false; pcall(function() data.needsHold = not entity.mlHolding and not entity.human:IsInDialog() end); entity.mlHolding = false" />
+								<IfCondition failOnCondition="false" condition="$needsHold">
+									<Sequence>
+										<SuppressFailure>
+											<Function_crime_getMrkev mrkev="$mrkev" nodeLabel="93000002" />
+											<CreateInformationWrapper Label="'assault'" PerceivedWuid="$this.id" PositionType="positionWuid" PositionVec3="" PositionWuid="$__player" Information="$crimeInformation" />
+											<LockDynamicInformationValues Information="$crimeInformation">
+												<SetDynamicInformationValue Information="$crimeInformation" Tag="'stimulusKind'" Variable="$enum:crime_stimulusKind.combat" Type="" Value="" />
+											</LockDynamicInformationValues>
+											<Function_crime_limits_reserveReactionLink ffCrimeIcon="false" information="$crimeInformation" priority="160" reactionKind="$enum:crime_reactionKind.attack" nodeLabel="93000003" />
+										</SuppressFailure>
+										<Expression expressions="$attackData.target = $__player &#10; $attackData.information = $crimeInformation &#10; $attackData.stimulusKind = $enum:crime_stimulusKind.combat &#10; $attackData.previousReaction = $enum:crime_reactionKind.unknown &#10; $attackData.initiatedBy = $enum:switch_interruptInitiator.switch &#10; $attackData.defenceMode = false &#10; $attackData.relationOverride = true &#10; $attackData.source = $enum:crime_source.direct &#10; $attackData.freshlyAttributedCrime = false &#10; $attackData.criminalFreshness = $enum:crime_criminalFreshness.unknown &#10; $attackData.escalatedFromFailedSurrender = false" />
+										<AddInterrupt_attack attackData="$attackData" Target="$this.id" Host="$mrkev" Behavior="'ml_host_idle'" Priority="160" IgnorePriorityOnPreviousInterrupt="true" urgency="Fast" Aliveness="Alive" Privileged="false" FastForward="false" />
+									</Sequence>
+								</IfCondition>
+								<Wait duration="'3s'" timeType="GameTime" doFail="false" variation="'200ms'" />
+							</Sequence>
+						</Loop>
+					</Parallel>
+				</SuppressFailure>
+			</Behavior>
+		</Root>
+		<ForestContainer />
+	</BehaviorTree>
+	<!-- Leans back against the wall. If the pose fails he still holds his place. LeaningBack needs a location object: he is his own. -->
+	<BehaviorTree name="ml_host_idle" is_function="0">
+		<Parameters>
+			<Variable name="attackData" type="switch:interruptData:attack" values="" isPersistent="0" form="single" requirementType="In" />
+		</Parameters>
+		<Root OneTimeOnly="false" FailState="Recoverable" saveVersion="2">
+			<Behavior canSkip="1">
+				<Parallel successMode="Any" failureMode="Any">
+					<Loop count="-1">
+						<Sequence>
+							<ExecuteLua code="entity.mlHolding = true" />
+							<Wait duration="'1s'" timeType="GameTime" doFail="false" variation="" />
+						</Sequence>
+					</Loop>
+					<Sequence>
+						<ExecuteLua code="pcall(function() MedievalLife.Log('host hold started') end)" />
+						<SuppressFailure>
+							<UnstanceElement unstance="LeaningBack" locationObject="$this.id" slaveObject="" enabled="true">
+								<Sequence>
+									<WaitAction />
+									<ExecuteLua code="pcall(function() MedievalLife.Host.FaceOut(entity) end)" />
+									<Wait duration="'-1'" timeType="GameTime" doFail="false" variation="" skipInLOD="false" />
+								</Sequence>
+							</UnstanceElement>
+						</SuppressFailure>
+						<ExecuteLua code="pcall(function() MedievalLife.Log('host pose ended') end)" />
+						<Wait duration="'-1'" timeType="GameTime" doFail="false" variation="" skipInLOD="false" />
+					</Sequence>
+				</Parallel>
+			</Behavior>
+		</Root>
+		<ForestContainer />
+	</BehaviorTree>
+</BehaviorTrees>

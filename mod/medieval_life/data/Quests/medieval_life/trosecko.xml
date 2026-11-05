@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- Trosky level file. A module only exists on the maps whose level file includes it. What must
+	     last on every map goes out as triggers, to the states in the project (ml_look). -->
+	<Skald>
+		<Level Name="trosecko" HibernateMode="Auto">
+			<Ports>
+				<Port Name="life_started" Direction="Out" Type="trigger" />
+			</Ports>
+			<Definitions>
+				<Definition File="trosecko/ml_new_life.xml" />
+				<Definition File="trosecko/ml_story.xml" />
+				<Definition File="trosecko/ml_clear_map.xml" />
+				<Definition File="trosecko/ml_work.xml" />
+				<Definition File="trosecko/ml_weapons.xml" />
+				<Definition File="trosecko/ml_employment.xml" />
+				<Definition File="trosecko/ml_order_tavern.xml" />
+				<Definition File="trosecko/ml_order_butcher.xml" />
+				<Definition File="trosecko/ml_order_tailor.xml" />
+				<Definition File="trosecko/ml_order_apothecary.xml" />
+				<Definition File="trosecko/ml_order_scribe.xml" />
+				<Definition File="trosecko/ml_order_merchant.xml" />
+				<Definition File="trosecko/ml_order_carpenter.xml" />
+				<Definition File="trosecko/ml_order_jakesh.xml" />
+				<Definition File="trosecko/ml_order_inn.xml" />
+				<Definition File="trosecko/ml_order_bathhouse.xml" />
+				<Definition File="trosecko/ml_order_olbram.xml" />
+				<Definition File="trosecko/ml_order_francis.xml" />
+				<Definition File="trosecko/ml_order_zvyest.xml" />
+				<Definition File="trosecko/ml_order_tachov_tavern.xml" />
+				<Definition File="trosecko/ml_order_tachov_smithy.xml" />
+				<Definition File="trosecko/ml_order_tachov_greengrocer.xml" />
+				<Definition File="trosecko/ml_order_semine_saddler.xml" />
+				<Definition File="trosecko/ml_order_semine_slavek.xml" />
+				<Definition File="trosecko/ml_order_semine_food.xml" />
+				<Definition File="trosecko/ml_order_semine_shoemaker.xml" />
+				<Definition File="trosecko/ml_order_semine_stables.xml" />
+				<Definition File="trosecko/ml_order_semine_kitchen.xml" />
+				<Definition File="trosecko/ml_order_castle_smithy.xml" />
+				<Definition File="trosecko/ml_order_castle_saddler.xml" />
+				<Definition File="trosecko/ml_order_castle_stables.xml" />
+				<Definition File="trosecko/ml_order_castle_archery.xml" />
+				<Definition File="trosecko/ml_order_castle_baths.xml" />
+				<Definition File="trosecko/ml_order_castle_kitchen.xml" />
+				<Definition File="trosecko/ml_order_castle_scribe.xml" />
+				<Definition File="trosecko/ml_order_castle_carpenter.xml" />
+				<Definition File="trosecko/ml_order_kreyzl_mill.xml" />
+				<Definition File="trosecko/ml_order_woodcutters.xml" />
+				<Definition File="trosecko/ml_order_nebakov_mill.xml" />
+				<Definition File="trosecko/ml_order_nebakov_gamekeeper.xml" />
+				<Definition File="trosecko/ml_order_vidlak_gamekeeper.xml" />
+				<Definition File="trosecko/ml_order_vidlak_tanner.xml" />
+				<Definition File="trosecko/ml_order_kopanina_herbalist.xml" />
+				<Definition File="trosecko/ml_order_nomads_fence.xml" />
+				<Definition File="trosecko/ml_order_nomads_merchant.xml" />
+				<Definition File="trosecko/ml_order_nomads_horses.xml" />
+				<Definition File="trosecko/ml_order_nomads_herbalist.xml" />
+				<Definition File="trosecko/ml_order_bozhena_hut.xml" />
+				<Definition File="trosecko/ml_order_slatego_greengrocer.xml" />
+				<Definition File="trosecko/ml_order_krenovy_farm.xml" />
+				<Definition File="trosecko/ml_order_schdiar_farm.xml" />
+			</Definitions>
+			<Nodes>
+				<ml_new_life Name="ml_new_life" PositionY="0" PositionX="0" RequiredForOutput="trosecko" />
+				<ml_clear_map Name="ml_clear_map" PositionY="200" PositionX="0">
+					<Edge From="ml_new_life.open_shops" To="open_shops" />
+					<Edge From="ml_new_life.life_started" To="life_started" />
+				</ml_clear_map>
+				<ml_work Name="ml_work" PositionY="400" PositionX="0" />
+				<ml_story Name="ml_story" PositionY="500" PositionX="0" />
+				<ml_employment Name="ml_employment" PositionY="800" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_work.hired" To="hired" />
+					<Edge From="ml_work.quit" To="quit" />
+					<Edge From="ml_new_life.life_started" To="life_started" />
+				</ml_employment>
+				<ml_weapons Name="ml_weapons" PositionY="600" PositionX="0">
+					<Edge From="ml_new_life.life_started" To="life_started" />
+				</ml_weapons>
+				<ml_order_tavern Name="ml_order_tavern" PositionY="1000" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_tavern>
+				<ml_order_butcher Name="ml_order_butcher" PositionY="1200" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_butcher>
+				<ml_order_tailor Name="ml_order_tailor" PositionY="1400" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_tailor>
+				<ml_order_apothecary Name="ml_order_apothecary" PositionY="1600" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_apothecary>
+				<ml_order_scribe Name="ml_order_scribe" PositionY="1800" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_scribe>
+				<ml_order_merchant Name="ml_order_merchant" PositionY="2000" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_merchant>
+				<ml_order_carpenter Name="ml_order_carpenter" PositionY="2200" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_carpenter>
+				<ml_order_jakesh Name="ml_order_jakesh" PositionY="2400" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_jakesh>
+				<ml_order_inn Name="ml_order_inn" PositionY="2600" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_inn>
+				<ml_order_bathhouse Name="ml_order_bathhouse" PositionY="2800" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_bathhouse>
+				<ml_order_olbram Name="ml_order_olbram" PositionY="3000" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_olbram>
+				<ml_order_francis Name="ml_order_francis" PositionY="3200" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_francis>
+				<ml_order_zvyest Name="ml_order_zvyest" PositionY="3400" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_zvyest>
+				<ml_order_tachov_tavern Name="ml_order_tachov_tavern" PositionY="3600" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_tachov_tavern>
+				<ml_order_tachov_smithy Name="ml_order_tachov_smithy" PositionY="3800" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_tachov_smithy>
+				<ml_order_tachov_greengrocer Name="ml_order_tachov_greengrocer" PositionY="4000" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_tachov_greengrocer>
+				<ml_order_semine_saddler Name="ml_order_semine_saddler" PositionY="4200" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_semine_saddler>
+				<ml_order_semine_slavek Name="ml_order_semine_slavek" PositionY="4400" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_semine_slavek>
+				<ml_order_semine_food Name="ml_order_semine_food" PositionY="4600" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_semine_food>
+				<ml_order_semine_shoemaker Name="ml_order_semine_shoemaker" PositionY="4800" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_semine_shoemaker>
+				<ml_order_semine_stables Name="ml_order_semine_stables" PositionY="5000" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_semine_stables>
+				<ml_order_semine_kitchen Name="ml_order_semine_kitchen" PositionY="5200" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_semine_kitchen>
+				<ml_order_castle_smithy Name="ml_order_castle_smithy" PositionY="5400" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_castle_smithy>
+				<ml_order_castle_saddler Name="ml_order_castle_saddler" PositionY="5600" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_castle_saddler>
+				<ml_order_castle_stables Name="ml_order_castle_stables" PositionY="5800" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_castle_stables>
+				<ml_order_castle_archery Name="ml_order_castle_archery" PositionY="6000" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_castle_archery>
+				<ml_order_castle_baths Name="ml_order_castle_baths" PositionY="6200" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_castle_baths>
+				<ml_order_castle_kitchen Name="ml_order_castle_kitchen" PositionY="6400" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_castle_kitchen>
+				<ml_order_castle_scribe Name="ml_order_castle_scribe" PositionY="6600" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_castle_scribe>
+				<ml_order_castle_carpenter Name="ml_order_castle_carpenter" PositionY="6800" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_castle_carpenter>
+				<ml_order_kreyzl_mill Name="ml_order_kreyzl_mill" PositionY="7000" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_kreyzl_mill>
+				<ml_order_woodcutters Name="ml_order_woodcutters" PositionY="7200" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_woodcutters>
+				<ml_order_nebakov_mill Name="ml_order_nebakov_mill" PositionY="7400" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_nebakov_mill>
+				<ml_order_nebakov_gamekeeper Name="ml_order_nebakov_gamekeeper" PositionY="7600" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_nebakov_gamekeeper>
+				<ml_order_vidlak_gamekeeper Name="ml_order_vidlak_gamekeeper" PositionY="7800" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_vidlak_gamekeeper>
+				<ml_order_vidlak_tanner Name="ml_order_vidlak_tanner" PositionY="8000" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_vidlak_tanner>
+				<ml_order_kopanina_herbalist Name="ml_order_kopanina_herbalist" PositionY="8200" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_kopanina_herbalist>
+				<ml_order_nomads_fence Name="ml_order_nomads_fence" PositionY="8400" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_nomads_fence>
+				<ml_order_nomads_merchant Name="ml_order_nomads_merchant" PositionY="8600" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_nomads_merchant>
+				<ml_order_nomads_horses Name="ml_order_nomads_horses" PositionY="8800" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_nomads_horses>
+				<ml_order_nomads_herbalist Name="ml_order_nomads_herbalist" PositionY="9000" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_nomads_herbalist>
+				<ml_order_bozhena_hut Name="ml_order_bozhena_hut" PositionY="9200" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_bozhena_hut>
+				<ml_order_slatego_greengrocer Name="ml_order_slatego_greengrocer" PositionY="9400" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_slatego_greengrocer>
+				<ml_order_krenovy_farm Name="ml_order_krenovy_farm" PositionY="9600" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_krenovy_farm>
+				<ml_order_schdiar_farm Name="ml_order_schdiar_farm" PositionY="9800" PositionX="0" RequiredForOutput="trosecko">
+					<Edge From="ml_new_life.in_life" To="in_life" />
+				</ml_order_schdiar_farm>
+				<Output Name="Output">
+					<Edge From="ml_new_life.life_started" To="life_started" />
+				</Output>
+			</Nodes>
+			<Text Text="trosecko" />
+		</Level>
+	</Skald>
+</Database>

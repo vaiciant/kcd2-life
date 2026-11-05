@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="../database.xsd">
+	<!-- The steps of reputation.lua: a faction takes the name of a row. ml_rep_up_300 is 0.3, ml_rep_up_050 is 0.05 and
+	     ml_rep_up_007 is 0.007, so any change takes three rows at most. The target is a set of flags, and 2 is that faction
+	     alone. -->
+	<reputation_changes version="1">
+		<reputation_change can_change_hostility="false" change="0.1" name="ml_rep_up_100" reputation_change_id="5206" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.1" name="ml_rep_down_100" reputation_change_id="5207" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.2" name="ml_rep_up_200" reputation_change_id="5212" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.2" name="ml_rep_down_200" reputation_change_id="5213" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.3" name="ml_rep_up_300" reputation_change_id="5214" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.3" name="ml_rep_down_300" reputation_change_id="5215" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.4" name="ml_rep_up_400" reputation_change_id="5216" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.4" name="ml_rep_down_400" reputation_change_id="5217" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.5" name="ml_rep_up_500" reputation_change_id="5218" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.5" name="ml_rep_down_500" reputation_change_id="5219" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.6" name="ml_rep_up_600" reputation_change_id="5220" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.6" name="ml_rep_down_600" reputation_change_id="5221" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.7" name="ml_rep_up_700" reputation_change_id="5222" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.7" name="ml_rep_down_700" reputation_change_id="5223" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.8" name="ml_rep_up_800" reputation_change_id="5224" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.8" name="ml_rep_down_800" reputation_change_id="5225" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.9" name="ml_rep_up_900" reputation_change_id="5226" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.9" name="ml_rep_down_900" reputation_change_id="5227" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.01" name="ml_rep_up_010" reputation_change_id="5208" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.01" name="ml_rep_down_010" reputation_change_id="5209" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.02" name="ml_rep_up_020" reputation_change_id="5228" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.02" name="ml_rep_down_020" reputation_change_id="5229" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.03" name="ml_rep_up_030" reputation_change_id="5230" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.03" name="ml_rep_down_030" reputation_change_id="5231" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.04" name="ml_rep_up_040" reputation_change_id="5232" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.04" name="ml_rep_down_040" reputation_change_id="5233" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.05" name="ml_rep_up_050" reputation_change_id="5234" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.05" name="ml_rep_down_050" reputation_change_id="5235" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.06" name="ml_rep_up_060" reputation_change_id="5236" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.06" name="ml_rep_down_060" reputation_change_id="5237" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.07" name="ml_rep_up_070" reputation_change_id="5238" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.07" name="ml_rep_down_070" reputation_change_id="5239" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.08" name="ml_rep_up_080" reputation_change_id="5240" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.08" name="ml_rep_down_080" reputation_change_id="5241" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.09" name="ml_rep_up_090" reputation_change_id="5242" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.09" name="ml_rep_down_090" reputation_change_id="5243" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.001" name="ml_rep_up_001" reputation_change_id="5210" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.001" name="ml_rep_down_001" reputation_change_id="5211" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.002" name="ml_rep_up_002" reputation_change_id="5244" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.002" name="ml_rep_down_002" reputation_change_id="5245" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.003" name="ml_rep_up_003" reputation_change_id="5246" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.003" name="ml_rep_down_003" reputation_change_id="5247" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.004" name="ml_rep_up_004" reputation_change_id="5248" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.004" name="ml_rep_down_004" reputation_change_id="5249" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.005" name="ml_rep_up_005" reputation_change_id="5250" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.005" name="ml_rep_down_005" reputation_change_id="5251" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.006" name="ml_rep_up_006" reputation_change_id="5252" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.006" name="ml_rep_down_006" reputation_change_id="5253" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.007" name="ml_rep_up_007" reputation_change_id="5254" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.007" name="ml_rep_down_007" reputation_change_id="5255" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.008" name="ml_rep_up_008" reputation_change_id="5256" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.008" name="ml_rep_down_008" reputation_change_id="5257" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="0.009" name="ml_rep_up_009" reputation_change_id="5258" reputation_change_target_id="2" />
+		<reputation_change can_change_hostility="false" change="-0.009" name="ml_rep_down_009" reputation_change_id="5259" reputation_change_target_id="2" />
+	</reputation_changes>
+</database>

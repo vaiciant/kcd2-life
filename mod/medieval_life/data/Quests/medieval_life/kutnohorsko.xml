@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- Kuttenberg level file. Nothing of the mod is only for this map: it marks that the project exists here too. -->
+	<Skald>
+		<Level Name="kutnohorsko" HibernateMode="Auto">
+			<Text Text="kutnohorsko" />
+		</Level>
+	</Skald>
+</Database>

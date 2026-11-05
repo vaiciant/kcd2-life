@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="../database.xsd">
+	<subbrains version="1">
+		<subbrain always_active="true" subbrain_id="6491b530-92a9-5f89-a3b5-c665e30f1a4d" subbrain_name="ml_host_switch" subbrain_type="6" timeout="0" />
+	</subbrains>
+</database>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- Skald project of the mod. ObjectiveValueTypes match the vanilla project. Each map has its Level.
+	     What must exist on every map hangs from the project. -->
+	<Skald>
+		<Project Name="medieval_life">
+			<Definitions>
+				<Definition File="medieval_life/trosecko.xml" />
+				<Definition File="medieval_life/kutnohorsko.xml" />
+				<Definition File="medieval_life/ml_look.xml" />
+				<Definition File="medieval_life/ml_sleep.xml" />
+				<Definition File="medieval_life/ml_switch.xml" />
+				<Definition File="medieval_life/ml_map_beds.xml" />
+			</Definitions>
+			<Nodes>
+				<trosecko Name="trosecko" PositionY="0" PositionX="0" />
+				<kutnohorsko Name="kutnohorsko" PositionY="200" PositionX="0" />
+				<ml_look Name="ml_look" PositionY="0" PositionX="400">
+					<Edge From="trosecko.life_started" To="life_started" />
+				</ml_look>
+				<ml_sleep Name="ml_sleep" PositionY="400" PositionX="400" />
+				<ml_switch Name="ml_switch" PositionY="600" PositionX="400" />
+				<ml_map_beds Name="ml_map_beds" PositionY="800" PositionX="400" />
+			</Nodes>
+			<Text Text="medieval_life" />
+			<ObjectiveValueTypes>
+				<ObjectiveValueType Type="None" IsPast="false" Icon="Exclamation" />
+				<ObjectiveValueType Type="Started" IsPast="false" Icon="Exclamation" Hint="objective_HintStarted" />
+				<ObjectiveValueType Type="Updated" IsPast="false" Icon="Exclamation" Hint="objective_HintUpdated" />
+				<ObjectiveValueType Type="Completed" IsPast="true" Icon="Check" Hint="objective_HintCompleted" />
+				<ObjectiveValueType Type="Canceled" IsPast="true" Icon="Cross" Hint="objective_HintCanceled" />
+			</ObjectiveValueTypes>
+		</Project>
+	</Skald>
+</Database>

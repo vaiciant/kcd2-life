@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- Paid work. The dialog calls Lua on its own. The only thing wired here is what the journal needs. -->
+	<Skald>
+		<Gameplay Name="ml_work">
+			<Ports>
+				<Port Name="hired" Direction="Out" Type="trigger" />
+				<Port Name="quit" Direction="Out" Type="trigger" />
+			</Ports>
+			<Definitions>
+				<Definition File="ml_work/zavodniPodkovy.xml" />
+				<Definition File="ml_work/nebakovObrana.xml" />
+			</Definitions>
+			<Nodes>
+				<zavodniPodkovy Name="steady" PositionY="0" PositionX="0" />
+				<nebakovObrana Name="casual" PositionY="200" PositionX="0" />
+				<Output Name="Output">
+					<Edge From="steady.hired" To="hired" />
+					<Edge From="steady.quit" To="quit" />
+				</Output>
+			</Nodes>
+			<Text Text="ml_work" />
+		</Gameplay>
+	</Skald>
+</Database>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="../database.xsd">
+	<!-- The game spreads a change of reputation to other factions 3 hours later, plus up to half an hour at random (KM-A-20:
+	     10800 and 1800 s). The panel shows it at once, so what reputation.lua reads would lag behind the panel. With 0, both
+	     are the same. -->
+	<rpg_params version="1">
+		<rpg_param rpg_param_key="ReputationPropagationTime" rpg_param_value="0" />
+		<rpg_param rpg_param_key="ReputationPropagationBiasTime" rpg_param_value="0" />
+	</rpg_params>
+</database>

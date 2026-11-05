@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- Selector of the new character: gender, origin, look, name and confirmation, with a way back. A forced monolog, with no other
+	     speaker and no third person copy, so the player chooses from their normal view. The options move the models: the next face of each people, so the player chooses. With
+	     options in the root decision the engine adds "(End dialog)", so the root picks itself and the options go in a
+	     nested decision, as in vanilla forced dialogs. -->
+	<Skald>
+		<ForcedDialog Name="ml_selector">
+			<Text Text="ml_selector" />
+			<Dialogue Type="monolog" TechnicalStatus="Enabled" AllowFarewell="false" AllowGreeting="false" Priority="1">
+				<SelectedSouls>
+					<SelectedSoul Role="HENRY" Voice="tomMcKay" Type="Wave" Language="ENG" />
+				</SelectedSouls>
+				<Decision Name="dec_start" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="HENRY" Autoselect="true">
+					<Sequences>
+						<Sequence EndType="Decision" Name="seq_start">
+							<Elements>
+								<Response Role="HENRY" />
+							</Elements>
+							<Decision Name="dec_gender" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="HENRY">
+								<Sequences>
+									<Sequence EndType="Decision" ExitScript="MedievalLife.Selector.First(1)" Name="seq_man">
+										<UiPrompt StringName="ui_ml_man" />
+										<Elements>
+											<Response Role="HENRY" />
+										</Elements>
+										<Decision Name="dec_origin_man" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="HENRY">
+											<Sequences>
+												<Sequence EndType="GoTo" GoToDecision="dec_origin_man" ExitScript="MedievalLife.Selector.SetOrigin(1)" Name="seq_origin_man_1">
+													<UiPrompt StringName="ui_ml_origin_1" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+												<Sequence EndType="GoTo" GoToDecision="dec_origin_man" ExitScript="MedievalLife.Selector.SetOrigin(2)" Name="seq_origin_man_2">
+													<UiPrompt StringName="ui_ml_origin_2" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+												<Sequence EndType="GoTo" GoToDecision="dec_origin_man" ExitScript="MedievalLife.Selector.SetOrigin(3)" Name="seq_origin_man_3">
+													<UiPrompt StringName="ui_ml_origin_3" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+												<Sequence EndType="Decision" Name="seq_origin_man_choose">
+													<UiPrompt StringName="ui_ml_origin_choose" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+													<Decision Name="dec_look_man" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="HENRY">
+														<Sequences>
+															<Sequence EntryCondition="gvar('ml_selector_next_czech') &gt; 0" EndType="GoTo" GoToDecision="dec_look_man" ExitScript="MedievalLife.Selector.Next(1, 1)" Name="seq_next_man_czech">
+																<UiPrompt StringName="ui_ml_next_man_czech" />
+																<Elements>
+																	<Response Role="HENRY" />
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="gvar('ml_selector_next_hungarian') &gt; 0" EndType="GoTo" GoToDecision="dec_look_man" ExitScript="MedievalLife.Selector.Next(1, 2)" Name="seq_next_man_hungarian">
+																<UiPrompt StringName="ui_ml_next_man_hungarian" />
+																<Elements>
+																	<Response Role="HENRY" />
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="gvar('ml_selector_next_romani') &gt; 0" EndType="GoTo" GoToDecision="dec_look_man" ExitScript="MedievalLife.Selector.Next(1, 3)" Name="seq_next_man_romani">
+																<UiPrompt StringName="ui_ml_next_man_romani" />
+																<Elements>
+																	<Response Role="HENRY" />
+																</Elements>
+															</Sequence>
+															<Sequence EndType="Decision" Name="seq_man_choose">
+																<UiPrompt StringName="ui_ml_choose" />
+																<Elements>
+																	<Response Role="HENRY" />
+																</Elements>
+																<Decision Name="dec_name_man" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="HENRY">
+																	<Sequences>
+																		<Sequence EndType="Decision" ExitScript="MedievalLife.Typing.Start(1)" Name="seq_name_write_man">
+																			<UiPrompt StringName="ui_ml_name_write" />
+																			<Elements>
+																				<Response Role="HENRY" />
+																			</Elements>
+																			<Decision Name="dec_confirm" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="HENRY">
+																				<Sequences>
+																					<Sequence EndType="EndDialogue" ExitScript="MedievalLife.Selector.Confirm()" Name="seq_confirm">
+																						<UiPrompt StringName="ui_ml_start_life" />
+																						<Elements>
+																							<Response Role="HENRY" />
+																						</Elements>
+																					</Sequence>
+																					<Sequence EndType="EndDialogue" ExitScript="MedievalLife.Selector.Leave()" Name="seq_cancel">
+																						<UiPrompt StringName="ui_ml_never_mind" />
+																						<Elements>
+																							<Response Role="HENRY" />
+																						</Elements>
+																					</Sequence>
+																				</Sequences>
+																			</Decision>
+																		</Sequence>
+																		<Sequence EndType="GoTo" GoToDecision="dec_look_man" Name="seq_name_man_back">
+																			<UiPrompt StringName="ui_ml_back" />
+																			<Elements>
+																				<Response Role="HENRY" />
+																			</Elements>
+																		</Sequence>
+																	</Sequences>
+																</Decision>
+															</Sequence>
+															<Sequence EndType="GoTo" GoToDecision="dec_origin_man" Name="seq_man_back">
+																<UiPrompt StringName="ui_ml_back" />
+																<Elements>
+																	<Response Role="HENRY" />
+																</Elements>
+															</Sequence>
+														</Sequences>
+													</Decision>
+												</Sequence>
+												<Sequence EndType="GoTo" GoToDecision="dec_gender" ExitScript="MedievalLife.Selector.Show(0)" Name="seq_origin_man_back">
+													<UiPrompt StringName="ui_ml_back" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+											</Sequences>
+										</Decision>
+									</Sequence>
+									<Sequence EndType="Decision" ExitScript="MedievalLife.Selector.First(2)" Name="seq_woman">
+										<UiPrompt StringName="ui_ml_woman" />
+										<Elements>
+											<Response Role="HENRY" />
+										</Elements>
+										<Decision Name="dec_origin_woman" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="HENRY">
+											<Sequences>
+												<Sequence EndType="GoTo" GoToDecision="dec_origin_woman" ExitScript="MedievalLife.Selector.SetOrigin(1)" Name="seq_origin_woman_1">
+													<UiPrompt StringName="ui_ml_origin_1" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+												<Sequence EndType="GoTo" GoToDecision="dec_origin_woman" ExitScript="MedievalLife.Selector.SetOrigin(2)" Name="seq_origin_woman_2">
+													<UiPrompt StringName="ui_ml_origin_2" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+												<Sequence EndType="GoTo" GoToDecision="dec_origin_woman" ExitScript="MedievalLife.Selector.SetOrigin(3)" Name="seq_origin_woman_3">
+													<UiPrompt StringName="ui_ml_origin_3" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+												<Sequence EndType="Decision" Name="seq_origin_woman_choose">
+													<UiPrompt StringName="ui_ml_origin_choose" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+													<Decision Name="dec_look_woman" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="HENRY">
+														<Sequences>
+															<Sequence EntryCondition="gvar('ml_selector_next_czech') &gt; 0" EndType="GoTo" GoToDecision="dec_look_woman" ExitScript="MedievalLife.Selector.Next(2, 1)" Name="seq_next_woman_czech">
+																<UiPrompt StringName="ui_ml_next_woman_czech" />
+																<Elements>
+																	<Response Role="HENRY" />
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="gvar('ml_selector_next_hungarian') &gt; 0" EndType="GoTo" GoToDecision="dec_look_woman" ExitScript="MedievalLife.Selector.Next(2, 2)" Name="seq_next_woman_hungarian">
+																<UiPrompt StringName="ui_ml_next_woman_hungarian" />
+																<Elements>
+																	<Response Role="HENRY" />
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="gvar('ml_selector_next_romani') &gt; 0" EndType="GoTo" GoToDecision="dec_look_woman" ExitScript="MedievalLife.Selector.Next(2, 3)" Name="seq_next_woman_romani">
+																<UiPrompt StringName="ui_ml_next_woman_romani" />
+																<Elements>
+																	<Response Role="HENRY" />
+																</Elements>
+															</Sequence>
+															<Sequence EndType="Decision" Name="seq_woman_choose">
+																<UiPrompt StringName="ui_ml_choose" />
+																<Elements>
+																	<Response Role="HENRY" />
+																</Elements>
+																<Decision Name="dec_name_woman" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="HENRY">
+																	<Sequences>
+																		<Sequence EndType="GoTo" GoToDecision="dec_confirm" ExitScript="MedievalLife.Typing.Start(2)" Name="seq_name_write_woman">
+																			<UiPrompt StringName="ui_ml_name_write" />
+																			<Elements>
+																				<Response Role="HENRY" />
+																			</Elements>
+																		</Sequence>
+																		<Sequence EndType="GoTo" GoToDecision="dec_look_woman" Name="seq_name_woman_back">
+																			<UiPrompt StringName="ui_ml_back" />
+																			<Elements>
+																				<Response Role="HENRY" />
+																			</Elements>
+																		</Sequence>
+																	</Sequences>
+																</Decision>
+															</Sequence>
+															<Sequence EndType="GoTo" GoToDecision="dec_origin_woman" Name="seq_woman_back">
+																<UiPrompt StringName="ui_ml_back" />
+																<Elements>
+																	<Response Role="HENRY" />
+																</Elements>
+															</Sequence>
+														</Sequences>
+													</Decision>
+												</Sequence>
+												<Sequence EndType="GoTo" GoToDecision="dec_gender" ExitScript="MedievalLife.Selector.Show(0)" Name="seq_origin_woman_back">
+													<UiPrompt StringName="ui_ml_back" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+											</Sequences>
+										</Decision>
+									</Sequence>
+									<Sequence EndType="EndDialogue" ExitScript="MedievalLife.Selector.Leave()" Name="seq_never_mind">
+										<UiPrompt StringName="ui_ml_never_mind" />
+										<Elements>
+											<Response Role="HENRY" />
+										</Elements>
+									</Sequence>
+								</Sequences>
+							</Decision>
+						</Sequence>
+					</Sequences>
+				</Decision>
+			</Dialogue>
+		</ForcedDialog>
+	</Skald>
+</Database>

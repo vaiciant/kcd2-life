@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- Whether the new character goes with nothing on the chest and the legs, for men and women: a job takes it like
+	     arriving drunk, with its own words. Lua reads the tokens. The look, the underwear and the rules of a woman's clothes
+	     belong to the frameworks. It lives in the project, so it works on every map. -->
+	<Skald>
+		<Module Name="ml_look">
+			<Ports>
+				<Port Name="life_started" Direction="In" Type="trigger" />
+			</Ports>
+			<Nodes>
+				<MakeArray Name="chest_slots" PositionY="-1050" PositionX="-900" TypeT="wh::entitymodule::EquipmentSlotIds">
+					<Constant Name="A" Value="body_cloth" />
+					<Constant Name="B" Value="body_cloth_padded" />
+					<Constant Name="C" Value="body_coat" />
+					<Constant Name="D" Value="body_chainmail" />
+					<Constant Name="E" Value="body_plate" />
+				</MakeArray>
+				<MemberFunction Name="bare_chest" PositionY="-1050" PositionX="-600" MethodName="CheckEquipment" DeclaringType="wh::rpgmodule::I_Soul">
+					<Asset Name="Soul" Alias="new_life" />
+					<Edge From="chest_slots.Array" To="FreeSlots" />
+				</MemberFunction>
+				<MakeArray Name="leg_slots" PositionY="-1800" PositionX="-900" TypeT="wh::entitymodule::EquipmentSlotIds">
+					<Constant Name="A" Value="leg_trousers" />
+					<Constant Name="B" Value="leg_trousers_padded" />
+					<Constant Name="C" Value="leg_armor" />
+				</MakeArray>
+				<MemberFunction Name="free_legs" PositionY="-1800" PositionX="-750" MethodName="CheckEquipment" DeclaringType="wh::rpgmodule::I_Soul">
+					<Asset Name="Soul" Alias="new_life" />
+					<Edge From="leg_slots.Array" To="FreeSlots" />
+				</MemberFunction>
+				<Function Name="naked_now" PositionY="-1800" PositionX="-600" MethodName="math::boolean::And" DeclaringType="math::boolean">
+					<Edge From="bare_chest.bool" To="A" />
+					<Edge From="free_legs.bool" To="B" />
+				</Function>
+				<Function Name="not_naked_now" PositionY="-1800" PositionX="-450" MethodName="math::boolean::Not" DeclaringType="math::boolean">
+					<Edge From="naked_now.bool" To="Value" />
+				</Function>
+				<Function Name="dressed" PositionY="-1950" PositionX="-450" MethodName="math::boolean::Not" DeclaringType="math::boolean">
+					<Edge From="naked.State" To="Value" />
+				</Function>
+				<Function Name="naked_starts" PositionY="-1800" PositionX="-300" MethodName="math::boolean::And" DeclaringType="math::boolean">
+					<Edge From="naked_now.bool" To="A" />
+					<Edge From="dressed.bool" To="B" />
+				</Function>
+				<Function Name="naked_ends" PositionY="-1950" PositionX="-300" MethodName="math::boolean::And" DeclaringType="math::boolean">
+					<Edge From="not_naked_now.bool" To="A" />
+					<Edge From="naked.State" To="B" />
+				</Function>
+				<Timer Name="watch_naked" PositionY="-1950" PositionX="-900">
+					<Constant Name="Duration" Value="1s" />
+					<Constant Name="TimeType" Value="GameTime" />
+					<Edge From="life_started" To="SetRunning" />
+					<Edge From="watch_naked.OnFinished" To="SetRunning" />
+				</Timer>
+				<If Name="if_naked_starts" PositionY="-1800" PositionX="-150">
+					<Edge From="naked_starts.bool" To="Condition" />
+					<Edge From="watch_naked.OnFinished" To="Exec" />
+				</If>
+				<If Name="if_naked_ends" PositionY="-1950" PositionX="-150">
+					<Edge From="naked_ends.bool" To="Condition" />
+					<Edge From="watch_naked.OnFinished" To="Exec" />
+				</If>
+				<State Name="naked" PositionY="-1950" PositionX="-600" TypeT="bool">
+					<Constant Name="DefaultValue" Value="false" />
+					<Edge From="if_naked_starts.True" To="SetTrue" />
+					<Edge From="if_naked_ends.True" To="SetFalse" />
+				</State>
+				<EventFunction Name="told_naked_on" PositionY="-1800" PositionX="300" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="66ee02d8-a476-5527-aeea-d667119d57ae" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="if_naked_starts.True" To="Exec" />
+				</EventFunction>
+				<EventFunction Name="told_naked_off" PositionY="-1950" PositionX="300" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="8e24f336-8593-5abf-925a-7626dd8e0082" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="if_naked_ends.True" To="Exec" />
+				</EventFunction>
+			</Nodes>
+			<Assets>
+				<SoulAsset Name="new_life" SharedSoulGuids="e9f088ff-48e3-5fa1-b733-80504a56d1dc" />
+			</Assets>
+			<Text Text="ml_look" />
+		</Module>
+	</Skald>
+</Database>

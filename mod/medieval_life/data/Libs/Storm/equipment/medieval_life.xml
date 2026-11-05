@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE storm SYSTEM "../../storm.dtd">
+<!-- Starting inventory of the new character: only what every origin has. The rest comes from origins.lua. -->
+<storm>
+	<rules>
+		<rule name="ml_player_inventory">
+			<selectors>
+				<hasName name="ml_player" />
+			</selectors>
+			<operations>
+				<setInventory preset="inventory_ml_player" />
+			</operations>
+		</rule>
+	</rules>
+</storm>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="InventoryPreset.xsd">
+	<InventoryPresets version="2">
+		<!-- The new character starts with nothing else: the clothes, the weapon and the money come from the origin (origins.lua). -->
+		<InventoryPreset Name="inventory_ml_player">
+			<PresetItem Name="keyring" Amount="1" />
+		</InventoryPreset>
+	</InventoryPresets>
+</database>

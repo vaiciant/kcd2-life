@@ -1,0 +1,375 @@
+"""Generates what the mod needs from the jobs out of a single file.
+
+Reads mod/medieval_life/jobs.toml and writes:
+
+- Scripts/MedievalLife/jobs_data.lua: sites, pay and experience, and the bed of each rental of the game, from the level.
+- Libs/Storm/roles/medieval_life.xml: the rule that gives the role role_ml_employer to each NPC.
+- localization/*_xml/text__medieval_life.xml: the text of the clock and the one of the book of trades for each site, and
+  one summary line per combination of skills and hours, in English and Spanish. The names of the skills
+  come from the game.
+- data/Quests/Final/Barbora/utils/roomrenting/: copies of the game's four dialogs of room rental, with their options only
+  for Henry. They come from the game of whoever builds and are not versioned.
+
+Looks up every NPC and skill in the game tables and stops if they do not exist.
+tools/install_mod.py runs it before packing.
+
+Usage: python -I mod/medieval_life/tools/generate_jobs.py mod/medieval_life
+"""
+import hashlib
+import math
+import os
+import pathlib
+import re
+import sys
+import tomllib
+import zipfile
+
+# The repository: this file is in mod/medieval_life/tools/.
+ROOT = pathlib.Path(__file__).resolve().parents[3]
+TABLES = ROOT / "game_files/Tables.pak/Libs/Tables/rpg"
+# KCD2_GAME, or the game in the default Steam library, or in the maintainer's.
+GAME_PLACES = (r"C:\Program Files (x86)\Steam\steamapps\common\KingdomComeDeliverance2", r"E:\SteamLibrary\steamapps\common\KingdomComeDeliverance2")
+GAME = pathlib.Path(os.environ.get("KCD2_GAME") or next((p for p in GAME_PLACES if os.path.isfile(os.path.join(p, "Data", "Tables.pak"))), GAME_PLACES[0]))
+LANGUAGES = (("English_xml", "en"), ("Spanish_xml", "es"))
+SUMMARY = {
+    "English_xml": "Worked {hours} h at {wage} g/h: +{pay} g. {main} +{xp_main} XP, {secondary} +{xp_secondary} XP.",
+    "Spanish_xml": "Trabajaste {hours} h a {wage} g/h: +{pay} g. {main} +{xp_main} XP, {secondary} +{xp_secondary} XP.",
+}
+DECIMAL = {"English_xml": ".", "Spanish_xml": ","}
+GLOBALS = ("wage", "xp_main", "xp_secondary", "first_hour", "last_hour", "min_hours", "role_en", "role_es",
+           "steady_wage", "steady_work_days", "steady_days_off", "steady_min_hours", "steady_hire_last_hour", "steady_late_minutes", "steady_faults", "steady_fault_days",
+           "steady_rehire_quit_days", "steady_rehire_fired_days", "steady_area", "steady_meal", "steady_role_en", "steady_role_es",
+           "casual_meal", "casual_meal_min_hours", "casual_meal_health", "casual_meal_fresh",
+           "casual_min_reputation", "steady_min_reputation", "rent_until_hour", "rent_week_days", "rent_week_paid_nights")
+
+
+def read(path):
+    return path.read_text("utf-8-sig", errors="replace")
+
+
+def souls():
+    names = set()
+    for path in TABLES.glob("soul*.xml"):
+        names.update(re.findall(r'soul_name="([^"]+)"', read(path)))
+    return names
+
+
+def fail(site, message):
+    raise SystemExit(f"jobs.toml, {site.get('key', '?')}: {message}")
+
+
+# What the story of Henry must have in the world for a site to be offered (story.lua).
+REQUIRES = {"castle", "semine", "semine_manor"}
+
+
+def check(data):
+    for field in GLOBALS:
+        if field not in data:
+            raise SystemExit(f"jobs.toml: missing {field}")
+    known_souls = souls()
+    known_skills = set(re.findall(r'skill_name="([^"]+)"', read(TABLES / "skill.xml")))
+    known_stats = set(re.findall(r'stat_name="([^"]+)"', read(TABLES / "stat.xml")))
+    sites = data.get("site", [])
+    keys = [s.get("key") for s in sites]
+    if len(set(keys)) != len(keys):
+        raise SystemExit("jobs.toml: two sites have the same key")
+    for site in sites:
+        for field in ("key", "npcs", "name_en", "name_es", "place_en", "place_es", "main", "secondary"):
+            if field not in site:
+                fail(site, f"missing {field}")
+        if not re.fullmatch(r"[a-z_]+", site["key"]):
+            fail(site, "the key must be lowercase")
+        for npc in site["npcs"]:
+            if npc not in known_souls:
+                fail(site, f"NPC {npc} does not exist")
+        for field in ("main", "secondary"):
+            if site[field] not in known_skills | known_stats:
+                fail(site, f"{field}: {site[field]} does not exist")
+        if site.get("requires", "castle") not in REQUIRES:
+            fail(site, f"requires must be one of {sorted(REQUIRES)}")
+        hours = site.get("hours", [data["first_hour"], data["last_hour"]])
+        if len(hours) != 2 or not all(isinstance(h, int) for h in hours) or not 0 <= hours[0] < hours[1] <= 24 \
+                or hours[1] - hours[0] < data["min_hours"]:
+            fail(site, "hours must be [first, last], whole hours of one day, at least min_hours apart")
+    return sites, known_stats
+
+
+def food():
+    found = {}
+    for path in (TABLES.parent / "item").glob("item*.xml"):
+        for row in re.findall(r"<Food [^>]*>", read(path)):
+            item = dict(re.findall(r'(\w+)="([^"]*)"', row))
+            found[item.get("Name")] = item
+    return found
+
+
+def rent_places(sites):
+    """The bed of each rental of the game, from the level: the smart object where the character lies, its prompt
+    (BedTrigger) and the door of the room, if it has one. Once rented, the bed of the game is Henry's, so rent.lua hides
+    its prompt and puts the mod's own bed in its place, unseen, on the same mattress."""
+    wanted = {s["rent"]: s for s in sites if "rent" in s}
+    if not wanted:
+        return {}
+    pak = zipfile.ZipFile(GAME / "Data/Levels/trosecko/level.pak")
+    text = pak.read(pak.getinfo("objects_mission0.xml")).decode("utf-8", errors="replace")
+    entities = {m.group(1): m.group(0) for m in re.finditer(r'<Entity [^>]*?EntityId="(\d+)"[^>]*>.*?</Entity>', text, re.S)}
+
+    def attr(entity, name, default=""):
+        found = re.search(r'\b' + name + r'="([^"]*)"', entity)
+        return found.group(1) if found else default
+
+    def links(entity):
+        return {name.replace("&apos;", "'"): target for target, name in re.findall(r'<Link TargetId="(\d+)"[^>]*Name="([^"]*)"', entity)}
+
+    def place(entity):
+        x, y, z = (float(n) for n in attr(entity, "Pos").split(","))
+        w, _, _, qz = (float(n) for n in attr(entity, "Rotate", "1,0,0,0").split(","))
+        return {"x": round(x, 3), "y": round(y, 3), "z": round(z, 3), "yaw": round(2 * math.atan2(qz, w), 4)}
+
+    found = {}
+    for holder, site in wanted.items():
+        entity = next((e for e in entities.values() if attr(e, "Name") == holder and attr(e, "EntityClass") == "SmartObjectHolder"), None)
+        if not entity:
+            fail(site, f"rent: the level has no SmartObjectHolder {holder}")
+        link = links(entity)
+        bed = entities.get(link.get("asset['bed']") or link.get("bed", ""), "")
+        if attr(bed, "EntityClass") != "StanceSmartObject":
+            fail(site, f"rent: {holder} has no bed")
+        prompt = entities.get(links(bed).get("mTrigger", ""), "")
+        if attr(prompt, "EntityClass") != "BedTrigger":
+            fail(site, f"rent: the bed of {holder} has no BedTrigger")
+        door = entities.get(link.get("asset['dvere']", ""), "")
+        found[site["key"]] = {
+            "price": round(site["rent_price"] * 10),
+            "price_economy": round(site["rent_price_economy"] * 10) if "rent_price_economy" in site else 0,
+            # The mark of the bed on the map and the compass: the game shows it while the bed is the character's, and the mod
+            # takes the others off. Its id is the EntityGuid of the bed and "BED POI" in bytes, as in whdata_0.
+            "mark": attr(bed, "EntityGuid") + "-4245-4420504f4900",
+            "object": dict(place(bed), helpers=attr(bed, "soclass_SmartObjectHelpers"), type=attr(bed, "guidSmartObjectType"),
+                           bed=attr(bed, "esBedTypes"), sleep=attr(bed, "esSleepQuality"), reading=attr(bed, "esReadingQuality")),
+            "trigger": dict(place(prompt), name=attr(prompt, "Name"), scale=round(float(attr(prompt, "Scale", "1,1,1").split(",")[0]), 3)),
+            "door": attr(door, "Name") if door else "",
+        }
+    return found
+
+
+def write_lua(mod_dir, data, sites, stats):
+    def flag(name):
+        return "true" if name in stats else "false"
+
+    def bed(site):
+        if "bed" not in site:
+            return ""
+        return "\n		bed = { " + ", ".join(str(n) for n in site["bed"]) + " },"
+
+    def requires(site):
+        return f'\n		requires = "{site["requires"]}",' if "requires" in site else ""
+
+    places = rent_places(sites)
+
+    def lua_table(values):
+        return "{ " + ", ".join(f'{k} = "{v}"' if isinstance(v, str) else f"{k} = {v}" for k, v in values.items()) + " }"
+
+    def rent(site):
+        if site["key"] not in places:
+            return ""
+        r = places[site["key"]]
+        door = f'\n			door = "{r["door"]}",' if r["door"] else ""
+        door += f'\n			price_economy = {r["price_economy"]},' if r["price_economy"] else ""
+        return (f'\n		rent = {{\n			price = {r["price"]},\n			mark = "{r["mark"]}",\n			object = {lua_table(r["object"])},\n'
+                f'			trigger = {lua_table(r["trigger"])},{door}\n		}},')
+
+    def hours(site):
+        if "hours" not in site:
+            return ""
+        return f'\n		first_hour = {site["hours"][0]},\n		last_hour = {site["hours"][1]},'
+
+    items = food()
+
+    def meal(field, health):
+        for name in data[field]:
+            if name not in items:
+                raise SystemExit(f"jobs.toml, {field}: {name} does not exist")
+        print(f"{field}:", sum(float(items[name]["NutritionBenefit"]) for name in data[field]))
+        return ", ".join(f'{{ "{items[name]["Id"]}", {health(name)} }}' for name in data[field])
+
+    steady_meal = meal("steady_meal", lambda name: 1)
+    casual_meal = meal("casual_meal", lambda name: 1 if name in data["casual_meal_fresh"] else data["casual_meal_health"])
+    rows = "".join(f'''	{{
+		key = "{s["key"]}",
+		npcs = {{ {", ".join(f'"{n}"' for n in s["npcs"])} }},
+		text = "@ml_job_{s["key"]}",
+		main = "{s["main"]}",
+		main_is_stat = {flag(s["main"])},
+		secondary = "{s["secondary"]}",
+		secondary_is_stat = {flag(s["secondary"])},
+		summary = "@ml_work_done_{s["main"]}_{s["secondary"]}_",
+		steady = {"true" if s.get("steady") else "false"},
+		steady_summary = "@ml_shift_done_{s["main"]}_{s["secondary"]}_",{bed(s)}{requires(s)}{hours(s)}{rent(s)}
+	}},
+''' for s in sites)
+    path = mod_dir / "data/Scripts/MedievalLife/jobs_data.lua"
+    path.write_bytes(f'''-- Generated by tools/generate_jobs.py from mod/medieval_life/jobs.toml. Edit that file, not this one.
+-- wage is in tenths of a groschen per hour.
+MedievalLife.JOB_RULES = {{
+	wage = {round(data["wage"] * 10)},
+	xp_main = {data["xp_main"]},
+	xp_secondary = {data["xp_secondary"]},
+	first_hour = {data["first_hour"]},
+	last_hour = {data["last_hour"]},
+	min_hours = {data["min_hours"]},
+	steady_wage = {round(data["steady_wage"] * 10)},
+	steady_work_days = {data["steady_work_days"]},
+	steady_days_off = {data["steady_days_off"]},
+	steady_min_hours = {data["steady_min_hours"]},
+	steady_hire_last_hour = {data["steady_hire_last_hour"]},
+	steady_late_minutes = {data["steady_late_minutes"]},
+	steady_faults = {data["steady_faults"]},
+	steady_fault_days = {data["steady_fault_days"]},
+	steady_rehire_quit_days = {data["steady_rehire_quit_days"]},
+	steady_rehire_fired_days = {data["steady_rehire_fired_days"]},
+	steady_area = {data["steady_area"]},
+	casual_min_reputation = {data["casual_min_reputation"]},
+	steady_min_reputation = {data["steady_min_reputation"]},
+	rent_until_hour = {data["rent_until_hour"]},
+	rent_week_days = {data["rent_week_days"]},
+	rent_week_paid_nights = {data["rent_week_paid_nights"]},
+	steady_meal = {{ {steady_meal} }},
+	casual_meal = {{ {casual_meal} }},
+	casual_meal_min_hours = {data["casual_meal_min_hours"]},
+}}
+MedievalLife.JOB_SITES = {{
+{rows}}}
+'''.encode("utf-8"))
+
+
+def edit(path, change):
+    raw = path.read_bytes().decode("utf-8")
+    crlf = "\r\n" in raw
+    text = change(raw.replace("\r\n", "\n"))
+    path.write_bytes((text.replace("\n", "\r\n") if crlf else text).encode("utf-8"))
+
+
+def write_storm(mod_dir, sites):
+    names = "".join(f'					<hasName name="{npc}" />\n' for site in sites for npc in site["npcs"])
+    rule = ('		<rule name="ml_employers">\n			<selectors>\n				<or>\n' + names +
+            '				</or>\n			</selectors>\n			<operations>\n				<addRole name="role_ml_employer" />\n			</operations>\n		</rule>\n')
+
+    def change(text):
+        text, count = re.subn(r'\t\t<rule name="ml_employers">.*?</rule>\n', lambda _: rule, text, flags=re.S)
+        if count != 1:
+            raise SystemExit("roles/medieval_life.xml: cannot find the rule ml_employers")
+        return text
+
+    edit(mod_dir / "data/Libs/Storm/roles/medieval_life.xml", change)
+
+
+def game_names(folder):
+    """The names of the skills and stats, as the game shows them."""
+    pak = zipfile.ZipFile(GAME / "Localization" / f"{folder}.pak")
+    text = pak.read("text_ui_soul.xml").decode("utf-8", "replace")
+    rows = dict(re.findall(r"<Row><Cell>(ui_(?:skill|stat)_[a-z_]+)</Cell><Cell>[^<]*</Cell><Cell>([^<]*)</Cell></Row>", text))
+    # skill.xml gives the text of each skill: the one of horse_riding is ui_skill_horse_whispering.
+    skills = dict(re.findall(r'skill_name="([^"]+)"[^>]*ui_string_name="([^"]+)"', read(TABLES / "skill.xml")))
+    return lambda name: rows[skills[name]] if name in skills else rows[f"ui_stat_{name}"]
+
+
+def summaries(data, sites, folder):
+    """One row per combination and duration: Lua cannot build translated text."""
+    name_of, rows = game_names(folder), {}
+    point = DECIMAL[folder]
+
+    factor = data["economy_factor"]
+
+    def amount(value):
+        return f"{value:.2f}".rstrip("0").rstrip(".").replace(".", point)
+
+    def add(prefix, site, wage, first_hours):
+        main, secondary = site["main"], site["secondary"]
+        for hours in range(first_hours, data["last_hour"] - data["first_hour"] + 1):
+            key = f"{prefix}_{main}_{secondary}_{hours}"
+            fields = dict(hours=hours, main=name_of(main), xp_main=hours * data["xp_main"],
+                          secondary=name_of(secondary), xp_secondary=hours * data["xp_secondary"])
+            rows[key] = SUMMARY[folder].format(wage=f"{wage:.1f}".replace(".", point), pay=f"{wage * hours:.1f}".replace(".", point), **fields)
+            # With an economy mod, what it pays, as economy.lua rounds it: jobs.lua adds _economy.
+            tenths = math.floor(round(wage * 10) * hours * factor + 0.5)
+            rows[key + "_economy"] = SUMMARY[folder].format(wage=amount(wage * factor), pay=amount(tenths / 10), **fields)
+
+    for site in sites:
+        add("ml_work_done", site, data["wage"], data["min_hours"])
+        if site.get("steady"):
+            add("ml_shift_done", site, data["steady_wage"], data["steady_min_hours"])
+    return "".join(f"  <Row><Cell>{key}</Cell><Cell>{key}</Cell><Cell>{text}</Cell></Row>\n" for key, text in rows.items())
+
+
+def write_text(mod_dir, data, sites):
+    for folder, language in LANGUAGES:
+        def change(text):
+            text = re.sub(r"  <Row><Cell>ml_job_[a-z_]+</Cell>[^\n]*\n", "", text)
+            text = re.sub(r"  <Row><Cell>ml_book_(?:place_[a-z_]+|role|steady_role)</Cell>[^\n]*\n", "", text)
+            text = re.sub(r"  <Row><Cell>ml_(?:work|shift)_done_[a-z_0-9]+</Cell>[^\n]*\n", "", text)
+            rows = "".join(f"  <Row><Cell>ml_job_{s['key']}</Cell><Cell>ml_job_{s['key']}</Cell><Cell>{s['name_' + language]}</Cell></Row>\n" for s in sites)
+            rows += "".join(f"  <Row><Cell>ml_book_place_{s['key']}</Cell><Cell>ml_book_place_{s['key']}</Cell><Cell>{s['place_' + language]}</Cell></Row>\n" for s in sites)
+            rows += f"  <Row><Cell>ml_book_role</Cell><Cell>ml_book_role</Cell><Cell>{data['role_' + language]}</Cell></Row>\n"
+            rows += f"  <Row><Cell>ml_book_steady_role</Cell><Cell>ml_book_steady_role</Cell><Cell>{data['steady_role_' + language]}</Cell></Row>\n"
+            rows += summaries(data, sites, folder)
+            if text.count("</Table>") != 1:
+                raise SystemExit(f"{folder}: cannot find the end of the table")
+            return text.replace("</Table>", rows + "</Table>")
+
+        edit(mod_dir / "localization" / folder / "text__medieval_life.xml", change)
+
+
+# The game's room rental, in four dialogs: for one night (roomrentonenight) and the room of Zhelejov (roomrent), each with
+# an innkeeper man and woman. They give the bed to Henry, so the new character rents with the option of the mod,
+# and the game's options show only while Henry plays. Each dialog has two root options, right under its first
+# decision: "Can I spend the night here?" and staying from time to time, or a room and board and a room for good. A file
+# of the mod with the same path replaces the game's one, as the barber of the frameworks does.
+RENT_DIALOGS = {
+    "Quests/Final/Barbora/utils/roomrenting/roomrentonenight/muz_pronajem_onenight_save.xml": "3ccee3983ed36a913bc70c7935938b58be17843ee2ef82fb0e975a0031282ed7",
+    "Quests/Final/Barbora/utils/roomrenting/roomrentonenight/zena_pronajem_onenight_save.xml": "c8968a367cadffb915296ce8606038c68b348e54d4a53bdb67ee6bbb6c279d11",
+    "Quests/Final/Barbora/utils/roomrenting/roomrent/muz_v_hostinci_pronajem.xml": "66e5ed242ea63078a49faeeb263e181913b94837d516b51faeb8d965c7615de7",
+    "Quests/Final/Barbora/utils/roomrenting/roomrent/zena_v_hostinci_pronajem.xml": "8c7d7e16563e19fa6ba3e195c441d3ecbc3a0246e57fcb6a69f8e1a0bf57baff",
+}
+RENT_ROOT_OPTIONS = 2
+# life.lua sets it to 1 on every tick while the new character plays, and to 0 while Henry plays or after ml_uninstall.
+HENRY_ONLY = " AND gvar('ml_new_life') != 1"
+
+
+def write_rent_dialogs(mod_dir):
+    """The hashes are those of game 1.5.6. If an update changes a dialog, the old copy would hide the change, so the tool
+    stops until someone reads the new file and updates its hash."""
+    with zipfile.ZipFile(GAME / "Data" / "Scripts.pak") as z:
+        for path, sha in RENT_DIALOGS.items():
+            raw = z.read(path)
+            found = hashlib.sha256(raw).hexdigest()
+            if found != sha:
+                raise SystemExit(f"{path} changed in the game (sha256 {found}). Check its root options, then update RENT_DIALOGS.")
+            text = raw.decode("utf-8-sig")
+            roots = re.findall(r'\n\t{6}<Sequence EntryCondition="([^"]*)"', text)
+            if len(roots) != RENT_ROOT_OPTIONS:
+                raise SystemExit(f"{path}: {len(roots)} root options, not {RENT_ROOT_OPTIONS}. Did the game change?")
+            for condition in roots:
+                old = f'EntryCondition="{condition}"'
+                if text.count(old) != 1:
+                    raise SystemExit(f"{path}: {old} not found exactly once. Did the game change?")
+                text = text.replace(old, f'EntryCondition="{condition}{HENRY_ONLY}"')
+            dest = mod_dir / "data" / path
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(text, encoding="utf-8-sig", newline="")
+
+
+def main(mod_dir):
+    data = tomllib.loads((mod_dir / "jobs.toml").read_text("utf-8"))
+    # The economy mod that the pay follows (economy.toml): the summaries of work say its amounts too.
+    data["economy_factor"] = tomllib.loads((mod_dir / "economy.toml").read_text("utf-8"))["realish"]["price_factor"]
+    sites, stats = check(data)
+    write_lua(mod_dir, data, sites, stats)
+    write_storm(mod_dir, sites)
+    write_text(mod_dir, data, sites)
+    write_rent_dialogs(mod_dir)
+    print(f"{len(sites)} sites, {len(RENT_DIALOGS)} rent dialogs of the game for Henry only")
+
+
+if __name__ == "__main__":
+    main((ROOT / sys.argv[1]).resolve())

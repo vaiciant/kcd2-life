@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- Where Henry's story is, read from the world it leaves: no node reads another quest by its name. The quests of the
+	     game load and unload layer profiles, such as the people of Trosky castle or Semine burned, and each profile here gives
+	     Lua a token when it loads and another when it unloads. Test ST1, -->
+	<Skald>
+		<Gameplay Name="ml_story">
+			<Nodes>
+				<State Name="watch" PositionY="-150" PositionX="-600" TypeT="bool">
+					<Constant Name="DefaultValue" Value="true" />
+				</State>
+				<ProfileStateTrigger Name="profile_castle_settled" PositionY="0" PositionX="-300">
+					<Asset Name="Profiles" Alias="castle_settled" />
+					<Edge From="watch.State" To="IsActive" />
+				</ProfileStateTrigger>
+				<EventFunction Name="told_castle_settled_on" PositionY="0" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="8c887bbd-870a-5113-9f0a-b6ef8a3c58a0" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_castle_settled.OnLoaded" To="Exec" />
+				</EventFunction>
+				<EventFunction Name="told_castle_settled_off" PositionY="70" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="49a8fc34-e196-5913-b3cd-6a3e0b148799" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_castle_settled.OnUnloaded" To="Exec" />
+				</EventFunction>
+				<ProfileStateTrigger Name="profile_castle_gates" PositionY="150" PositionX="-300">
+					<Asset Name="Profiles" Alias="castle_gates" />
+					<Edge From="watch.State" To="IsActive" />
+				</ProfileStateTrigger>
+				<EventFunction Name="told_castle_gates_on" PositionY="150" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="7655ca2f-6b8d-541b-a17a-b2468711c80c" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_castle_gates.OnLoaded" To="Exec" />
+				</EventFunction>
+				<EventFunction Name="told_castle_gates_off" PositionY="220" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="5f116898-f496-5bfd-9e44-ce1704c09ba2" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_castle_gates.OnUnloaded" To="Exec" />
+				</EventFunction>
+				<ProfileStateTrigger Name="profile_castle_army" PositionY="300" PositionX="-300">
+					<Asset Name="Profiles" Alias="castle_army" />
+					<Edge From="watch.State" To="IsActive" />
+				</ProfileStateTrigger>
+				<EventFunction Name="told_castle_army_on" PositionY="300" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="62f1ac17-28ae-5b7a-8aea-7a6b61e0f34c" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_castle_army.OnLoaded" To="Exec" />
+				</EventFunction>
+				<EventFunction Name="told_castle_army_off" PositionY="370" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="eb4d1aba-83b3-5a94-9425-80ec724a3cd9" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_castle_army.OnUnloaded" To="Exec" />
+				</EventFunction>
+				<ProfileStateTrigger Name="profile_bergow" PositionY="450" PositionX="-300">
+					<Asset Name="Profiles" Alias="bergow" />
+					<Edge From="watch.State" To="IsActive" />
+				</ProfileStateTrigger>
+				<EventFunction Name="told_bergow_on" PositionY="450" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="4ebe5c90-e5ea-5a16-b3a7-8fe55b0ba70d" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_bergow.OnLoaded" To="Exec" />
+				</EventFunction>
+				<EventFunction Name="told_bergow_off" PositionY="520" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="17ca62a7-f80e-5c82-9d5e-8c2df9960f34" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_bergow.OnUnloaded" To="Exec" />
+				</EventFunction>
+				<ProfileStateTrigger Name="profile_semine_people" PositionY="600" PositionX="-300">
+					<Asset Name="Profiles" Alias="semine_people" />
+					<Edge From="watch.State" To="IsActive" />
+				</ProfileStateTrigger>
+				<EventFunction Name="told_semine_people_on" PositionY="600" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="369e0e9d-e150-5781-9059-4827a293ed37" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_semine_people.OnLoaded" To="Exec" />
+				</EventFunction>
+				<EventFunction Name="told_semine_people_off" PositionY="670" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="9bcb028b-623c-5e4c-b84e-33410fa23d47" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_semine_people.OnUnloaded" To="Exec" />
+				</EventFunction>
+				<ProfileStateTrigger Name="profile_semine_burned" PositionY="750" PositionX="-300">
+					<Asset Name="Profiles" Alias="semine_burned" />
+					<Edge From="watch.State" To="IsActive" />
+				</ProfileStateTrigger>
+				<EventFunction Name="told_semine_burned_on" PositionY="750" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="00f2e77f-7bf7-54ff-b9e2-a0eee6a41ddd" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_semine_burned.OnLoaded" To="Exec" />
+				</EventFunction>
+				<EventFunction Name="told_semine_burned_off" PositionY="820" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="6655f0d9-a97b-53f9-9fd9-89d56d588742" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_semine_burned.OnUnloaded" To="Exec" />
+				</EventFunction>
+				<ProfileStateTrigger Name="profile_semine_wedding" PositionY="900" PositionX="-300">
+					<Asset Name="Profiles" Alias="semine_wedding" />
+					<Edge From="watch.State" To="IsActive" />
+				</ProfileStateTrigger>
+				<EventFunction Name="told_semine_wedding_on" PositionY="900" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="d5ab21a9-3ff5-5ce7-8f3c-786c1e534e06" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_semine_wedding.OnLoaded" To="Exec" />
+				</EventFunction>
+				<EventFunction Name="told_semine_wedding_off" PositionY="970" PositionX="0" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="6b9a74e4-5a4d-5358-b320-3681f55e9285" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="profile_semine_wedding.OnUnloaded" To="Exec" />
+				</EventFunction>
+			</Nodes>
+			<Assets>
+				<ProfileAsset Name="castle_settled" AssetProfiles="trosky_settlingDefault" />
+				<ProfileAsset Name="castle_gates" AssetProfiles="trosky_fullyOpened" />
+				<ProfileAsset Name="castle_army" AssetProfiles="trosky_armyCamp" />
+				<ProfileAsset Name="bergow" AssetProfiles="ttro_bergov" />
+				<ProfileAsset Name="semine_people" AssetProfiles="trosecko_otherSemins" />
+				<ProfileAsset Name="semine_burned" AssetProfiles="semin_burned" />
+				<ProfileAsset Name="semine_wedding" AssetProfiles="semin_duringQuestSvatba" />
+			</Assets>
+			<Text Text="ml_story" />
+		</Gameplay>
+	</Skald>
+</Database>

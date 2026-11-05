@@ -1,0 +1,61 @@
+# Origins of the new character. This is the only file to edit.
+#
+# tools/generate_origins.py turns it into the script data, the options of the selector and the
+# texts in English and Spanish. tools/install_mod.py runs it, so saving here and installing is enough.
+# It checks every name against the tables of the game, and stops if one does not exist.
+#
+# To add an origin, copy a block to the END of the list: saves keep the position of the origin.
+#
+#   key             Short id, in lower case.
+#   name_en/name_es Text of the option in the selector.
+#   clothes         clothing_preset.xml, Male. What the new character and the male models wear.
+#   clothes_female  clothing_preset.xml, Female. What the female model wears.
+#   weapon          weapon_preset.xml. Optional.
+#   quality         Level of the clothes and the weapon, from 1 to 3. The number next to their name.
+#   quality_basic   Level of the weapon, the tunic or dress and the trousers, if it is another. Optional.
+#   money           Groschen.
+#   skills          Level each skill reaches, from 2 up. The rest stay at 1. skill.xml has the names.
+#   items           Item name and amount, from the item tables. Optional.
+#   steady_job      Key of a site of jobs.toml with steady = true. Optional: the origin starts with that job.
+
+# The origin the model wears when it appears.
+default = "innkeeper"
+# What every origin gets, already equipped. Item names, from the item tables.
+for_all = ["torch_weapon"]
+
+[[origin]]
+key = "peasant"
+name_en = "Peasant family"
+name_es = "Familia campesina"
+# Nothing on the head: a scarf looks like a bandit.
+clothes = "S60_mazakDead"
+clothes_female = "f_wench_34"
+weapon = "mace_1_01"
+quality = 1
+money = 15
+skills = { survival = 3, craftsmanship = 2 }
+items = { bread = 2 }
+
+[[origin]]
+key = "innkeeper"
+name_en = "Innkeeper family"
+name_es = "Familia de taberneros"
+clothes = "innkeeper_02"
+clothes_female = "ttkc_innkeeper"
+weapon = "huntingsword_1_01"
+quality = 2
+quality_basic = 1
+money = 40
+skills = { drinking = 3, scholarship = 2 }
+steady_job = "tavern"
+
+[[origin]]
+key = "burgher"
+name_en = "Burgher family"
+name_es = "Familia burguesa"
+clothes = "burgher_01"
+clothes_female = "kkut_innkeeperAdamsBathhouse"
+weapon = "sword_2_01"
+quality = 2
+money = 300
+skills = { scholarship = 3, horse_riding = 2 }

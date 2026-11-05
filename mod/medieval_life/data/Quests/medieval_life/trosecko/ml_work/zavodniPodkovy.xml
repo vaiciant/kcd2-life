@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- The engine looks for the voice and the lips of a line in a folder named after the level and the nodes with VoiceNamespace.
+	     This Gameplay has the name of the quest of the game where Henry recorded the line of this dialog, so nothing is copied. -->
+	<Skald>
+		<Gameplay Name="zavodniPodkovy" VoiceNamespace="true">
+			<Ports>
+				<Port Name="hired" Direction="Out" Type="trigger" />
+				<Port Name="quit" Direction="Out" Type="trigger" />
+			</Ports>
+			<Definitions>
+				<Definition File="zavodniPodkovy/ml_work_dialog.xml" />
+			</Definitions>
+			<Nodes>
+				<ml_work_dialog Name="dialog" PositionY="0" PositionX="0" />
+				<Output Name="Output">
+					<Edge From="dialog.hired" To="hired" />
+					<Edge From="dialog.quit" To="quit" />
+				</Output>
+			</Nodes>
+			<Text Text="zavodniPodkovy" />
+		</Gameplay>
+	</Skald>
+</Database>

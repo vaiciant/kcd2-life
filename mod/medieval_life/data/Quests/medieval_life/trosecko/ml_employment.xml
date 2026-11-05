@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- The steady job in the journal. Hiring and quitting come from the dialog. A dismissal, or a job that comes with the
+	     origin, comes from Lua with a token on the inventory of the new character, so those triggers only turn on after the
+	     switch.
+	     Around the bed nobody reacts to trespassing, because the tavern is private at night. Theft stays a crime. Lua says
+	     when the employee goes in or out.
+	     After SetFailed a quest does not open again, so leaving closes it as Done and only cancels the objective. -->
+	<Skald>
+		<Quest Name="ml_employment" Type="Side" Players="0 2" Repeatable="true">
+			<Ports>
+				<Port Name="hired" Direction="In" Type="trigger" />
+				<Port Name="quit" Direction="In" Type="trigger" />
+				<Port Name="life_started" Direction="In" Type="trigger" />
+			</Ports>
+			<Nodes>
+				<ObjectProperties Name="new_life" PositionY="100" PositionX="-900" DeclaringType="wh::rpgmodule::I_Soul">
+					<Asset Name="I_Soul" Alias="new_life" />
+				</ObjectProperties>
+				<State Name="in_life" PositionY="-100" PositionX="-900" TypeT="bool">
+					<Constant Name="DefaultValue" Value="false" />
+					<Edge From="life_started" To="SetTrue" />
+				</State>
+				<Function Name="fired_descriptor" PositionY="200" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="2ae07c17-6972-5c2d-ad61-1ac3f42c532c" />
+					<Constant Name="Amount" Value="1" />
+				</Function>
+				<ItemDescriptorTrigger Name="fired_token" PositionY="200" PositionX="-300">
+					<Edge From="new_life.Inventory" To="Inventory" />
+					<Edge From="fired_descriptor.ItemDescriptor" To="ItemDescriptor" />
+					<Edge From="in_life.State" To="IsActive" />
+				</ItemDescriptorTrigger>
+				<Function Name="hired_descriptor" PositionY="800" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="38bfcd15-b814-5c40-ab90-08a03f54eef4" />
+					<Constant Name="Amount" Value="1" />
+				</Function>
+				<ItemDescriptorTrigger Name="hired_token" PositionY="800" PositionX="-300">
+					<Edge From="new_life.Inventory" To="Inventory" />
+					<Edge From="hired_descriptor.ItemDescriptor" To="ItemDescriptor" />
+					<Edge From="in_life.State" To="IsActive" />
+				</ItemDescriptorTrigger>
+				<Function Name="area_in_descriptor" PositionY="400" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="3cf1f02c-f2c8-51bf-8f86-5c0465e5158a" />
+					<Constant Name="Amount" Value="1" />
+				</Function>
+				<ItemDescriptorTrigger Name="area_in_token" PositionY="400" PositionX="-300">
+					<Edge From="new_life.Inventory" To="Inventory" />
+					<Edge From="area_in_descriptor.ItemDescriptor" To="ItemDescriptor" />
+					<Edge From="in_life.State" To="IsActive" />
+				</ItemDescriptorTrigger>
+				<Function Name="area_out_descriptor" PositionY="600" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="2e283b32-7623-52bd-93c0-5817c1223150" />
+					<Constant Name="Amount" Value="1" />
+				</Function>
+				<ItemDescriptorTrigger Name="area_out_token" PositionY="600" PositionX="-300">
+					<Edge From="new_life.Inventory" To="Inventory" />
+					<Edge From="area_out_descriptor.ItemDescriptor" To="ItemDescriptor" />
+					<Edge From="in_life.State" To="IsActive" />
+				</ItemDescriptorTrigger>
+				<State Name="quest_state" PositionY="-100" PositionX="0" RequiredForOutput="trosecko" TypeT="wh::questmodule::QuestProgress">
+					<Edge From="hired" To="SetActive" />
+					<Edge From="hired_token.OnAcquire" To="SetActive" />
+					<Edge From="quit" To="SetDone" />
+					<Edge From="fired_token.OnAcquire" To="SetDone" />
+				</State>
+				<State Name="objective_state" PositionY="100" PositionX="0" RequiredForOutput="trosecko" TypeT="ProgressFailable">
+					<Edge From="hired" To="SetActive" />
+					<Edge From="hired_token.OnAcquire" To="SetActive" />
+					<Edge From="quit" To="SetCanceled" />
+					<Edge From="fired_token.OnAcquire" To="SetCanceled" />
+				</State>
+				<keep_the_job Name="objective" PositionY="100" PositionX="300" RequiredForOutput="trosecko">
+					<Edge From="objective_state.State" To="Progress" />
+				</keep_the_job>
+				<State Name="at_work" PositionY="400" PositionX="0" TypeT="bool">
+					<Constant Name="DefaultValue" Value="false" />
+					<Edge From="area_in_token.OnAcquire" To="SetTrue" />
+					<Edge From="area_out_token.OnAcquire" To="SetFalse" />
+				</State>
+				<SetGameContext Name="no_trespass" PositionY="400" PositionX="300">
+					<Constant Name="Context" Value="crime_disabledTrespassReactions" />
+					<Edge From="at_work.State" To="IsActive" />
+				</SetGameContext>
+				<Output Name="Output">
+					<Edge From="quest_state.State" To="Progress" />
+				</Output>
+			</Nodes>
+			<Assets>
+				<SoulAsset Name="new_life" SharedSoulGuids="e9f088ff-48e3-5fa1-b733-80504a56d1dc" />
+			</Assets>
+			<QuestName StringName="qname_ml_employment" />
+			<QuestDescription StringName="qdesc_ml_employment" />
+			<Objectives>
+				<Objective TypeT="ProgressFailable" Name="keep_the_job">
+					<LocalizedName StringName="ml_employment_objective" />
+					<Logs>
+						<EnumLog Type="None" Name="None" />
+						<EnumLog Type="Started" Name="Active">
+							<Log StringName="ml_employment_log_active" />
+						</EnumLog>
+						<EnumLog Type="Completed" Name="Done">
+							<Log StringName="ml_employment_log_done" />
+						</EnumLog>
+						<EnumLog Type="Canceled" Name="Canceled">
+							<Log StringName="ml_employment_log_canceled" />
+						</EnumLog>
+					</Logs>
+				</Objective>
+			</Objectives>
+		</Quest>
+	</Skald>
+</Database>

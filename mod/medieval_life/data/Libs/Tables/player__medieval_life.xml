@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="database.xsd">
+	<!-- The playable new character, with the same options as Henry. ShelveData keeps Henry's crimes away from them.
+	     QuestGiversEnabled hides Henry's side quests from the map. -->
+	<players version="2">
+		<PlayerData PlayerId="2" SoulGuid="e9f088ff-48e3-5fa1-b733-80504a56d1dc" UIMapCharacter="Henry" GameContext="player_henry" FreezeReputation="false" ShelveData="true" FastTravelEnabled="true" ChangingClothesEnabled="true" QuestGiversEnabled="false" />
+	</players>
+</database>

@@ -1,0 +1,551 @@
+# Work sites of the new character. This is the only file to edit.
+#
+# tools/generate_jobs.py turns it into the script data, the role that opens the option in the
+# dialog of each NPC, and the texts in English and Spanish. tools/install_mod.py runs it.
+# It checks every NPC and skill against the tables of the game, and stops if one does not exist.
+#
+#   key      Short id, in lower case. ml_goto <key> goes to the NPC, as a test shortcut.
+#   npcs     soul_name of each NPC who gives this work. The tables do not say who runs each
+#            shop, so these come from their faction and trade, and the game has the last word.
+#   name_en, name_es  Text of the clock.
+#   place_en, place_es  How the book of trades writes the place.
+#   main     Skill or stat that gets the most experience. secondary gets the rest.
+#   steady   true if this site also offers the steady job.
+#   bed      x, y, z and yaw of the bed of the employee, from ml_pos. Optional.
+#   requires Only while Henry's story has this place in the world: castle, semine or semine_manor (story.lua). Optional.
+#   hours    First and last hour of work here, when the NPC keeps other hours than first_hour and last_hour. Optional.
+#            The game gives each NPC a routine (Libs/Tables/ai/SchedulerAlias.xml, linked from the NPC in the level):
+#            most work 7 to 19, give or take half an hour, so the day of the mod, 8 to 18, fits inside it.
+
+wage = 1.8           # Groschen per hour.
+xp_main = 6          # Experience per hour.
+xp_secondary = 2
+first_hour = 8       # The day starts here.
+last_hour = 18       # And ends here: the hours on offer are what is left of it.
+min_hours = 2        # With less than this left, the NPC says to come back tomorrow.
+role_en = "Hired hand"  # The post, as the book of trades writes it.
+role_es = "Ayudante"
+
+# Steady job. The shift is the most that fits in the day, and the dialog says how long it is.
+steady_wage = 0.8               # Groschen per hour.
+steady_work_days = 6            # Counted from the day of hiring, then the days off.
+steady_days_off = 1
+steady_min_hours = 6            # With less than this left in the day, the shift is lost.
+steady_hire_last_hour = 12      # From this hour on, employers say to come back tomorrow.
+steady_late_minutes = 30        # Starting later than this past first_hour is late. Two working days in a row is a fault.
+steady_faults = 3               # This many active faults is a dismissal.
+steady_fault_days = 14          # A fault stops counting after this.
+steady_rehire_quit_days = 3     # Days to ask again after quitting.
+steady_rehire_fired_days = 7    # And after a dismissal, also for leaving the region.
+casual_min_reputation = 35      # Points of the reputation panel, with the faction of the employer. Below this, no casual work.
+steady_min_reputation = 50      # And below this, no steady job.
+steady_area = 5                 # Metres around the bed where the employee may be, private or not.
+# What a shift gives to eat, by item name. Together they feed as much as a bread: 19.
+steady_meal = ["breadroll", "water", "plums", "parsnip", "egg"]
+# A day of work of at least casual_meal_min_hours gives a poorer meal: less food, and not fresh.
+casual_meal = ["pretzel", "water", "peaches", "leek", "egg"]
+casual_meal_min_hours = 6
+casual_meal_health = 0.6
+casual_meal_fresh = ["water"]   # These stay as they are.
+steady_role_en = "Steady hand"
+steady_role_es = "Ayudante fijo"
+
+# A bed for the night, at the places that rent one in the game: rent is the SmartObjectHolder of that rental in
+# the level, rent_price its price in groschen, as the game asks. tools/generate_jobs.py takes the bed, its prompt and
+# the door from the level. The bed is the character's until rent_until_hour of the next morning.
+rent_until_hour = 10
+# Or for a week: this many nights, for the price of these.
+rent_week_days = 7
+rent_week_paid_nights = 5
+
+[[site]]
+key = "tavern"
+steady = true
+bed = [2331.58, 2069.70, 110.55, 1.5698]
+npcs = ["ttkc_inkeeper"]
+rent = "troskoviceOneNight"
+rent_price = 5
+name_en = "Working at the tavern"
+name_es = "Trabajando en la taberna"
+place_en = "Tavern, Troskowitz"
+place_es = "Taberna de Troskowitz"
+main = "speech"
+secondary = "craftsmanship"
+
+[[site]]
+key = "butcher"
+hours = [11, 18]  # Its NPC works late_work, 10 to 19 in the game.
+npcs = ["ttkc_baska"]
+name_en = "Working at the butcher's"
+name_es = "Trabajando en la carnicería"
+place_en = "Butcher's, Troskowitz"
+place_es = "Carnicería de Troskowitz"
+main = "strength"
+secondary = "survival"
+
+[[site]]
+key = "tailor"
+npcs = ["ttkc_bartosek"]
+name_en = "Working at the tailor's"
+name_es = "Trabajando en la sastrería"
+place_en = "Tailor's, Troskowitz"
+place_es = "Sastrería de Troskowitz"
+main = "craftsmanship"
+secondary = "speech"
+
+[[site]]
+key = "apothecary"
+npcs = ["ttkc_emerich"]
+name_en = "Working at the apothecary's"
+name_es = "Trabajando en la botica"
+place_en = "Apothecary's, Troskowitz"
+place_es = "Botica de Troskowitz"
+main = "alchemy"
+secondary = "scholarship"
+
+[[site]]
+key = "scribe"
+hours = [9, 15]  # Its NPC works 8 to 16, give or take an hour in the game.
+npcs = ["ttkc_scribe"]
+name_en = "Working as a scribe"
+name_es = "Trabajando de escribano"
+place_en = "Scribe's office, Troskowitz"
+place_es = "Escribanía de Troskowitz"
+main = "scholarship"
+secondary = "speech"
+
+[[site]]
+key = "merchant"
+npcs = ["ttkc_man_11"]
+name_en = "Working for the merchant"
+name_es = "Trabajando para el mercader"
+place_en = "Merchant's, Troskowitz"
+place_es = "Mercader de Troskowitz"
+main = "speech"
+secondary = "strength"
+
+[[site]]
+key = "carpenter"
+npcs = ["ttkc_woodworker"]
+name_en = "Working at the carpenter's"
+name_es = "Trabajando en la carpintería"
+place_en = "Carpenter's, Troskowitz"
+place_es = "Carpintería de Troskowitz"
+main = "craftsmanship"
+secondary = "strength"
+
+[[site]]
+key = "jakesh"
+npcs = ["ttkc_jakes"]
+name_en = "Working on Jakesh's farm"
+name_es = "Trabajando en la granja de Jakesh"
+place_en = "Jakesh's farm, Troskowitz"
+place_es = "Granja de Jakesh, Troskowitz"
+main = "vitality"
+secondary = "strength"
+
+[[site]]
+key = "inn"
+steady = true
+bed = [1650.58, 2146.92, 35.21, 4.8070]
+npcs = ["tzel_vavrinec", "tzel_woman_9"]
+rent = "zelejovHospoda"
+rent_price = 20
+# A room of its own, with a door and a chest: too cheap at a quarter, so with an economy mod it has its own price.
+rent_price_economy = 10
+name_en = "Working at the inn"
+name_es = "Trabajando en la posada"
+place_en = "Inn, Zhelejov"
+place_es = "Posada de Zhelejov"
+main = "speech"
+secondary = "craftsmanship"
+
+[[site]]
+key = "bathhouse"
+npcs = ["tzel_woman_5"]
+name_en = "Working at the bathhouse"
+name_es = "Trabajando en los baños"
+place_en = "Bathhouse, Zhelejov"
+place_es = "Baños de Zhelejov"
+main = "vitality"
+secondary = "speech"
+
+[[site]]
+key = "olbram"
+npcs = ["tzel_olbram"]
+name_en = "Working on Olbram's farm"
+name_es = "Trabajando en la granja de Olbram"
+place_en = "Olbram's farm, Zhelejov"
+place_es = "Granja de Olbram, Zhelejov"
+main = "vitality"
+secondary = "strength"
+
+[[site]]
+key = "francis"
+npcs = ["tzel_frantisek"]
+name_en = "Working on Francis's farm"
+name_es = "Trabajando en la granja de Francis"
+place_en = "Francis's farm, Zhelejov"
+place_es = "Granja de Francis, Zhelejov"
+main = "vitality"
+secondary = "strength"
+
+[[site]]
+key = "zvyest"
+npcs = ["tzel_zvest"]
+name_en = "Working on Zvyest's farm"
+name_es = "Trabajando en la granja de Zvyest"
+place_en = "Zvyest's farm, Zhelejov"
+place_es = "Granja de Zvyest, Zhelejov"
+main = "vitality"
+secondary = "strength"
+
+# The rest of the Trosky region.
+
+[[site]]
+key = "tachov_tavern"
+steady = true
+npcs = ["ttac_procek", "ttac_vojka"]
+rent = "tachovOneNight"
+rent_price = 5
+bed = [1998.59, 2535.55, 119.77, -1.4492]  # From ml_bed in the game.
+name_en = "Working at the tavern"
+name_es = "Trabajando en la taberna"
+place_en = "Tavern, Tachov"
+place_es = "Taberna de Tachov"
+main = "speech"
+secondary = "craftsmanship"
+
+[[site]]
+key = "tachov_smithy"
+npcs = ["ttac_blacksmith"]
+rent = "tachovKovarOneNight"
+rent_price = 5
+name_en = "Working at the smithy"
+name_es = "Trabajando en la herrería"
+place_en = "Smithy, Tachov"
+place_es = "Herrería de Tachov"
+main = "weaponsmithing"
+secondary = "strength"
+
+[[site]]
+key = "tachov_greengrocer"
+npcs = ["ttac_man_4"]
+name_en = "Working at the vegetable stall"
+name_es = "Trabajando en el puesto de verduras"
+place_en = "Greengrocer, Tachov"
+place_es = "Verdulería de Tachov"
+main = "speech"
+secondary = "strength"
+
+[[site]]
+key = "semine_saddler"
+requires = "semine"
+npcs = ["tsem_man_16"]
+name_en = "Working at the saddler's"
+name_es = "Trabajando en la guarnicionería"
+place_en = "Saddler, Semine"
+place_es = "Guarnicionería de Semín"
+main = "craftsmanship"
+secondary = "horse_riding"
+
+[[site]]
+key = "semine_slavek"
+requires = "semine"
+npcs = ["tsem_man_17"]
+name_en = "Working on Slavek's farm"
+name_es = "Trabajando en la granja de Slavek"
+place_en = "Slavek's farm, Semine"
+place_es = "Granja de Slavek, Semín"
+main = "vitality"
+secondary = "strength"
+
+[[site]]
+key = "semine_food"
+requires = "semine"
+npcs = ["tsem_woman_12"]
+name_en = "Working at the food stall"
+name_es = "Trabajando en el puesto de comida"
+place_en = "Food stall, Semine"
+place_es = "Puesto de comida de Semín"
+main = "speech"
+secondary = "cooking"
+
+[[site]]
+key = "semine_shoemaker"
+requires = "semine"
+npcs = ["tsem_man_2"]
+name_en = "Working at the shoemaker's"
+name_es = "Trabajando en la zapatería"
+place_en = "Shoemaker, Semine"
+place_es = "Zapatería de Semín"
+main = "shoemaking"
+secondary = "craftsmanship"
+
+[[site]]
+key = "semine_stables"
+requires = "semine_manor"
+npcs = ["tsem_man_15"]
+name_en = "Working at the stables"
+name_es = "Trabajando en los establos"
+place_en = "Stables, Semine"
+place_es = "Establos de Semín"
+main = "horse_riding"
+secondary = "strength"
+
+[[site]]
+key = "semine_kitchen"
+requires = "semine_manor"
+npcs = ["tsem_woman_1"]
+name_en = "Working in the kitchen"
+name_es = "Trabajando en la cocina"
+place_en = "Kitchen, Semine"
+place_es = "Cocina de Semín"
+main = "cooking"
+secondary = "vitality"
+
+[[site]]
+key = "castle_smithy"
+requires = "castle"
+npcs = ["ttro_kovar"]
+name_en = "Working at the smithy"
+name_es = "Trabajando en la herrería"
+place_en = "Smithy, Trosky Castle"
+place_es = "Herrería del castillo de Trosky"
+main = "weaponsmithing"
+secondary = "strength"
+
+[[site]]
+key = "castle_saddler"
+requires = "castle"
+npcs = ["ttro_man_69"]
+name_en = "Working at the saddler's"
+name_es = "Trabajando en la guarnicionería"
+place_en = "Saddler, Trosky Castle"
+place_es = "Guarnicionería del castillo de Trosky"
+main = "craftsmanship"
+secondary = "horse_riding"
+
+[[site]]
+key = "castle_stables"
+requires = "castle"
+npcs = ["ttro_man_8"]
+name_en = "Working at the stables"
+name_es = "Trabajando en los establos"
+place_en = "Stables, Trosky Castle"
+place_es = "Establos del castillo de Trosky"
+main = "horse_riding"
+secondary = "strength"
+
+[[site]]
+key = "castle_archery"
+requires = "castle"
+npcs = ["ttro_man_1"]
+name_en = "Making arrows"
+name_es = "Haciendo flechas"
+place_en = "Shootmaster, Trosky Castle"
+place_es = "Maestro arquero del castillo de Trosky"
+main = "bowyery"
+secondary = "marksmanship"
+
+[[site]]
+key = "castle_baths"
+requires = "castle"
+npcs = ["ttro_woman_6"]
+name_en = "Working at the bathhouse"
+name_es = "Trabajando en los baños"
+place_en = "Bathhouse, Trosky Castle"
+place_es = "Baños del castillo de Trosky"
+main = "vitality"
+secondary = "speech"
+
+[[site]]
+key = "castle_kitchen"
+requires = "castle"
+npcs = ["ttro_baba", "ttro_panna", "ttro_woman_5"]
+name_en = "Working in the kitchen"
+name_es = "Trabajando en la cocina"
+place_en = "Kitchen, Trosky Castle"
+place_es = "Cocina del castillo de Trosky"
+main = "cooking"
+secondary = "vitality"
+
+[[site]]
+key = "castle_scribe"
+requires = "castle"
+npcs = ["ttro_pisar"]
+name_en = "Copying for the scribe"
+name_es = "Copiando para el escribano"
+place_en = "Scribe, Trosky Castle"
+place_es = "Escribano del castillo de Trosky"
+main = "scholarship"
+secondary = "speech"
+
+[[site]]
+key = "castle_carpenter"
+requires = "castle"
+npcs = ["ttro_man_16"]
+name_en = "Working at the carpenter's"
+name_es = "Trabajando en la carpintería"
+place_en = "Carpenter, Trosky Castle"
+place_es = "Carpintería del castillo de Trosky"
+main = "craftsmanship"
+secondary = "strength"
+
+[[site]]
+key = "kreyzl_mill"
+npcs = ["tpod_krejzl"]
+rent = "podseminOneNight"
+rent_price = 5
+name_en = "Working at the mill"
+name_es = "Trabajando en el molino"
+place_en = "Lower Semine Mill"
+place_es = "Molino de Semín Bajo"
+main = "strength"
+secondary = "vitality"
+
+[[site]]
+key = "woodcutters"
+npcs = ["tpod_man_1"]
+name_en = "Cutting wood"
+name_es = "Cortando leña"
+place_en = "Woodcutters' camp, Lower Semine"
+place_es = "Campamento de leñadores de Semín Bajo"
+main = "strength"
+secondary = "vitality"
+
+[[site]]
+key = "nebakov_mill"
+npcs = ["tneb_miller"]
+name_en = "Working at the mill"
+name_es = "Trabajando en el molino"
+place_en = "Nebakov Mill"
+place_es = "Molino de Nebakov"
+main = "strength"
+secondary = "vitality"
+
+[[site]]
+key = "nebakov_gamekeeper"
+npcs = ["tneb_huntsman"]
+rent = "nebakovOneNight"
+rent_price = 5
+name_en = "Helping the gamekeeper"
+name_es = "Ayudando al guardabosques"
+place_en = "Gamekeeper, Nebakov Mill"
+place_es = "Guardabosques del molino de Nebakov"
+main = "survival"
+secondary = "marksmanship"
+
+[[site]]
+key = "vidlak_gamekeeper"
+npcs = ["tvid_huntsman"]
+rent = "vidlakOneNight"
+rent_price = 5
+name_en = "Helping the gamekeeper"
+name_es = "Ayudando al guardabosques"
+place_en = "Gamekeeper, Vidlak Pond"
+place_es = "Guardabosques del estanque de Vidlák"
+main = "survival"
+secondary = "marksmanship"
+
+[[site]]
+key = "vidlak_tanner"
+npcs = ["tvid_tanner"]
+name_en = "Working at the tannery"
+name_es = "Trabajando en la tenería"
+place_en = "Tannery, Vidlak Pond"
+place_es = "Tenería del estanque de Vidlák"
+main = "craftsmanship"
+secondary = "strength"
+
+[[site]]
+key = "kopanina_herbalist"
+npcs = ["tkop_barnabas"]
+name_en = "Gathering herbs"
+name_es = "Recogiendo hierbas"
+place_en = "Herbalist, Kopanina"
+place_es = "Herbolario de Kopanina"
+main = "alchemy"
+secondary = "survival"
+
+[[site]]
+key = "nomads_fence"
+npcs = ["tvez_dedek"]
+name_en = "Working for the fence"
+name_es = "Trabajando para el perista"
+place_en = "Fence, Nomads' Camp"
+place_es = "Perista del campamento de los nómadas"
+main = "speech"
+secondary = "thievery"
+
+[[site]]
+key = "nomads_merchant"
+npcs = ["tvez_man_6"]
+name_en = "Working for the merchant"
+name_es = "Trabajando para el mercader"
+place_en = "Merchant, Nomads' Camp"
+place_es = "Mercader del campamento de los nómadas"
+main = "speech"
+secondary = "strength"
+
+[[site]]
+key = "nomads_horses"
+npcs = ["tvez_mikolaj"]
+name_en = "Tending the horses"
+name_es = "Cuidando los caballos"
+place_en = "Horse handler, Nomads' Camp"
+place_es = "Tratante de caballos del campamento de los nómadas"
+main = "horse_riding"
+secondary = "strength"
+
+[[site]]
+key = "nomads_herbalist"
+npcs = ["tvez_aranka"]
+name_en = "Gathering herbs"
+name_es = "Recogiendo hierbas"
+place_en = "Herbalist, Nomads' Camp"
+place_es = "Herbolaria del campamento de los nómadas"
+main = "alchemy"
+secondary = "survival"
+
+[[site]]
+key = "bozhena_hut"
+npcs = ["tvez_pavlena", "tvez_bozena"]
+name_en = "Gathering herbs"
+name_es = "Recogiendo hierbas"
+place_en = "Herbalist Bozhena's hut"
+place_es = "La cabaña de Bozhena, la herborista"
+main = "alchemy"
+secondary = "survival"
+
+[[site]]
+key = "slatego_greengrocer"
+hours = [10, 18]  # Its NPC works 9 to 19, give or take half an hour in the game.
+npcs = ["tsla_vajsar"]
+name_en = "Working at the vegetable stall"
+name_es = "Trabajando en el puesto de verduras"
+place_en = "Greengrocer, Slatego"
+place_es = "Verdulería de Slatego"
+main = "speech"
+secondary = "strength"
+
+[[site]]
+key = "krenovy_farm"
+hours = [9, 18]  # Its NPC works 9 to 19 in the game.
+npcs = ["tsla_man_2"]
+name_en = "Working on the Krenovy farm"
+name_es = "Trabajando en la granja Krenovy"
+place_en = "Krenovy farm, Slatego"
+place_es = "Granja Krenovy, Slatego"
+main = "vitality"
+secondary = "strength"
+
+[[site]]
+key = "schdiar_farm"
+npcs = ["tzda_man_3"]
+name_en = "Working on the west farm"
+name_es = "Trabajando en la granja del oeste"
+place_en = "Schdiar - West Farm"
+place_es = "Schdiar: granja del oeste"
+main = "vitality"
+secondary = "strength"

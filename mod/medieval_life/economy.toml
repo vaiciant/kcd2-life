@@ -1,0 +1,34 @@
+# Mods that change the prices of the game.
+# When the game starts, KCD2 Life asks whether one of the files of the mod is there (System.IsFileExist). If it is, KCD2
+# Life pays and charges price_factor times as much, so its money keeps its worth next to the shops: the wages, the pay
+# of errands, the money to buy, what is owed for the goods, the money of the origins and the book of trades.
+# tools/generate_orders.py reads this file: it writes the texts that say an amount a second time, with the amount of
+# the mod, and the dialogs pick one or the other with ml_economy.
+
+[realish]
+name = "Realish Economy"
+file = "Libs/Tables/item/item__realisheconomy.xml"
+# It divides by 4 almost every price of the game: the middle of 4083 items it changes.
+price_factor = 0.25
+
+# The goods of errands to buy that it prices otherwise, in percent of the game's price. Rounded up, so the money is
+# always enough. Every other goods is price_factor.
+[realish.percent]
+special_charcoal = 35
+herb_dried_salvia = 100
+herb_dried_chamomile = 100
+water = 200
+beer = 30
+herb_dried_urticaria = 100
+herb_dried_mint = 100
+herb_dried_valerian = 100
+herb_dried_comfrey = 100
+beefDried = 35
+pigMeat = 90
+carrot = 35
+beef = 95
+chicken = 35
+wine = 35
+herb_dried_marigold = 100
+wineGood = 135
+pigMeatSmoked = 45

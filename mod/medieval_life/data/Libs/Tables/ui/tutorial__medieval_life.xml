@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="../database.xsd">
+	<!-- The first steps of the new life, in the voice of the world, as the game's own tutorials: wide window, 30 s.
+	     tutorial.lua shows them one at a time with Game.ShowTutorial(Name). -->
+	<Tutorials version="2">
+		<PopupTutorial Text="ui_tut_ml_new_life" Priority="0" WindowSize="1" DurationOverride="30s" Name="ML_NewLife" />
+		<PopupTutorial Text="ui_tut_ml_sleep" Priority="0" WindowSize="1" DurationOverride="30s" Name="ML_Sleep" />
+		<PopupTutorial Text="ui_tut_ml_work" Priority="0" WindowSize="1" DurationOverride="30s" Name="ML_Work" />
+		<PopupTutorial Text="ui_tut_ml_errands" Priority="0" WindowSize="1" DurationOverride="30s" Name="ML_Errands" />
+		<PopupTutorial Text="ui_tut_ml_barber" Priority="0" WindowSize="1" DurationOverride="30s" Name="ML_Barber" />
+	</Tutorials>
+</database>

@@ -1,0 +1,751 @@
+# Orders of the businesses (F6).
+# tools/generate_orders.py writes from this file the journal quests, the dialog, the tokens, the texts and
+# Scripts/MedievalLife/orders_data.lua. tools/install_mod.py runs it before packing.
+#
+# Every business draws a day from 1 to days_between, each on its own, and asks on that day, that day + 7,
+# + 14... of the life, so two businesses can ask the same day. The draw comes from the day the life
+# started, so Lua makes it again the same anywhere. The order lasts that day only. The keys are those
+# of jobs.toml.
+#
+# A business has two turns, each on its own day. In one it sends something of its own to each of the
+# others, in its town and in the other one. In the other it needs something: half the weeks it is
+# fetched from another business, and half it is bought, with money that the business gives. The texts come
+# from templates in the generator, with the names of the people as the game writes them, and do not say which
+# goods go, except the objective to buy. Lua picks the order of the day, and when it is taken, which goods
+# and how many.
+
+days_between = 7
+deadline_hours = 12
+# Hours of the working day of the place the errand ends at: the clock stops while it is closed.
+fail_points = 10          # Points of the panel that the business loses when an order runs out.
+done_points = 1           # And that it gains when it is done.
+pay_same_town = 1.5       # Groschen for an order inside one town: less than an hour of casual work.
+pay_other_town = 10       # And from one town to the other: the road is long and can be dangerous.
+fetch_pay_factor = 1.5    # A pickup pays this many times as much: the character goes there and comes back. To the
+                          # nearest tenth of a groschen: 2.3 in the same town, 15 to the next one.
+buy_percent = 100         # The money to buy: what a shop asks with 50 points of reputation, in percent of what the goods
+                          # are worth (shops sell at 0.7 to 0.8, and 50 points add a quarter). pay_same_town is
+                          # added on top, so what is left is the pay.
+# Trust of each business: pickups need this many deliveries done for it, and buying, this many
+# deliveries and pickups together. Each of its orders that runs out multiplies both by trust_factor.
+trust_fetch = 5
+trust_buy = 15
+trust_factor = 2
+# Or the hours worked for the business: this many as its steady employee opens pickups, and this many
+# shopping. A casual hour counts for half, so casual work takes twice as many. Each order run out multiplies them
+# by trust_factor too.
+work_fetch_hours = 50
+work_buy_hours = 80
+casual_hours_weight = 0.5
+# Errands keep the working hours of each business, as its work does (jobs.toml): it gives them and takes them
+# in only then, and gives none in the last late_margin_hours before the place the character must go closes.
+late_margin_hours = 1
+# Points of the reputation panel with the business that each kind needs.
+rep_deliver = 40
+rep_fetch = 50
+rep_buy = 65
+# This many errands run out and unpaid in a town, and their slips pass to the guard as a theft: what is
+# owed, in IOUs, plus the 50 groschen of a theft. The guard hears it when the character is in the
+# town, within crime_range metres of one of its authorities, because the guards of a town far away do not
+# take it.
+crime_fails = 3
+crime_range = 150
+
+[towns]
+troskowitz = ["tavern", "butcher", "tailor", "apothecary", "scribe", "merchant", "carpenter", "jakesh"]
+zhelejov = ["inn", "bathhouse", "olbram", "francis", "zvyest"]
+tachov = ["tachov_tavern", "tachov_smithy", "tachov_greengrocer"]
+semine = ["semine_saddler", "semine_slavek", "semine_food", "semine_shoemaker", "semine_stables", "semine_kitchen"]
+trosky_castle = ["castle_smithy", "castle_saddler", "castle_stables", "castle_archery", "castle_baths", "castle_kitchen",
+                 "castle_scribe", "castle_carpenter"]
+lower_semine_mill = ["kreyzl_mill", "woodcutters"]
+nebakov_mill = ["nebakov_mill", "nebakov_gamekeeper"]
+vidlak = ["vidlak_gamekeeper", "vidlak_tanner"]
+kopanina = ["kopanina_herbalist"]
+nomads_camp = ["nomads_fence", "nomads_merchant", "nomads_horses", "nomads_herbalist"]
+bozhena_hut = ["bozhena_hut"]
+slatego = ["slatego_greengrocer", "krenovy_farm"]
+schdiar = ["schdiar_farm"]
+
+# The authorities of each town, by soul_name, the highest rank first: the commander of the guard and the
+# guards of Troskowitz, and the catchpoles and the militia of Zhelejov. A theft of errands is told to
+# all of them that are in the map, so that killing one does not wipe it.
+[authorities]
+troskowitz = ["ttkc_man_1", "ttkc_man_2", "ttkc_man_3", "ttkc_man_4", "ttkc_man_5", "ttkc_man_6", "ttkc_man_7",
+              "ttkc_man_20", "ttkc_man_21", "ttkc_man_22", "ttkc_man_23"]
+zhelejov = ["tzel_man_12", "tzel_man_13", "tzel_man_4", "tzel_man_7"]
+tachov = ["ttac_man_9", "ttac_man_10"]
+semine = ["tsem_man_14", "tsem_man_8", "tsem_man_6", "tsem_man_5", "tsem_man_7", "tsem_man_9", "tsem_man_19", "tsem_man_4",
+          "tsem_man_23"]
+trosky_castle = ["ttro_tomas", "ttro_man_64", "ttro_man_61", "ttro_man_55", "ttro_man_47", "ttro_man_56", "ttro_man_62",
+                 "ttro_man_63", "ttro_man_54", "ttro_man_58", "ttro_man_11", "ttro_man_30", "ttro_man_19", "ttro_man_17",
+                 "ttro_man_32", "ttro_man_29", "ttro_man_33", "ttro_man_18", "ttro_man_34", "ttro_man_28", "ttro_man_22",
+                 "ttro_man_21", "ttro_man_12", "ttro_man_35", "ttro_man_20", "ttro_man_27", "ttro_man_2", "ttro_man_24",
+                 "ttro_man_13", "ttro_man_23", "ttro_man_31", "ttro_man_26", "ttro_man_5", "ttro_man_10", "ttro_man_25",
+                 "ttro_man_36", "ttro_man_78", "ttro_man_80", "ttro_man_50", "ttro_man_59", "ttro_man_45", "ttro_man_46",
+                 "ttro_man_48", "ttro_man_51", "ttro_man_52", "ttro_man_60", "ttro_man_79", "ttro_man_53", "ttro_man_49"]
+nomads_camp = ["tvez_man_3", "tvez_man_4", "tvez_man_5", "tvez_kocour"]
+lower_semine_mill = ["tsem_man_14", "tsem_man_8", "tsem_man_6", "tsem_man_5", "tsem_man_7", "tsem_man_9", "tsem_man_19", "tsem_man_4",
+                     "tsem_man_23", "tzel_man_12", "tzel_man_13", "tzel_man_4", "tzel_man_7"]
+nebakov_mill = ["tsem_man_14", "tsem_man_8", "tsem_man_6", "tsem_man_5", "tsem_man_7", "tsem_man_9", "tsem_man_19", "tsem_man_4",
+                "tsem_man_23", "tzel_man_12", "tzel_man_13", "tzel_man_4", "tzel_man_7"]
+vidlak = ["ttac_man_9", "ttac_man_10"]
+kopanina = ["ttac_man_9", "ttac_man_10", "ttro_tomas", "ttro_man_64", "ttro_man_61", "ttro_man_55", "ttro_man_47",
+            "ttro_man_56", "ttro_man_62", "ttro_man_63", "ttro_man_54", "ttro_man_58", "ttro_man_11", "ttro_man_30",
+            "ttro_man_19", "ttro_man_17", "ttro_man_32", "ttro_man_29", "ttro_man_33", "ttro_man_18", "ttro_man_34",
+            "ttro_man_28", "ttro_man_22", "ttro_man_21", "ttro_man_12", "ttro_man_35", "ttro_man_20", "ttro_man_27",
+            "ttro_man_2", "ttro_man_24", "ttro_man_13", "ttro_man_23", "ttro_man_31", "ttro_man_26", "ttro_man_5",
+            "ttro_man_10", "ttro_man_25", "ttro_man_36", "ttro_man_78", "ttro_man_80", "ttro_man_50", "ttro_man_59",
+            "ttro_man_45", "ttro_man_46", "ttro_man_48", "ttro_man_51", "ttro_man_52", "ttro_man_60", "ttro_man_79",
+            "ttro_man_53", "ttro_man_49"]
+bozhena_hut = ["tzel_man_12", "tzel_man_13", "tzel_man_4", "tzel_man_7"]
+slatego = ["ttkc_man_1", "ttkc_man_2", "ttkc_man_3", "ttkc_man_4", "ttkc_man_5", "ttkc_man_6", "ttkc_man_7", "ttkc_man_20",
+           "ttkc_man_21", "ttkc_man_22", "ttkc_man_23"]
+schdiar = ["tsem_man_14", "tsem_man_8", "tsem_man_6", "tsem_man_5", "tsem_man_7", "tsem_man_9", "tsem_man_19", "tsem_man_4",
+           "tsem_man_23", "ttkc_man_1", "ttkc_man_2", "ttkc_man_3", "ttkc_man_4", "ttkc_man_5", "ttkc_man_6", "ttkc_man_7",
+           "ttkc_man_20", "ttkc_man_21", "ttkc_man_22", "ttkc_man_23"]
+
+# As the game writes them, in English and Spanish. An order to the other town says so.
+[town_names]
+troskowitz = ["Troskowitz", "Troskovice"]
+zhelejov = ["Zhelejov", "Želejov"]
+tachov = ["Tachov", "Tachov"]
+semine = ["Semine", "Semín"]
+trosky_castle = ["Trosky Castle", "Castillo de Trosky"]
+lower_semine_mill = ["Lower Semine Mill", "Molino de Semín Bajo"]
+nebakov_mill = ["Nebakov Mill", "Molino de Nebakov"]
+vidlak = ["Vidlak Pond", "Estanque de Vidlák"]
+kopanina = ["Kopanina", "Kopanina"]
+nomads_camp = ["Nomads' Camp", "Campamento de los nómadas"]
+bozhena_hut = ["Herbalist Bozhena's hut", "La cabaña de Bozhena"]
+slatego = ["Slatego", "Slatego"]
+schdiar = ["Schdiar Valley", "Valle de Schdiar"]
+
+# Towns next to each other, both ways. An errand goes, at most, to a town next to its own. Neighbors are within about
+# 610 m of each other, between their NPCs in the game (ml_sites); Vidlak, far from all, has its two closest. A site gives
+# and takes errands only with a business below.
+[neighbors]
+troskowitz = ["zhelejov", "tachov", "trosky_castle", "slatego", "schdiar"]
+zhelejov = ["troskowitz", "bozhena_hut", "semine", "tachov"]
+tachov = ["troskowitz", "zhelejov", "trosky_castle", "kopanina", "vidlak"]
+trosky_castle = ["troskowitz", "tachov", "kopanina"]
+semine = ["zhelejov", "bozhena_hut", "lower_semine_mill", "nebakov_mill", "schdiar", "nomads_camp"]
+lower_semine_mill = ["semine", "nomads_camp"]
+nebakov_mill = ["semine", "schdiar", "slatego"]
+vidlak = ["tachov", "bozhena_hut"]
+kopanina = ["tachov", "trosky_castle"]
+nomads_camp = ["lower_semine_mill", "bozhena_hut", "semine"]
+bozhena_hut = ["zhelejov", "semine", "nomads_camp", "vidlak"]
+slatego = ["troskowitz", "nebakov_mill", "schdiar"]
+schdiar = ["troskowitz", "semine", "nebakov_mill", "slatego"]
+
+# What each business sells (sells, at least 3) and needs (needs, at least 3, buyable in a shop of the two
+# towns): an item of item.xml and how many (a lot of them, or the business would go itself). The goods
+# it needs say how the objective to buy calls them, in English and Spanish, and percent replaces buy_percent
+# when shops sell them dearer: the apothecary sells herbs at 2.5 times what they are worth, so with 50 points
+# they cost 3.125 times.
+# name_en and name_es replace the name of the business in the game.
+
+[[business]]
+key = "tavern"
+sells = [
+    { goods = "beerTroskovice", amount = [10, 15] },
+    { goods = "mead", amount = [5, 8] },
+    { goods = "chickenCooked", amount = [3, 5] },
+]
+needs = [
+    { goods = "bacon", amount = [3, 6], en = "bacon", es = "panceta" },
+    { goods = "wineCheap", amount = [8, 12], en = "cheap wine", es = "vino barato" },
+    { goods = "special_charcoal", amount = [5, 10], en = "charcoal", es = "carbón" },
+]
+
+[[business]]
+key = "butcher"
+sells = [
+    { goods = "beefSmoked", amount = [10, 15] },
+    { goods = "kielbasaSmoked", amount = [3, 5] },
+    { goods = "bacon", amount = [5, 8] },
+]
+needs = [
+    { goods = "special_charcoal", amount = [5, 10], en = "charcoal", es = "carbón" },
+    { goods = "herb_dried_salvia", amount = [5, 8], en = "dried sage", es = "salvia seca", percent = 313 },
+    { goods = "soap", amount = [2, 4], en = "soap", es = "jabón" },
+]
+
+[[business]]
+key = "tailor"
+sells = [
+    { goods = "repairKit_tailorsSmall", amount = [4, 6] },
+    { goods = "loot_cloth", amount = [4, 8] },
+    { goods = "Cap03_m02_E", amount = [4, 8] },
+]
+needs = [
+    { goods = "special_pigSkin", amount = [1, 2], en = "pig skins", es = "pieles de cerdo" },
+    { goods = "bsmt_hardware", amount = [2, 3], en = "fastening material", es = "materiales de sujeción" },
+    { goods = "soap", amount = [2, 3], en = "soap", es = "jabón" },
+]
+
+[[business]]
+key = "apothecary"
+sells = [
+    { goods = "bandage_classic", amount = [15, 25] },
+    { goods = "potion_marigold", amount = [2, 4] },
+    { goods = "potion_saviourSchnapps", amount = [2, 3] },
+]
+needs = [
+    { goods = "herb_dried_chamomile", amount = [5, 9], en = "dried chamomile", es = "manzanilla seca", percent = 313 },
+    { goods = "wineCheap", amount = [8, 12], en = "cheap wine", es = "vino barato" },
+    { goods = "water", amount = [4, 6], en = "drinking water", es = "agua potable" },
+]
+
+[[business]]
+key = "scribe"
+sells = [
+    { goods = "loot_candle", amount = [15, 25] },
+    { goods = "loot_oakGallInk", amount = [2, 4] },
+    { goods = "loot_gooseFeathers", amount = [5, 10] },
+]
+needs = [
+    { goods = "wineCheap", amount = [6, 10], en = "cheap wine", es = "vino barato" },
+    { goods = "bsmt_ironBad", amount = [2, 4], en = "scrap metal", es = "chatarra" },
+    { goods = "special_charcoal", amount = [4, 8], en = "charcoal", es = "carbón" },
+]
+
+[[business]]
+key = "merchant"
+sells = [
+    { goods = "honey", amount = [8, 12] },
+    { goods = "loot_salt", amount = [3, 5] },
+    { goods = "chickenDried", amount = [5, 8] },
+]
+needs = [
+    { goods = "repairKit_tailorsSmall", amount = [1, 3], en = "tailor's kits", es = "enseres de sastre" },
+    { goods = "perfume_longWeak", amount = [1, 3], en = "weak Mintha perfume", es = "perfume Minte suave" },
+    { goods = "beer", amount = [10, 15], en = "beer", es = "cerveza" },
+]
+
+[[business]]
+key = "carpenter"
+name_en = "the carpenter"
+name_es = "el carpintero"
+sells = [
+    { goods = "arrow_hunting", amount = [20, 30] },
+    { goods = "bolt_crude", amount = [15, 25] },
+    { goods = "torch_weapon", amount = [3, 6] },
+]
+needs = [
+    { goods = "bsmt_hardware", amount = [2, 3], en = "fastening material", es = "materiales de sujeción" },
+    { goods = "bsmt_ironBad", amount = [2, 4], en = "scrap metal", es = "chatarra" },
+    { goods = "bsmt_steelBad", amount = [2, 3], en = "steel", es = "acero" },
+]
+
+[[business]]
+key = "jakesh"
+sells = [
+    { goods = "egg", amount = [20, 30] },
+    { goods = "milk", amount = [5, 10] },
+    { goods = "curdCheese", amount = [4, 8] },
+]
+needs = [
+    { goods = "herb_dried_urticaria", amount = [5, 10], en = "dried nettle", es = "ortiga seca", percent = 313 },
+    { goods = "beer", amount = [8, 12], en = "beer", es = "cerveza" },
+    { goods = "bsmt_hardware", amount = [2, 3], en = "fastening material", es = "materiales de sujeción" },
+]
+
+[[business]]
+key = "inn"
+sells = [
+    { goods = "wine", amount = [8, 12] },
+    { goods = "spirits", amount = [2, 4] },
+    { goods = "lambMeatCooked", amount = [2, 4] },
+]
+needs = [
+    { goods = "lambMeat", amount = [4, 8], en = "mutton", es = "cordero" },
+    { goods = "herb_dried_salvia", amount = [4, 8], en = "dried sage", es = "salvia seca", percent = 313 },
+    { goods = "beer", amount = [10, 15], en = "beer", es = "cerveza" },
+]
+
+[[business]]
+key = "bathhouse"
+sells = [
+    { goods = "soap", amount = [4, 6] },
+    { goods = "perfume_longWeak", amount = [2, 3] },
+    { goods = "potion_chamomile_decoction", amount = [2, 4] },
+]
+needs = [
+    { goods = "herb_dried_mint", amount = [5, 10], en = "dried mint", es = "menta seca", percent = 313 },
+    { goods = "herb_dried_valerian", amount = [4, 8], en = "dried valerian", es = "valeriana seca", percent = 313 },
+    { goods = "herb_dried_comfrey", amount = [4, 8], en = "dried comfrey", es = "consuelda seca", percent = 313 },
+]
+
+[[business]]
+key = "olbram"
+name_es = "el viejo Olbram"
+sells = [
+    { goods = "apple", amount = [20, 30] },
+    { goods = "pear", amount = [20, 30] },
+    { goods = "plums", amount = [20, 30] },
+]
+needs = [
+    { goods = "chickenDried", amount = [3, 6], en = "dried chicken", es = "pollo desecado" },
+    { goods = "bandage_classic", amount = [5, 10], en = "bandages", es = "vendajes" },
+    { goods = "wineCheap", amount = [6, 10], en = "cheap wine", es = "vino barato" },
+]
+
+[[business]]
+key = "francis"
+sells = [
+    { goods = "cabbage", amount = [8, 12] },
+    { goods = "sauerkraut", amount = [8, 12] },
+    { goods = "onion", amount = [15, 25] },
+]
+needs = [
+    { goods = "beefDried", amount = [2, 4], en = "dried beef", es = "ternera desecada" },
+    { goods = "soap", amount = [1, 3], en = "soap", es = "jabón" },
+    { goods = "wineCheap", amount = [6, 10], en = "cheap wine", es = "vino barato" },
+]
+
+[[business]]
+key = "zvyest"
+sells = [
+    { goods = "carrot", amount = [20, 30] },
+    { goods = "parsnip", amount = [20, 30] },
+    { goods = "beet", amount = [20, 30] },
+]
+needs = [
+    { goods = "bandage_classic", amount = [5, 10], en = "bandages", es = "vendajes" },
+    { goods = "beer", amount = [8, 12], en = "beer", es = "cerveza" },
+    { goods = "soap", amount = [1, 3], en = "soap", es = "jabón" },
+]
+
+# The rest of the Trosky region.
+
+[[business]]
+key = "tachov_tavern"
+sells = [
+    { goods = "beer", amount = [10, 15] },
+    { goods = "troutCooked", amount = [3, 5] },
+    { goods = "cheeseQuarterSmoked", amount = [2, 4] },
+]
+needs = [
+    { goods = "pigMeat", amount = [4, 8], en = "pork", es = "carne de cerdo" },
+    { goods = "herb_dried_salvia", amount = [4, 8], en = "dried sage", es = "salvia seca", percent = 313 },
+    { goods = "special_charcoal", amount = [5, 10], en = "charcoal", es = "carbón" },
+]
+
+[[business]]
+key = "tachov_smithy"
+sells = [
+    { goods = "horseshoeFarmer", amount = [4, 6] },
+    { goods = "axeWork01", amount = [2, 3] },
+    { goods = "bsmt_hardware", amount = [5, 10] },
+]
+needs = [
+    { goods = "special_charcoal", amount = [5, 10], en = "charcoal", es = "carbón" },
+    { goods = "bsmt_ironGood", amount = [3, 6], en = "iron", es = "hierro" },
+    { goods = "beer", amount = [8, 12], en = "beer", es = "cerveza" },
+]
+
+[[business]]
+key = "tachov_greengrocer"
+name_en = "the greengrocer of Tachov"
+name_es = "el verdulero de Tachov"
+sells = [
+    { goods = "turnip", amount = [20, 30] },
+    { goods = "garlic", amount = [10, 15] },
+    { goods = "horseradish", amount = [8, 12] },
+]
+needs = [
+    { goods = "bacon", amount = [2, 4], en = "bacon", es = "panceta" },
+    { goods = "wineCheap", amount = [6, 10], en = "cheap wine", es = "vino barato" },
+    { goods = "soap", amount = [1, 3], en = "soap", es = "jabón" },
+]
+
+[[business]]
+key = "semine_saddler"
+name_en = "the saddler of Semine"
+name_es = "el guarnicionero de Semín"
+sells = [
+    { goods = "BasicBridle01_m02", amount = [1, 2] },
+    { goods = "belt_2slot", amount = [2, 4] },
+    { goods = "repairKit_cobblersSmall", amount = [2, 4] },
+]
+needs = [
+    { goods = "special_cowSkin", amount = [1, 3], en = "cow skins", es = "pieles de vaca" },
+    { goods = "bsmt_hardware", amount = [2, 4], en = "fastening material", es = "materiales de sujeción" },
+    { goods = "repairKit_tailorsSmall", amount = [1, 2], en = "tailor's kits", es = "enseres de sastre" },
+]
+
+[[business]]
+key = "semine_slavek"
+sells = [
+    { goods = "egg", amount = [20, 30] },
+    { goods = "cheeseQuarter", amount = [3, 6] },
+    { goods = "cream", amount = [3, 6] },
+]
+needs = [
+    { goods = "bsmt_hardware", amount = [2, 3], en = "fastening material", es = "materiales de sujeción" },
+    { goods = "lambMeatSmoked", amount = [2, 4], en = "smoked mutton", es = "cordero ahumado" },
+    { goods = "beer", amount = [8, 12], en = "beer", es = "cerveza" },
+]
+
+[[business]]
+key = "semine_food"
+name_en = "the food seller of Semine"
+name_es = "la vendedora de comida de Semín"
+sells = [
+    { goods = "griddlecake", amount = [6, 10] },
+    { goods = "poppyseedCake", amount = [5, 8] },
+    { goods = "cheeseCake", amount = [5, 8] },
+]
+needs = [
+    { goods = "milk", amount = [2, 3], en = "milk", es = "leche" },
+    { goods = "honey", amount = [1, 2], en = "honey", es = "miel" },
+    { goods = "special_charcoal", amount = [4, 8], en = "charcoal", es = "carbón" },
+]
+
+[[business]]
+key = "semine_shoemaker"
+sells = [
+    { goods = "BootsAnkle01_m02_C", amount = [2, 3] },
+    { goods = "BootsKnee04_m02_D", amount = [2, 3] },
+    { goods = "repairKit_cobblersSmall", amount = [3, 5] },
+]
+needs = [
+    { goods = "special_cowSkin", amount = [1, 2], en = "cow skins", es = "pieles de vaca" },
+    { goods = "special_pigSkin", amount = [1, 2], en = "pig skins", es = "pieles de cerdo" },
+    { goods = "bsmt_hardware", amount = [2, 3], en = "fastening material", es = "materiales de sujeción" },
+]
+
+[[business]]
+key = "semine_stables"
+sells = [
+    { goods = "horseshoeFarmer", amount = [3, 5] },
+    { goods = "BasicBridle01_m05", amount = [1, 2] },
+    { goods = "Spurs01_m01_C", amount = [1, 2] },
+]
+needs = [
+    { goods = "apple", amount = [6, 10], en = "apples", es = "manzanas" },
+    { goods = "carrot", amount = [5, 8], en = "carrots", es = "zanahorias" },
+    { goods = "beer", amount = [8, 12], en = "beer", es = "cerveza" },
+]
+
+[[business]]
+key = "semine_kitchen"
+sells = [
+    { goods = "pigMeatCooked", amount = [2, 4] },
+    { goods = "chickenThigh", amount = [4, 8] },
+    { goods = "roastedPeas", amount = [8, 12] },
+]
+needs = [
+    { goods = "beef", amount = [4, 8], en = "beef", es = "ternera" },
+    { goods = "chicken", amount = [4, 8], en = "chicken", es = "pollo" },
+    { goods = "wine", amount = [4, 6], en = "wine", es = "vino" },
+]
+
+[[business]]
+key = "castle_smithy"
+sells = [
+    { goods = "horseshoeMilitary", amount = [2, 4] },
+    { goods = "bolt_normal", amount = [20, 30] },
+    { goods = "repairKit_weaponSmall", amount = [2, 3] },
+]
+needs = [
+    { goods = "special_charcoal", amount = [5, 10], en = "charcoal", es = "carbón" },
+    { goods = "bsmt_ironGood", amount = [3, 6], en = "iron", es = "hierro" },
+    { goods = "bsmt_steelBad", amount = [2, 4], en = "steel", es = "acero" },
+]
+
+[[business]]
+key = "castle_saddler"
+sells = [
+    { goods = "BasicBridle03_m02", amount = [1, 2] },
+    { goods = "belt_3slot", amount = [1, 2] },
+    { goods = "repairKit_armourSmall", amount = [2, 4] },
+]
+needs = [
+    { goods = "special_cowSkin", amount = [1, 2], en = "cow skins", es = "pieles de vaca" },
+    { goods = "special_deerSkin", amount = [1, 2], en = "deer skins", es = "pieles de ciervo" },
+    { goods = "bsmt_hardware", amount = [2, 3], en = "fastening material", es = "materiales de sujeción" },
+]
+
+[[business]]
+key = "castle_stables"
+sells = [
+    { goods = "BasicBridle01_m04", amount = [1, 2] },
+    { goods = "BasicSaddle01_m04", amount = [1, 1] },
+    { goods = "Pouch_test_3slot", amount = [1, 2] },
+]
+needs = [
+    { goods = "carrot", amount = [5, 8], en = "carrots", es = "zanahorias" },
+    { goods = "apple", amount = [4, 8], en = "apples", es = "manzanas" },
+    { goods = "special_cowSkin", amount = [1, 2], en = "cow skins", es = "pieles de vaca" },
+]
+
+[[business]]
+key = "castle_archery"
+sells = [
+    { goods = "arrow_precise", amount = [15, 25] },
+    { goods = "bolt_precise", amount = [10, 20] },
+    { goods = "repairKit_bowyerSmall", amount = [2, 3] },
+]
+needs = [
+    { goods = "bsmt_ironBad", amount = [2, 4], en = "scrap metal", es = "chatarra" },
+    { goods = "bsmt_woodExotic", amount = [1, 2], en = "exotic wood", es = "madera exótica" },
+    { goods = "special_pigSkin", amount = [1, 2], en = "pig skins", es = "pieles de cerdo" },
+]
+
+[[business]]
+key = "castle_baths"
+sells = [
+    { goods = "soap", amount = [3, 5] },
+    { goods = "bandage_classic", amount = [10, 20] },
+    { goods = "perfume_longWeak_medium", amount = [1, 3] },
+]
+needs = [
+    { goods = "herb_dried_marigold", amount = [5, 8], en = "dried marigold", es = "caléndula seca", percent = 313 },
+    { goods = "beer", amount = [10, 15], en = "beer", es = "cerveza" },
+    { goods = "special_charcoal", amount = [5, 10], en = "charcoal", es = "carbón" },
+]
+
+[[business]]
+key = "castle_kitchen"
+sells = [
+    { goods = "beefCooked", amount = [2, 4] },
+    { goods = "duck", amount = [2, 4] },
+    { goods = "cabbageCooked", amount = [4, 8] },
+]
+needs = [
+    { goods = "pigMeat", amount = [4, 8], en = "pork", es = "carne de cerdo" },
+    { goods = "bacon", amount = [3, 6], en = "bacon", es = "panceta" },
+    { goods = "wineGood", amount = [4, 6], en = "fine wine", es = "vino de calidad" },
+]
+
+[[business]]
+key = "castle_scribe"
+sells = [
+    { goods = "loot_candle", amount = [10, 20] },
+    { goods = "loot_oakGallInk", amount = [2, 3] },
+    { goods = "loot_gooseFeathers", amount = [5, 8] },
+]
+needs = [
+    { goods = "wine", amount = [4, 8], en = "wine", es = "vino" },
+    { goods = "bsmt_ironBad", amount = [2, 3], en = "scrap metal", es = "chatarra" },
+    { goods = "special_cowSkin", amount = [1, 2], en = "cow skins", es = "pieles de vaca" },
+]
+
+[[business]]
+key = "castle_carpenter"
+name_en = "the castle carpenter"
+name_es = "el carpintero del castillo"
+sells = [
+    { goods = "shieldHeater_whole_T", amount = [1, 2] },
+    { goods = "polearmTraining", amount = [4, 8] },
+    { goods = "torch_weapon", amount = [4, 8] },
+]
+needs = [
+    { goods = "bsmt_hardware", amount = [2, 4], en = "fastening material", es = "materiales de sujeción" },
+    { goods = "bsmt_woodExotic", amount = [1, 2], en = "exotic wood", es = "madera exótica" },
+    { goods = "beer", amount = [8, 12], en = "beer", es = "cerveza" },
+]
+
+[[business]]
+key = "kreyzl_mill"
+sells = [
+    { goods = "breadroll", amount = [10, 20] },
+    { goods = "pretzel", amount = [10, 20] },
+    { goods = "bread", amount = [5, 8] },
+]
+needs = [
+    { goods = "beer", amount = [8, 12], en = "beer", es = "cerveza" },
+    { goods = "pigMeatSmoked", amount = [2, 4], en = "smoked pork", es = "cerdo ahumado" },
+    { goods = "bsmt_ironBad", amount = [2, 4], en = "scrap metal", es = "chatarra" },
+]
+
+[[business]]
+key = "woodcutters"
+name_en = "the woodcutter foreman"
+name_es = "el capataz de leñadores"
+sells = [
+    { goods = "special_charcoal", amount = [10, 20] },
+    { goods = "loot_oakBark", amount = [5, 10] },
+    { goods = "loot_tar", amount = [3, 6] },
+]
+needs = [
+    { goods = "bacon", amount = [3, 6], en = "bacon", es = "panceta" },
+    { goods = "beer", amount = [10, 15], en = "beer", es = "cerveza" },
+    { goods = "bandage_classic", amount = [5, 10], en = "bandages", es = "vendajes" },
+]
+
+[[business]]
+key = "nebakov_mill"
+sells = [
+    { goods = "bread", amount = [3, 6] },
+    { goods = "bagel", amount = [8, 15] },
+    { goods = "walnutCake", amount = [4, 8] },
+]
+needs = [
+    { goods = "wineCheap", amount = [6, 10], en = "cheap wine", es = "vino barato" },
+    { goods = "chickenDried", amount = [3, 6], en = "dried chicken", es = "pollo desecado" },
+    { goods = "bsmt_hardware", amount = [2, 3], en = "fastening material", es = "materiales de sujeción" },
+]
+
+[[business]]
+key = "nebakov_gamekeeper"
+sells = [
+    { goods = "deerMeatSmoked", amount = [3, 5] },
+    { goods = "rabbitMeatSmoked", amount = [5, 10] },
+    { goods = "skin_hare", amount = [2, 4] },
+]
+needs = [
+    { goods = "spirits", amount = [2, 4], en = "schnapps", es = "schnapps" },
+    { goods = "bandage_classic", amount = [5, 10], en = "bandages", es = "vendajes" },
+    { goods = "cheeseQuarterSmoked", amount = [2, 3], en = "smoked cheese", es = "queso ahumado" },
+]
+
+[[business]]
+key = "vidlak_gamekeeper"
+name_es = "el cazador Vostatek"
+sells = [
+    { goods = "boarMeatSmoked", amount = [3, 5] },
+    { goods = "deerFlankSmoked", amount = [3, 6] },
+    { goods = "skin_roe", amount = [1, 2] },
+]
+needs = [
+    { goods = "beer", amount = [8, 12], en = "beer", es = "cerveza" },
+    { goods = "bandage_classic", amount = [5, 10], en = "bandages", es = "vendajes" },
+    { goods = "torch_weapon", amount = [3, 5], en = "torches", es = "antorchas" },
+]
+
+[[business]]
+key = "vidlak_tanner"
+sells = [
+    { goods = "special_cowSkin", amount = [2, 4] },
+    { goods = "special_pigSkin", amount = [2, 4] },
+    { goods = "special_deerSkin", amount = [1, 2] },
+]
+needs = [
+    { goods = "skin_hare", amount = [2, 4], en = "hare pelts", es = "pieles de liebre" },
+    { goods = "skin_roe", amount = [1, 2], en = "roe-deer hides", es = "pieles de corzo" },
+    { goods = "beer", amount = [8, 12], en = "beer", es = "cerveza" },
+]
+
+[[business]]
+key = "kopanina_herbalist"
+name_es = "el herborista Bernabé"
+sells = [
+    { goods = "herb_comfrey", amount = [8, 12] },
+    { goods = "herb_hypericum", amount = [8, 12] },
+    { goods = "herb_ginger", amount = [2, 4] },
+]
+needs = [
+    { goods = "spirits", amount = [2, 4], en = "schnapps", es = "schnapps" },
+    { goods = "special_charcoal", amount = [4, 8], en = "charcoal", es = "carbón" },
+    { goods = "wineCheap", amount = [6, 10], en = "cheap wine", es = "vino barato" },
+]
+
+[[business]]
+key = "nomads_fence"
+sells = [
+    { goods = "loot_silverCup", amount = [1, 2] },
+    { goods = "loot_pewterJugDecorated", amount = [1, 3] },
+    { goods = "loot_necklace_jasperBeads", amount = [1, 2] },
+]
+needs = [
+    { goods = "spirits", amount = [2, 4], en = "schnapps", es = "schnapps" },
+    { goods = "beefDried", amount = [2, 4], en = "dried beef", es = "ternera desecada" },
+    { goods = "torch_weapon", amount = [3, 5], en = "torches", es = "antorchas" },
+]
+
+[[business]]
+key = "nomads_merchant"
+sells = [
+    { goods = "deerMeatDried", amount = [4, 8] },
+    { goods = "boarMeatDried", amount = [2, 4] },
+    { goods = "wine", amount = [6, 10] },
+]
+needs = [
+    { goods = "cheeseQuarterSmoked", amount = [2, 4], en = "smoked cheese", es = "queso ahumado" },
+    { goods = "beer", amount = [10, 15], en = "beer", es = "cerveza" },
+    { goods = "special_pigSkin", amount = [1, 2], en = "pig skins", es = "pieles de cerdo" },
+]
+
+[[business]]
+key = "nomads_horses"
+sells = [
+    { goods = "horseshoeNomad", amount = [1, 2] },
+    { goods = "horseshoeFarmer", amount = [3, 5] },
+    { goods = "Spurs01_m02_C", amount = [1, 2] },
+]
+needs = [
+    { goods = "special_cowSkin", amount = [1, 2], en = "cow skins", es = "pieles de vaca" },
+    { goods = "bsmt_ironGood", amount = [2, 4], en = "iron", es = "hierro" },
+    { goods = "lambMeatSmoked", amount = [2, 4], en = "smoked mutton", es = "cordero ahumado" },
+]
+
+[[business]]
+key = "nomads_herbalist"
+sells = [
+    { goods = "herb_poppy", amount = [15, 25] },
+    { goods = "herb_belladona", amount = [3, 5] },
+    { goods = "herb_valerian", amount = [10, 15] },
+]
+needs = [
+    { goods = "herb_dried_marigold", amount = [4, 8], en = "dried marigold", es = "caléndula seca", percent = 313 },
+    { goods = "spirits", amount = [2, 3], en = "schnapps", es = "schnapps" },
+    { goods = "water", amount = [4, 6], en = "drinking water", es = "agua potable" },
+]
+
+[[business]]
+key = "bozhena_hut"
+sells = [
+    { goods = "herb_mint", amount = [10, 15] },
+    { goods = "herb_paris", amount = [10, 15] },
+    { goods = "herb_eyewort", amount = [8, 12] },
+]
+needs = [
+    { goods = "herb_dried_chamomile", amount = [5, 9], en = "dried chamomile", es = "manzanilla seca", percent = 313 },
+    { goods = "special_charcoal", amount = [4, 8], en = "charcoal", es = "carbón" },
+    { goods = "wine", amount = [4, 6], en = "wine", es = "vino" },
+]
+
+[[business]]
+key = "slatego_greengrocer"
+sells = [
+    { goods = "peaches", amount = [20, 30] },
+    { goods = "watermelon", amount = [4, 8] },
+    { goods = "walnuts", amount = [5, 10] },
+]
+needs = [
+    { goods = "chickenDried", amount = [3, 6], en = "dried chicken", es = "pollo desecado" },
+    { goods = "beer", amount = [8, 12], en = "beer", es = "cerveza" },
+    { goods = "bandage_classic", amount = [5, 10], en = "bandages", es = "vendajes" },
+]
+
+[[business]]
+key = "krenovy_farm"
+sells = [
+    { goods = "chicken", amount = [3, 6] },
+    { goods = "egg", amount = [15, 25] },
+    { goods = "cabbage", amount = [8, 12] },
+]
+needs = [
+    { goods = "herb_dried_urticaria", amount = [5, 10], en = "dried nettle", es = "ortiga seca", percent = 313 },
+    { goods = "wineCheap", amount = [6, 10], en = "cheap wine", es = "vino barato" },
+    { goods = "soap", amount = [1, 3], en = "soap", es = "jabón" },
+]
+
+[[business]]
+key = "schdiar_farm"
+name_en = "the farmer of the west farm"
+name_es = "el granjero de la granja del oeste"
+sells = [
+    { goods = "lambMeat", amount = [3, 6] },
+    { goods = "milk", amount = [5, 10] },
+    { goods = "carrot", amount = [20, 30] },
+]
+needs = [
+    { goods = "bsmt_hardware", amount = [2, 3], en = "fastening material", es = "materiales de sujeción" },
+    { goods = "beefDried", amount = [2, 4], en = "dried beef", es = "ternera desecada" },
+    { goods = "bandage_classic", amount = [5, 10], en = "bandages", es = "vendajes" },
+]

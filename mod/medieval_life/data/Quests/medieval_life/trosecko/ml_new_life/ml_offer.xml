@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- The offer of the new life. Only Henry sees it, from the host at the tavern wall (Scripts/MedievalLife/host.lua). The camera shows
+	     the player during the warning. Lua starts from ExitScript, once the dialog closes. The lines have no audio: subtitles play silently. -->
+	<Skald>
+		<FaderDialog Name="ml_offer">
+			<Ports>
+				<Port Name="in_new_life" Direction="In" Type="bool" />
+			</Ports>
+			<Text Text="ml_offer" />
+			<Dialogue TechnicalStatus="Enabled">
+				<SelectedSouls>
+					<SelectedSoul Role="HENRY" Voice="tomMcKay" Type="Wave" Language="ENG" />
+					<SelectedSoul Role="role_ml_host" Voice="martinBishop" Type="Wave" Language="ENG" />
+				</SelectedSouls>
+				<Decision Name="dec_root" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_host HENRY">
+					<Sequences>
+						<Sequence EndType="Decision" EntryCondition="!Port('in_new_life')" Name="seq_offer">
+							<UiPrompt StringName="ui_ml_offer" />
+							<Elements>
+								<Response Role="HENRY" />
+								<Response Role="role_ml_host">
+									<Text StringName="ml_offer_warning" />
+									<Commands>
+										<CameraCommand Role="HENRY" CameraType="Medium" />
+									</Commands>
+								</Response>
+							</Elements>
+							<Decision Name="dec_offer" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_host HENRY">
+								<Sequences>
+									<Sequence EndType="EndDialogue" ExitScript="MedievalLife.Selector.Enter()" Name="seq_accept">
+										<UiPrompt StringName="ui_ml_offer_accept" />
+										<Elements>
+											<Response Role="HENRY" />
+											<Response Role="role_ml_host" />
+										</Elements>
+									</Sequence>
+									<Sequence EndType="EndDialogue" Name="seq_decline">
+										<UiPrompt StringName="ui_ml_never_mind" />
+										<Elements>
+											<Response Role="HENRY" />
+											<Response Role="role_ml_host" />
+										</Elements>
+									</Sequence>
+								</Sequences>
+							</Decision>
+						</Sequence>
+					</Sequences>
+				</Decision>
+			</Dialogue>
+		</FaderDialog>
+	</Skald>
+</Database>

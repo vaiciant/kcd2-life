@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- Tells Lua when a wait or a sleep starts and ends: see life.lua. Every map has beds, so it hangs from the project. -->
+	<Skald>
+		<Module Name="ml_sleep">
+			<Nodes>
+				<State Name="always_on" PositionY="0" PositionX="-300" TypeT="bool">
+					<Constant Name="DefaultValue" Value="true" />
+				</State>
+				<SkipTimeTrigger Name="skip" PositionY="0" PositionX="0">
+					<Edge From="always_on.State" To="IsActive" />
+				</SkipTimeTrigger>
+				<EventFunction Name="started" PositionY="0" PositionX="300" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="aaee9462-4303-5c2e-8454-11d1696e29bd" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="skip.OnStarted" To="Exec" />
+				</EventFunction>
+				<EventFunction Name="ended" PositionY="200" PositionX="300" MethodName="wh::entitymodule::CreatePlayerReward" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="aaee9462-4303-5c2e-8454-11d1696e29bd" />
+					<Constant Name="Amount" Value="2" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="skip.OnStopped" To="Exec" />
+				</EventFunction>
+			</Nodes>
+			<Text Text="ml_sleep" />
+		</Module>
+	</Skald>
+</Database>

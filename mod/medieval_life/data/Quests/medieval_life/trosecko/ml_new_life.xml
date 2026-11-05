@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- New life: the offer, the selector and the switch to the new character. Lua gives its tokens to Henry, before the
+	     switch: during the session of the switch, Skald does not see the inventory of the new character. SwitchPlayer needs
+	     OnFinished connected. The look is the frameworks' work: Lua gives them the token of the look, and this module tells
+	     them when the switch ends. -->
+	<Skald>
+		<Gameplay Name="ml_new_life">
+			<Ports>
+				<Port Name="life_started" Direction="Out" Type="trigger" />
+				<!-- True while the new life goes on. It is saved, so a graph added by an update of the mod reads it at
+				     once; life_started only fires when the life begins. -->
+				<Port Name="in_life" Direction="Out" Type="bool" />
+				<Port Name="open_shops" Direction="Out" Type="trigger" />
+			</Ports>
+			<Definitions>
+				<Definition File="ml_new_life/ml_offer.xml" />
+				<Definition File="ml_new_life/ml_selector.xml" />
+			</Definitions>
+			<Nodes>
+				<ObjectProperties Name="henry" PositionY="0" PositionX="-900" DeclaringType="wh::rpgmodule::I_Soul">
+					<Asset Name="I_Soul" Alias="player" />
+				</ObjectProperties>
+				<State Name="always_on" PositionY="-150" PositionX="-900" TypeT="bool">
+					<Constant Name="DefaultValue" Value="true" />
+				</State>
+				<Function Name="switch_descriptor" PositionY="0" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="43723559-8b7d-5cae-8c55-d57645f282f6" />
+					<Constant Name="Amount" Value="1" />
+				</Function>
+				<ItemDescriptorTrigger Name="switch_token" PositionY="0" PositionX="-300">
+					<Edge From="henry.Inventory" To="Inventory" />
+					<Edge From="switch_descriptor.ItemDescriptor" To="ItemDescriptor" />
+					<Edge From="always_on.State" To="IsActive" />
+				</ItemDescriptorTrigger>
+				<SwitchPlayer Name="to_new_life" PositionY="0" PositionX="0">
+					<Constant Name="PlayerId" Value="2" />
+					<Edge From="switch_token.OnAcquire" To="Exec" />
+				</SwitchPlayer>
+				<!-- When the switch finishes, a token in Henry's inventory for each framework: they turn on the look of the new
+				     character only then, because SwitchPlayer does not show what was turned on before. -->
+				<EventMemberFunction Name="ml_ff_started" PositionY="-150" PositionX="300" MethodName="CreateItems" DeclaringType="wh::entitymodule::Inventory">
+					<Constant Name="ItemClass" Value="9082f127-4c9c-5eb6-bb78-ed186287d07d" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="henry.Inventory" To="Inventory" />
+					<Edge From="to_new_life.OnFinished" To="Exec" />
+				</EventMemberFunction>
+				<EventMemberFunction Name="ml_mf_started" PositionY="-300" PositionX="300" MethodName="CreateItems" DeclaringType="wh::entitymodule::Inventory">
+					<Constant Name="ItemClass" Value="8a3d3c87-1110-5b07-96de-51eb82e30029" />
+					<Constant Name="Amount" Value="1" />
+					<Constant Name="ShowUINotification" Value="false" />
+					<Edge From="henry.Inventory" To="Inventory" />
+					<Edge From="to_new_life.OnFinished" To="Exec" />
+				</EventMemberFunction>
+				<State Name="in_new_life" PositionY="0" PositionX="300" TypeT="bool">
+					<Constant Name="DefaultValue" Value="false" />
+					<Edge From="to_new_life.OnFinished" To="SetTrue" />
+				</State>
+				<ml_offer Name="offer" PositionY="200" PositionX="300">
+					<Edge From="in_new_life.State" To="in_new_life" />
+				</ml_offer>
+				<Function Name="shops_descriptor" PositionY="-300" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="09516a0f-bfb0-55d9-8293-9783edb12872" />
+					<Constant Name="Amount" Value="1" />
+				</Function>
+				<ItemDescriptorTrigger Name="shops_token" PositionY="-300" PositionX="-300">
+					<Edge From="henry.Inventory" To="Inventory" />
+					<Edge From="shops_descriptor.ItemDescriptor" To="ItemDescriptor" />
+					<Edge From="always_on.State" To="IsActive" />
+				</ItemDescriptorTrigger>
+				<Function Name="selector_descriptor" PositionY="350" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="6523ce70-91d2-5586-bfb3-a771fd6e0159" />
+					<Constant Name="Amount" Value="1" />
+				</Function>
+				<ItemDescriptorTrigger Name="selector_token" PositionY="350" PositionX="-300">
+					<Edge From="henry.Inventory" To="Inventory" />
+					<Edge From="selector_descriptor.ItemDescriptor" To="ItemDescriptor" />
+					<Edge From="always_on.State" To="IsActive" />
+				</ItemDescriptorTrigger>
+				<Function Name="selector_params" PositionY="450" PositionX="-300" MethodName="wh::dialogmodule::CreateDialogParams" DeclaringType="wh::dialogmodule">
+					<Asset Name="Participants" Alias="player" />
+					<Constant Name="IncludePlayer" Value="false" />
+					<Constant Name="UseTwins" Value="false" />
+					<Constant Name="HideNearbyNPCs" Value="false" />
+				</Function>
+				<ml_selector Name="selector" PositionY="350" PositionX="0">
+					<Edge From="selector_params.DialogParams" To="DialogParams" />
+					<Edge From="selector_token.OnAcquire" To="EnqueueDialogue" />
+				</ml_selector>
+				<Output Name="Output">
+					<Edge From="to_new_life.OnFinished" To="life_started" />
+					<Edge From="in_new_life.State" To="in_life" />
+					<Edge From="shops_token.OnAcquire" To="open_shops" />
+				</Output>
+			</Nodes>
+			<Assets>
+				<SoulAsset Name="player" SharedSoulGuids="4c2dcffb-dea1-6263-72d7-b39f4db2d8b5" />
+			</Assets>
+			<Text Text="ml_new_life" />
+		</Gameplay>
+	</Skald>
+</Database>

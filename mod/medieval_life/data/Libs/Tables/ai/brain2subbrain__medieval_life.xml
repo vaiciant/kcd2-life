@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="us-ascii"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="../database.xsd">
+	<brain2subbrains version="1">
+		<!-- Our own switch, in place of the vanilla one, plus the vanilla npc_basic scheduler. -->
+		<brain2subbrain brain_id="f61341b4-504b-54dc-b65b-77e08208d651" priority="0" subbrain_id="4eaa0620-d090-e268-c244-cba09ad5ec80" />
+		<brain2subbrain brain_id="f61341b4-504b-54dc-b65b-77e08208d651" priority="0" subbrain_id="6491b530-92a9-5f89-a3b5-c665e30f1a4d" />
+	</brain2subbrains>
+</database>

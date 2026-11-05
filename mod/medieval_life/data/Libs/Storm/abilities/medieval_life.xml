@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE storm SYSTEM "../../storm.dtd">
+<!-- Base perks and attributes of the vanilla player_henry rule. Stats start at 0 and skills at 1, because at 0 a skill
+     does not exist for the game. Houndmaster stays at 0 on purpose: the new character has no dog, so it must not show. -->
+<storm>
+	<rules>
+		<rule name="ml_player_abilities">
+			<selectors>
+				<hasName name="ml_player" />
+			</selectors>
+			<operations>
+				<setAttribute stat="vision" value="10" />
+				<addPerk name="Player" />
+				<addPerk name="Hunt attack" />
+				<addPerk name="Mercy kill" />
+				<addPerk name="Lifesaver" />
+				<addPerk name="Stealth takedown" />
+				<addPerk name="Stealth kill" />
+				<addPerk name="Perfect Block" />
+				<addPerk name="Dodger" />
+				<addPerk name="Feint" />
+				<addPerk name="Bailman" />
+				<addPerk name="first_aid_I_meta" />
+				<addPerk name="Riposte" />
+				<addPerk name="Combo LowerLeft" />
+				<addPerk name="Combo LowerRight" />
+				<addPerk name="Combo Lower Left Halberd" />
+				<addPerk name="Combo Lower Right Halberd" />
+				<setAttribute stat="storyProgress" value="5" />
+				<setAttribute stat="strength" value="0" />
+				<setAttribute stat="agility" value="0" />
+				<setAttribute stat="vitality" value="0" />
+				<setAttribute stat="speech" value="0" />
+				<setAttribute skill="defense" value="1" />
+				<setAttribute skill="weapon_sword" value="1" />
+				<setAttribute skill="heavy_weapons" value="1" />
+				<setAttribute skill="weapon_large" value="1" />
+				<setAttribute skill="weapon_unarmed" value="1" />
+				<setAttribute skill="marksmanship" value="1" />
+				<setAttribute skill="alchemy" value="1" />
+				<setAttribute skill="craftsmanship" value="1" />
+				<setAttribute skill="drinking" value="1" />
+				<setAttribute skill="horse_riding" value="1" />
+				<setAttribute skill="houndmaster" value="0" />
+				<setAttribute skill="scholarship" value="1" />
+				<setAttribute skill="stealth" value="1" />
+				<setAttribute skill="survival" value="1" />
+				<setAttribute skill="thievery" value="1" />
+			</operations>
+		</rule>
+	</rules>
+</storm>
