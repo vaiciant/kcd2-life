@@ -63,7 +63,7 @@ KCD2 Life has been played together with 47 other mods at once. These make a new 
 - **ldpotions:** more potions to brew, and more recipes for your new character to learn.
 - **Mod Configuration Menu:** settings in the game's menu. With it, you choose how long a month lasts.
 
-The full list is on GitHub. Others should work too.
+The full list is on [GitHub](https://github.com/vaiciant/kcd2-life/blob/main/mod/medieval_life/TESTED_MODS.md). Others should work too.
 
 ## Playing Henry again
 
@@ -87,6 +87,10 @@ Do it when Henry is ready to hand over: save next to the wayfarer by the tavern 
 - KCD2 Female Framework
 - KCD2 Male Framework
 - Optional: [Mod Configuration Menu](https://www.nexusmods.com/kingdomcomedeliverance2/mods/1423), to change the length of the months
+
+## Source
+
+The code, the tools and the technical guide are on [GitHub](https://github.com/vaiciant/kcd2-life).
 
 ## Roadmap
 
