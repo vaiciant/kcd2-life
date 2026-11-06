@@ -133,7 +133,7 @@ Players see three commands: `ml_status`, which writes the state of the mod in th
 | `ml_rep`, `ml_rep_*`, `ml_crime_test`, `ml_crime_forget` | Reputation and theft |
 | `ml_xp`, `ml_look_refresh`, `ml_w_dress`, `ml_w_gear`, `ml_w_shop` | Experience, the look, and women's clothes |
 | `ml_tutorials`, `ml_sites`, `ml_stash`, `ml_rent` | The notes of the first steps, again, every work site with where its NPC is, whose things the master chest holds, and the bed rented for the night |
-| `ml_freeze` | Stops the character's animation, body and face, for videos and pictures. Again, and it moves |
+| `ml_freeze` | Meant to stop the character's animation for videos and pictures. It does not stop it yet |
 | `ml_lua <code>` | Runs Lua. It needs `-devmode` |
 
 The pattern is short, if you want it for your own mod. The public commands register when the file loads. The test commands wait in a table, and one function registers them when developer mode turns on:
