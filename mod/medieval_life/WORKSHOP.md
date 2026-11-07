@@ -47,6 +47,7 @@ Every business asks for errands on its own day of the week, never farther than t
 - **Any save will do.** Add it to the save you are playing: no new game needed. In that save, Henry's alchemy recipes are hidden while the mod is installed, because your new character must start with none. They come back when you remove the mods.
 - **In a new game,** Henry's own playthrough works with no problems.
 - **Keep a save from before the new life.** It is the safest way back to Henry.
+- **Kuttenberg** opens to the new character once Henry's story has reached it, with the coachman by Slatejov, as for Henry.
 - Women speak with Henry's voice.
 - It changes the game's alchemy recipe list, so mods that change the game's own recipes can clash with it. Mods that add new potions, like ldpotions, work.
 - It works with the game alone, and with other mods too.

@@ -439,6 +439,7 @@ Commands.DEVELOPER = {
 	{ "ml_pos", "MedievalLife.Commands.Pos()", "Shows the player position and yaw" },
 	{ "ml_freeze", "MedievalLife.Commands.Freeze()", "For videos and pictures: the character's animation stops, and ml_freeze again lets it go on" },
 	{ "ml_rent", "MedievalLife.Rent.Report()", "Test shortcut: the bed rented for the night, and whether the owner nearby rents one" },
+	{ "ml_rent_bed", "MedievalLife.Rent.BedMode(%line)", "Test shortcut: how a rented high bed is built, stance, game or basic, and the bed again with it" },
 	{ "ml_stash", "MedievalLife.Stash.Report()", "Test shortcut: the master chest of this region, whose things it holds and what each character carries for it" },
 	{ "ml_tutorials", "MedievalLife.Tutorial.Reset()", "Test shortcut: the tutorials of the new life show again, one after another" },
 	{ "ml_sites", "MedievalLife.Commands.Sites()", "Every work site: whether the story offers it, and where its NPC is in this region" },

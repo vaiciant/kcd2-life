@@ -129,36 +129,63 @@ local function action(stance, message)
 	}
 end
 
--- The bed of the mod, built like the bed of the steady job (employee_bed.lua), with what the bed of the game has.
+-- The smart object of a high bed. Its prompt showed and could be used, but nothing happened, with a BasicEntity
+-- as the low beds have (ml_rent: enabled, not blocked, can sleep). Three ways to try, with ml_rent_bed: stance, its own
+-- StanceSmartObject, the class of the bed of the game, with its properties; game, the bed of the game itself, whose
+-- owner the prompt of the mod does not check; basic, the BasicEntity of the low beds.
+Rent.HIGH_BED_MODES = { stance = true, game = true, basic = true }
+Rent.highBedMode = "stance"
+
+-- The smart object of the bed of the mod, built like the bed of the steady job (employee_bed.lua), with what the bed of
+-- the game has. Returns it and whether it is the mod's own.
+local function smartObject(object, high)
+	local mode = high and Rent.highBedMode or "basic"
+	if mode == "game" then
+		local bed = object.name and System.GetEntityByName(object.name)
+		if bed then
+			return bed, false
+		end
+		ML.Log("rent: no bed of the game named", object.name, "- the mod's own")
+		mode = "stance"
+	end
+	local properties = {
+		bSaved_by_game = false,
+		bSerialize = false,
+		guidSmartObjectType = object.type,
+		soclass_SmartObjectHelpers = object.helpers,
+		sWH_AI_EntityCategory = "Bed",
+		Script = { esBedTypes = object.bed },
+		Bed = { esSleepQuality = object.sleep, esReadingQuality = object.reading },
+	}
+	if mode == "basic" then
+		properties.object_Model = ML.EmployeeBed.MODEL
+		properties.sSittingTagGlobal = "sittingNoTable"
+		properties.fUsabilityDistance = 1.25
+		properties.bInteractiveCollisionClass = true
+		-- As the smart object of the game, which has no model: the mattress of the game is the body. A body of its own,
+		-- even unseen, got in the way under the high bed of Zhelejov.
+		properties.Physics = { bPhysicalize = false, bRigidBody = false }
+	end
+	local bed = System.SpawnEntity({
+		class = mode == "basic" and "BasicEntity" or "StanceSmartObject",
+		name = Rent.OBJECT_NAME,
+		position = { x = object.x, y = object.y, z = object.z },
+		properties = properties,
+	})
+	bed:SetAngles({ 0, 0, object.yaw })
+	if mode == "basic" then
+		-- The mattress of the game is already there.
+		ML.Try("rent model", function() bed:DrawSlot(0, 0) end)
+	end
+	return bed, true
+end
+
 -- Its prompt is used as the game's: a low bed lies on a click, and a high bed (trigger.sit) sits on a click and lies on
--- a hold. Its smart object has no way to lie down from standing, and the character could not sleep in Zhelejov.
+-- a hold. Its smart object has no way to lie down from standing.
 local function place(site)
 	remove()
 	local object, trigger = site.rent.object, site.rent.trigger
-	local bed = System.SpawnEntity({
-		class = "BasicEntity",
-		name = Rent.OBJECT_NAME,
-		position = { x = object.x, y = object.y, z = object.z },
-		properties = {
-			object_Model = ML.EmployeeBed.MODEL,
-			bSaved_by_game = false,
-			bSerialize = false,
-			guidSmartObjectType = object.type,
-			soclass_SmartObjectHelpers = object.helpers,
-			sWH_AI_EntityCategory = "Bed",
-			sSittingTagGlobal = "sittingNoTable",
-			fUsabilityDistance = 1.25,
-			bInteractiveCollisionClass = true,
-			-- As the smart object of the game, which has no model: the mattress of the game is the body. A body of its own,
-			-- even unseen, got in the way under the high bed of Zhelejov, and the character could not lie down.
-			Physics = { bPhysicalize = false, bRigidBody = false },
-			Script = { esBedTypes = object.bed },
-			Bed = { esSleepQuality = object.sleep, esReadingQuality = object.reading },
-		},
-	})
-	bed:SetAngles({ 0, 0, object.yaw })
-	-- The mattress of the game is already there.
-	ML.Try("rent model", function() bed:DrawSlot(0, 0) end)
+	local bed, own = smartObject(object, trigger.sit)
 	local sleep = action("lying", "@ui_hud_sleep_and_save")
 	local prompt = System.SpawnEntity({
 		class = "BedTrigger",
@@ -175,10 +202,26 @@ local function place(site)
 	})
 	prompt:SetAngles({ 0, 0, trigger.yaw })
 	prompt:CreateLink("", bed.id)
-	bed:CreateLink("mTrigger", prompt.id)
+	-- The bed of the game keeps its own links.
+	if own then
+		bed:CreateLink("mTrigger", prompt.id)
+	end
 	showGame(site, false)
 	placedGen = ML.gen
-	ML.Log("rent bed in place at", site.key)
+	ML.Log("rent bed in place at", site.key, "high", trigger.sit == true, "mode", trigger.sit and Rent.highBedMode or "basic",
+		"class", bed.class)
+end
+
+-- For ml_rent_bed: how a high bed is built, stance, game or basic, and the bed of a rental again with it.
+function Rent.BedMode(line)
+	local mode = string.match(line or "", "(%a+)")
+	if mode and Rent.HIGH_BED_MODES[mode] then
+		Rent.highBedMode = mode
+		if active() then
+			place(siteByKey(active().site))
+		end
+	end
+	ML.Log("rent high bed mode", Rent.highBedMode, "(stance, game or basic)")
 end
 
 -- The rental ends: the bed of the mod goes, and the game's comes back.

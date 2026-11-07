@@ -25,6 +25,7 @@ KCD2 Life turns *Kingdom Come: Deliverance II* (PC, game version 1.5) into a lif
   | Burgher family | Sword | 300 groschen |
 
 - **A fresh map.** The places Henry found are hidden again, and so are his beds and homes on the map. The compass can still show one of his beds. The new character has no dog.
+- **Kuttenberg** opens to the new character as it does to Henry: the coachman by Slatejov takes you there once Henry's story has reached the city. Before that, the game crashes while loading the city, so the mod does not open the road early.
 - **A calendar of your own.** Your life starts on 1 June 1403, and the book of trades keeps the date. Months last 7 days, so a month is a week of work. With the optional [settings](#settings), you can switch to 14-day months or the real calendar.
 
 ## Work across the Trosky region
@@ -154,7 +155,8 @@ Players see three commands: `ml_status`, which writes the state of the mod in th
 | `ml_orders`, `ml_order_force <business>`, `ml_order_expire`, `ml_order_trust` | Errands |
 | `ml_rep`, `ml_rep_*`, `ml_crime_test`, `ml_crime_forget` | Reputation and theft |
 | `ml_xp`, `ml_look_refresh`, `ml_w_dress`, `ml_w_gear`, `ml_w_shop` | Experience, the look, and women's clothes |
-| `ml_tutorials`, `ml_sites`, `ml_stash`, `ml_rent` | The notes of the first steps, again, every work site with where its NPC is, whose things the master chest holds, and the bed rented for the night |
+| `ml_tutorials`, `ml_sites`, `ml_stash`, `ml_rent` | The notes of the first steps, again, every work site with where its NPC is, whose things the master chest holds, and the bed rented for the night, with whether its prompt can be used |
+| `ml_rent_bed stance`, `game` or `basic` | How a rented high bed, as in Zhelejov, is built, and the bed again with it |
 | `ml_freeze` | Meant to stop the character's animation for videos and pictures. It does not stop it yet |
 | `ml_lua <code>` | Runs Lua. It needs `-devmode` |
 

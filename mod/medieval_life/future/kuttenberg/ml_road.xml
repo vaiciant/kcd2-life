@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
-	<!-- The road to Kuttenberg for the new character. The game goes there only with the coachman of the caravan camp
+	<!-- OFF FOR NOW. Kept outside data/, so it is not packed, for when Kuttenberg gets its own content. The camp loads
+	     and the coachman sells the ride, but before Henry's story reaches Kuttenberg the game crashes while loading the
+	     city: its world is in a state the game never loads, and it fails on a layer of Sigismund's army camp. To try it
+	     again, move this file back to data/Quests/medieval_life/trosecko/ and add to trosecko.xml its definition and node,
+	     <ml_road Name="ml_road"> with the edges ml_new_life.in_life -> in_life and ml_new_life.life_started ->
+	     life_started.
+	     The road to Kuttenberg for the new character. The game goes there only with the coachman of the caravan camp
 	     by Slatejov, who sells the ride in a dialog and switches the level. His camp, the profile caravanCamp_slatejov_camp
 	     with him, his horses and the point on the map, streams only once Henry ends the quest at Trosky castle
 	     (vezniNaTroskach, caravancamp_slatejov.xml of the game). A new life can start long before, so this streams the same

@@ -155,7 +155,8 @@ def rent_places(sites):
             # The mark of the bed on the map and the compass: the game shows it while the bed is the character's, and the mod
             # takes the others off. Its id is the EntityGuid of the bed and "BED POI" in bytes, as in whdata_0.
             "mark": attr(bed, "EntityGuid") + "-4245-4420504f4900",
-            "object": dict(place(bed), helpers=attr(bed, "soclass_SmartObjectHelpers"), type=attr(bed, "guidSmartObjectType"),
+            # Its name: a high bed uses the smart object of the game.
+            "object": dict(place(bed), name=attr(bed, "Name"), helpers=attr(bed, "soclass_SmartObjectHelpers"), type=attr(bed, "guidSmartObjectType"),
                            bed=attr(bed, "esBedTypes"), sleep=attr(bed, "esSleepQuality"), reading=attr(bed, "esReadingQuality")),
             "trigger": dict(place(prompt), name=attr(prompt, "Name"), scale=round(float(attr(prompt, "Scale", "1,1,1").split(",")[0]), 3),
                             **({"sit": True} if sit else {})),
