@@ -227,11 +227,7 @@ function Rent.BedMode(line)
 	ML.Log("rent high bed mode", Rent.highBedMode, "(stance, game or basic)")
 end
 
--- After a rental ends by the bed, the bubble of no trespassing stays until the character walks away or GRACE_HOURS
--- pass (Rent.InBubble).
-Rent.GRACE_HOURS = 1
-local grace
-
+-- Within rent_area metres of the bed of a site.
 local function near(site)
 	local position, area = player:GetWorldPos(), ML.JOB_RULES.rent_area
 	local dx, dy = site.rent.object.x - position.x, site.rent.object.y - position.y
@@ -275,12 +271,6 @@ function Rent.Update()
 		return
 	end
 	if Calendar.GetWorldTime() >= rental.until_time then
-		local rented = siteByKey(rental.site)
-		-- Ended by the bed: a while to get up and go, with no trespassing (Rent.InBubble).
-		if rented and rented.rent and near(rented) then
-			grace = { site = rental.site, until_time = Calendar.GetWorldTime() + Rent.GRACE_HOURS * Rent.HOUR_SECONDS }
-			ML.Log("rent grace at", rental.site, "hours=", Rent.GRACE_HOURS)
-		end
 		finish(rental, "in the morning")
 		notice(Rent.OVER_TEXT)
 	elseif placedGen ~= ML.gen then
@@ -339,28 +329,15 @@ end
 -- Whether the character is near the rented bed while it is theirs: within rent_area metres, as the bed of the steady
 -- job does with steady_area. employment.lua turns off the reactions to trespassing there, with the same Skald state. The bed of the game stays the inn's, so on waking up in Zhelejov the innkeeper threw the character out; Henry's rental is left as it is.
 -- It lasts as long as the rental, not up to its hour: the rental waits for the character to wake up, and a bubble that
--- went at 10:00 in the middle of the sleep woke them up. When the rental ends by the bed, the bubble stays for a
--- while, until the character walks away or GRACE_HOURS pass: the game lets no one wait or sleep while trespassing, and
--- someone left standing by a bed that was no longer theirs could not skip time at all.
+-- went at 10:00 in the middle of the sleep woke them up. Once the rental ends, nothing is left: the place is as
+-- the game has it, and the character may sleep there without leave, as anyone.
 function Rent.InBubble()
 	if not ML.Life.IsStarted() or ML.Region() ~= "trosky" then
-		grace = nil
 		return false
 	end
 	local rental = active()
 	local site = rental and siteByKey(rental.site)
-	if site and site.rent then
-		return near(site)
-	end
-	site = grace and Calendar.GetWorldTime() < grace.until_time and siteByKey(grace.site)
-	if site and site.rent and near(site) then
-		return true
-	end
-	if grace then
-		ML.Log("rent grace over at", grace.site)
-		grace = nil
-	end
-	return false
+	return site and site.rent and near(site) or false
 end
 
 -- From the dialog: a week, for the price of rent_week_paid_nights nights.
