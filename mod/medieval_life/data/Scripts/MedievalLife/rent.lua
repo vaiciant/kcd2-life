@@ -300,9 +300,30 @@ end
 
 -- Test shortcut: the rental, and the place nearby. And what there is of the bed of the place nearby: the bed of the
 -- mod, the prompt of the game hidden or not, and the door locked or not.
+-- Whether a bed prompt can be used now, as the game decides it when showing the prompt (BedTrigger.lua): the click and
+-- the hold, with the reason when not, whether its smart object is found and taken, and whether the player can sleep.
+-- For the high bed of Zhelejov, which shows its prompt and does nothing.
+local function reportPrompt(label, prompt)
+	if not prompt then
+		ML.Log("rent", label, "prompt: none")
+		return
+	end
+	ML.Try("rent prompt check", function()
+		local properties = prompt.Properties or {}
+		local click, hold = properties.Click or {}, properties.Hold or {}
+		local clickOn, clickWhy = prompt:IsEnabled(player)
+		local holdOn, holdWhy = prompt:IsEnabledHold(player)
+		local link = prompt.GetLinkedSmartObject and prompt:GetLinkedSmartObject()
+		local blocked = link and link.smartObject and XGenAIModule.IsStanceBlocked(link.smartObject.__this)
+		ML.Log("rent", label, "prompt: click", click.esActionType, click.sAction, clickOn, clickWhy, "hold", hold.bIsActive,
+			hold.esActionType, hold.sAction, holdOn, holdWhy, "smart object", link ~= nil, "stance blocked", blocked)
+	end)
+end
+
 function Rent.Report()
 	local rental = active()
-	local site = ML.Try("rent site", ML.Jobs.NearestSite)
+	-- The rented place, even upstairs, far from its owner; else the nearest.
+	local site = rental and siteByKey(rental.site) or ML.Try("rent site", ML.Jobs.NearestSite)
 	ML.Log("rent:", rental and rental.site or "none", "days=", rental and rental.days or 0, "hours left=", rental and (rental.until_time - Calendar.GetWorldTime()) / Rent.HOUR_SECONDS or 0,
 		"here=", site and site.rent and site.key or "nobody rents", "price=", site and site.rent and price(site) / 10 or 0)
 	if site and site.rent then
@@ -311,6 +332,12 @@ function Rent.Report()
 		ML.Log("rent bed of the mod:", System.GetEntityByName(Rent.OBJECT_NAME) ~= nil, System.GetEntityByName(Rent.TRIGGER_NAME) ~= nil,
 			"game prompt:", prompt ~= nil, prompt and ML.Try("rent hidden", function() return prompt:IsHidden() end),
 			"door locked:", door and door.bLocked, "game mark:", site.rent.mark)
+		reportPrompt("mod", System.GetEntityByName(Rent.TRIGGER_NAME))
+		reportPrompt("game", prompt)
+		ML.Try("rent can sleep", function()
+			local can, why = player.player.CanSleep()
+			ML.Log("rent can sleep", can, why, "bed helpers", site.rent.object.helpers, "sit", site.rent.trigger.sit == true)
+		end)
 	end
 	ML.BedMarker.Dump()
 end
