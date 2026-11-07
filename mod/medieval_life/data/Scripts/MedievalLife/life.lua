@@ -142,10 +142,26 @@ end
 -- The new character has no dog. Mutt is not deleted: he waits hidden, far away, so nothing is lost if the mod goes
 -- away. He comes back after a load or a region change, so this checks every tick. The dog action map has the key
 -- that calls him. The engine enables it again, so it is turned off every tick too.
-local function keepDogAway()
-	if not Life.IsStarted() then
+-- And Mutt is not the player's dog while the new character plays: the inventory showed him, with his obedience, next
+-- to the horse. Player.SetPlayerDog takes the dog of the player, and NULL_ENTITY none [H: the binding is in the
+-- game, unconfirmed in use]. Once per load: the game may give him back. Life.ReturnDog gives him to Henry again. A dog
+-- of the new character's own, bought in the future, would go here instead of none.
+local dogClearedGen
+
+local function clearPlayerDog()
+	if dogClearedGen == ML.gen then
 		return
 	end
+	dogClearedGen = ML.gen
+	ML.Log("player dog cleared", ML.Try("player dog", function() return player.player:SetPlayerDog(NULL_ENTITY) end))
+end
+
+local function keepDogAway()
+	if not Life.IsStarted() then
+		dogClearedGen = nil
+		return
+	end
+	clearPlayerDog()
 	ActionMapManager.EnableActionMap("dog", false)
 	local dog = findDog()
 	if not dog then
@@ -175,7 +191,8 @@ function Life.ReturnDog()
 	local position = player:GetWorldPos()
 	dog:SetWorldPos({ x = position.x + 2, y = position.y, z = position.z })
 	dog:Hide(0)
-	ML.Log("dog given back")
+	-- He is Henry's dog again.
+	ML.Log("dog given back, player dog", ML.Try("player dog", function() return player.player:SetPlayerDog(dog.id) end))
 	return true
 end
 
