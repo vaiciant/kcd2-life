@@ -169,6 +169,9 @@
   <Row><Cell>ml_steady_terms_economy</Cell><Cell>ml_steady_terms_economy</Cell><Cell>Seis días de trabajo y uno libre, contando desde hoy, de ocho a seis, a 0,2 groschen la hora. Con cama y comida. Hay que estar aquí a las ocho y media: dos días seguidos tarde es una falta. Tres faltas y estás fuera, y dejar la región cuenta como abandonar el puesto.</Cell></Row>
   <Row><Cell>ml_steady_terms_custom</Cell><Cell>ml_steady_terms_custom</Cell><Cell>Seis días de trabajo y uno libre, contando desde hoy, de ocho a seis, con paga por hora. Con cama y comida. Hay que estar aquí a las ocho y media: dos días seguidos tarde es una falta. Tres faltas y estás fuera, y dejar la región cuenta como abandonar el puesto.</Cell></Row>
   <Row><Cell>ml_work_summary_custom</Cell><Cell>ml_work_summary_custom</Cell><Cell>Trabajaste</Cell></Row>
+  <Row><Cell>ml_work_summary_custom_hours</Cell><Cell>ml_work_summary_custom_hours</Cell><Cell>h:</Cell></Row>
+  <Row><Cell>ml_work_summary_custom_xp_in</Cell><Cell>ml_work_summary_custom_xp_in</Cell><Cell>XP en</Cell></Row>
+  <Row><Cell>ml_work_summary_custom_and</Cell><Cell>ml_work_summary_custom_and</Cell><Cell>y</Cell></Row>
   <Row><Cell>ui_ml_rent_1</Cell><Cell>ui_ml_rent_1</Cell><Cell>Necesito una cama para esta noche (1 groschen).</Cell></Row>
   <Row><Cell>ui_ml_rent_5</Cell><Cell>ui_ml_rent_5</Cell><Cell>Necesito una cama para esta noche (5 groschen).</Cell></Row>
   <Row><Cell>ui_ml_rent_20</Cell><Cell>ui_ml_rent_20</Cell><Cell>Necesito una cama para esta noche (20 groschen).</Cell></Row>

@@ -169,6 +169,9 @@
   <Row><Cell>ml_steady_terms_economy</Cell><Cell>ml_steady_terms_economy</Cell><Cell>Six days of work and one off, counted from today, eight to six, at 0.2 groschen an hour. Bed and a meal included. Be here by half past eight: two late days in a row is a fault. Three faults and you're out, and leaving the region counts as walking out on me.</Cell></Row>
   <Row><Cell>ml_steady_terms_custom</Cell><Cell>ml_steady_terms_custom</Cell><Cell>Six days of work and one off, counted from today, eight to six, paid by the hour. Bed and a meal included. Be here by half past eight: two late days in a row is a fault. Three faults and you're out, and leaving the region counts as walking out on me.</Cell></Row>
   <Row><Cell>ml_work_summary_custom</Cell><Cell>ml_work_summary_custom</Cell><Cell>Worked</Cell></Row>
+  <Row><Cell>ml_work_summary_custom_hours</Cell><Cell>ml_work_summary_custom_hours</Cell><Cell>h:</Cell></Row>
+  <Row><Cell>ml_work_summary_custom_xp_in</Cell><Cell>ml_work_summary_custom_xp_in</Cell><Cell>XP in</Cell></Row>
+  <Row><Cell>ml_work_summary_custom_and</Cell><Cell>ml_work_summary_custom_and</Cell><Cell>and</Cell></Row>
   <Row><Cell>ui_ml_rent_1</Cell><Cell>ui_ml_rent_1</Cell><Cell>I need a bed for the night (1 groschen).</Cell></Row>
   <Row><Cell>ui_ml_rent_5</Cell><Cell>ui_ml_rent_5</Cell><Cell>I need a bed for the night (5 groschen).</Cell></Row>
   <Row><Cell>ui_ml_rent_20</Cell><Cell>ui_ml_rent_20</Cell><Cell>I need a bed for the night (20 groschen).</Cell></Row>
