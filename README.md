@@ -24,7 +24,7 @@ KCD2 Life turns *Kingdom Come: Deliverance II* (PC, game version 1.5) into a lif
   | Innkeeper family | Hunting sword | 40 groschen, and the steady job at the tavern |
   | Burgher family | Sword | 300 groschen |
 
-- **A fresh map.** The places Henry found are hidden again, and so are his beds and homes on the map. The compass can still show one of his beds. The new character has no dog.
+- **A fresh map.** The places Henry found are hidden again, and so are his beds and homes on the map. The compass can still show one of his beds. The new character has no dog, though the inventory still shows Mutt: for the game he stays the player's dog.
 - **Kuttenberg** opens to the new character as it does to Henry: the coachman by Slatejov takes you there once Henry's story has reached the city. Before that, the game crashes while loading the city, so the mod does not open the road early.
 - **A calendar of your own.** Your life starts on 1 June 1403, and the book of trades keeps the date. Months last 7 days, so a month is a week of work. With the optional [settings](#settings), you can switch to 14-day months or the real calendar.
 
@@ -82,7 +82,7 @@ With the pay changed, the summary after work, the terms of the steady job, the e
 
 - **A character of its own.** The new life is a second playable soul, `ml_player`, switched to with `SwitchPlayer`, as the game does with Godwin. Henry stays in the save, untouched.
 - **Looks from the frameworks.** KCD2 Life only calls them: KCD2 Female Framework for a woman, KCD2 Male Framework for a man. They put the head and the body on `ml_player`, and the women's clothes fit through the female framework.
-- **Its own Skald project.** `Quests/medieval_life.xml` holds the offer, the selector, the work, the steady job and the errands. It edits no vanilla quest, and NPCs get its dialogs through STORM roles (`addRole`), which join their menus. The only dialogs of the game it replaces are the four of the room rental, copied from your game when the mod is built, so that their options show only to Henry.
+- **Its own Skald project.** `Quests/medieval_life.xml` holds the offer, the selector, the work, the steady job and the errands. It edits no vanilla quest, and NPCs get its dialogs through STORM roles (`addRole`), which join their menus. The only files of the game it replaces are the four dialogs of the room rental, so that their options show only to Henry, and eight files of horse buying, so that the horse trader asks whoever plays about their horse and their money. Both are copied from your game when the mod is built.
 - **Data, not code.** Jobs, errands and origins live in `jobs.toml`, `orders.toml` and `origins.toml`. The tools write the Skald graphs, the items, the texts and the Lua tables from them.
 - **Saves.** The mod's values live in a saved entity of the game's own class. The amount of the game's keyring says whether that entity is current, after a load or a region change. No new entity classes go into your saves.
 
@@ -108,6 +108,7 @@ KCD2 Life works with the game alone, and is built to clash with as few mods as p
 |---|---|
 | Replaces the whole table `Libs/Tables/minigame/AlchemyRecipe.xml`: the game's recipes are hidden and the mod's copies take their place, so Henry does not see his recipes while the mod is installed | A mod that changes the game's own recipes, or replaces that table too. Mods that add new recipes with a table patch, such as ldpotions, work: the new character learns their recipes as Henry would |
 | Replaces the four dialogs of the game's room rental, in `Quests/Final/Barbora/utils/roomrenting/` | A mod that replaces those dialogs too. Realish Economy changes the rental itself, `roomrent.xml`, and not its dialogs: they work together |
+| Replaces eight files of horse buying: the horse traders of Semine and Kutná Hora, the horse handler of Trosky and four of `Quests/Final/Barbora/utils/horsebuying_utils/`. Where the game asks Henry about his horse, his money or his saddle, they ask whoever plays | A mod that replaces those files too. Realish Economy changes the washing of horses, `horsebuying_washinstance.xml`, which KCD2 Life leaves alone |
 
 - **Realish Economy.** It makes the game's prices about a quarter. KCD2 Life finds it by itself and pays and charges a quarter too: the wages, the pay of errands, the money to buy, the debts, the money of the origins, the book of trades and the beds for rent. The offers, the terms of the steady job and the summary after work say those amounts.
 - **The Nutrition Mod.** Work moves the clock by itself, so after it KCD2 Life ends the buffs of food and drink of that mod that would have run out in those hours.

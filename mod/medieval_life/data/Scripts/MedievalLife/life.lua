@@ -142,6 +142,8 @@ end
 -- The new character has no dog. Mutt is not deleted: he waits hidden, far away, so nothing is lost if the mod goes
 -- away. He comes back after a load or a region change, so this checks every tick. The dog action map has the key
 -- that calls him. The engine enables it again, so it is turned off every tick too.
+-- The inventory still shows Mutt, with his obedience, next to the horse: for the game he stays the player's dog.
+-- player.player:SetPlayerDog(NULL_ENTITY) to take him away is a Lua error, and no other way is known.
 local function keepDogAway()
 	if not Life.IsStarted() then
 		return

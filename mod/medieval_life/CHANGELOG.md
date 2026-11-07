@@ -4,7 +4,7 @@ Every release is listed here, as it went out on Steam Workshop, Nexus Mods and G
 
 ## 0.1.1
 
-Settings for work and errands, and the rented beds.
+Settings for work and errands, the rented beds, and horses.
 
 - **Settings.** In Mod Configuration Menu, next to the calendar, and each save keeps its own:
   - **Work:** pay, experience, and how hungry and tired it makes you.
@@ -13,8 +13,10 @@ Settings for work and errands, and the rented beds.
   - With the time of an errand longer than two days, the owner says you have a few days, and the slip says in how many.
 - **The inn of Zhelejov.** Its rented room has a high bed, and you can now sit and sleep in it. Before, its prompt showed and nothing happened.
 - **Nobody minds you by your rented bed.** Within 5 metres of it, while it is yours, nobody reacts to you being there, as by the bed of a steady job: the innkeeper of Zhelejov threw the new character out on waking up. It lasts through a sleep that goes past the end of the rental, and ends with it. Stealing is still a crime.
+- **Horses.** The new character can buy a horse from the horse traders with their own money, and gets its saddle and bridle. Before, the trader asked about Henry: he said you already had a horse, Henry's, and counted Henry's money.
 - **Summaries** of work write their amounts without trailing zeros: "+9 g.", not "+9.0 g.".
 - **Kuttenberg:** the README and the Workshop page now say that it opens to the new character once Henry's story has reached it, as for Henry.
+- **Known:** the inventory of the new character still shows Mutt. The game has no way to undo the bond with the player's dog, so the README and the Workshop page say it.
 - **Developer mode:** `ml_settings` shows and changes the settings; `ml_rent` says whether the prompts of the rented bed can be used, and why not; `ml_rent_bed` chooses how a rented high bed is built.
 
 ## 0.1.0

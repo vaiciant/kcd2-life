@@ -480,6 +480,40 @@ def write_rent_dialogs(mod_dir):
             dest.write_text(text, encoding="utf-8-sig", newline="")
 
 
+# Buying a horse: the game asks the horse trader about the soul of Henry, alias player, for the horse the buyer
+# already has, the charisma for haggling, the money to pay, and who gets the saddle and the bridle. So the new
+# character heard "you already have one" for Henry's horse, and could not pay with their own money. These copies ask
+# player_any, whoever plays: Henry while he plays, as before. The washing of horses, which Realish Economy replaces, is
+# left alone. With the sha256 of game 1.5.6 and how many player aliases each has.
+HORSE_COPIES = {
+    "Quests/Final/Barbora/trosecko/nakup_koni__trosecko/horse_trader_semin.xml": ("f51676cf373b877fed51871acaf1608dedc3473baf286d4a73121c1cc207e2cc", 3),
+    "Quests/Final/Barbora/trosecko/nakup_koni__trosecko/horse_trader_semin/sedivka_focus_cam.xml": ("17626afd6f1c24d661817911eabc33517b06fd49cb136da55c25a66fc47508c1", 2),
+    "Quests/Final/Barbora/trosecko/nakup_koni__trosecko/horse_handler_trosecko.xml": ("2b46a208562329816565cc0c9fe478cf7567771c9a7dadc062d410cae56453d8", 1),
+    "Quests/Final/Barbora/kutnohorsko/nakup_koni__kutnohorsko/horse_trader_kutna_hora.xml": ("8c6a2d0284af487b1aa7fbfef8ab94b459abf14aec18cf9db1b22f71934edf55", 1),
+    "Quests/Final/Barbora/utils/horsebuying_utils/horsebuying_payment.xml": ("fb277591381ad7c73dd25cc1923202e3d8d9c50ff24c1cbb6f1c2ad5227d1ea0", 1),
+    "Quests/Final/Barbora/utils/horsebuying_utils/HorseBuying_StartingEquip.xml": ("40630e0c92e1afbed628eddeea993c456b2d2c65d4b696e9a523a52672340c06", 1),
+    "Quests/Final/Barbora/utils/horsebuying_utils/horseinstance.xml": ("8ffffd9da29dce6a53f748fe407179af5e90b203b278cca9c51edbc17a13d37d", 1),
+    "Quests/Final/Barbora/utils/horsebuying_utils/horsebuying_transactionscene.xml": ("67960ab67013e1d37e1a6f487a15ea517e05445c04c70f5ede8bf9df7f838ed8", 2),
+}
+PLAYER_ALIAS, PLAYING_ALIAS = 'Alias="player"', 'Alias="player_any"'
+
+
+def write_horse_copies(mod_dir):
+    """As the rent dialogs: if an update changes one of the files, the tool stops until someone reads it again."""
+    with zipfile.ZipFile(GAME / "Data" / "Scripts.pak") as z:
+        for path, (sha, aliases) in HORSE_COPIES.items():
+            raw = z.read(path)
+            found = hashlib.sha256(raw).hexdigest()
+            if found != sha:
+                raise SystemExit(f"{path} changed in the game (sha256 {found}). Check its player aliases, then update HORSE_COPIES.")
+            text = raw.decode("utf-8-sig")
+            if text.count(PLAYER_ALIAS) != aliases:
+                raise SystemExit(f"{path}: {text.count(PLAYER_ALIAS)} player aliases, not {aliases}. Did the game change?")
+            dest = mod_dir / "data" / path
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(text.replace(PLAYER_ALIAS, PLAYING_ALIAS), encoding="utf-8-sig", newline="")
+
+
 def main(mod_dir):
     data = tomllib.loads((mod_dir / "jobs.toml").read_text("utf-8"))
     # The economy mod that the pay follows (economy.toml): the summaries of work say its amounts too.
@@ -490,7 +524,9 @@ def main(mod_dir):
     write_text(mod_dir, data, sites)
     write_terms_dialog(mod_dir, data)
     write_rent_dialogs(mod_dir)
-    print(f"{len(sites)} sites, {len(RENT_DIALOGS)} rent dialogs of the game for Henry only")
+    write_horse_copies(mod_dir)
+    print(f"{len(sites)} sites, {len(RENT_DIALOGS)} rent dialogs of the game for Henry only, "
+          f"{len(HORSE_COPIES)} horse buying files of the game for whoever plays")
 
 
 if __name__ == "__main__":
