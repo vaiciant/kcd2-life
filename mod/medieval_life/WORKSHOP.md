@@ -39,6 +39,7 @@ Every business asks for errands on its own day of the week, never farther than t
 - **Businesses keep their hours:** errands are given and delivered only while they are open, and the owner tells you when an errand can wait until tomorrow.
 - **Fail an errand** and you owe the value of the goods, and that business gives you no work until you pay.
 - **Steal too much** and the guards come for you: three unpaid slips in one town, and they will be waiting.
+- **Too hard?** With Mod Configuration Menu you choose the time to do an errand, its pay, how often businesses ask, the trust and reputation they need, what a failure costs and when the guards come.
 
 ## Good to know
 
@@ -61,7 +62,7 @@ KCD2 Life has been played together with 47 other mods at once. These make a new 
 - **The KCD2 Cooking Mod:** cook your own meals. Buy the food with your wages and feed yourself.
 - **Realish Wounds and Realish Crime:** wounds and the law closer to the real thing, so a fight or a theft costs a nobody dearly.
 - **ldpotions:** more potions to brew, and more recipes for your new character to learn.
-- **Mod Configuration Menu:** settings in the game's menu. With it, you choose how long a month lasts.
+- **Mod Configuration Menu:** settings in the game's menu: how long a month lasts, what work pays and teaches, how hungry and tired it makes you, and how hard errands are.
 
 The full list is on [GitHub](https://github.com/vaiciant/kcd2-life/blob/main/mod/medieval_life/TESTED_MODS.md). Others should work too.
 
@@ -86,7 +87,7 @@ Do it when Henry is ready to hand over: save next to the wayfarer by the tavern 
 - Kingdom Come: Deliverance II 1.5
 - KCD2 Female Framework
 - KCD2 Male Framework
-- Optional: [Mod Configuration Menu](https://www.nexusmods.com/kingdomcomedeliverance2/mods/1423), to change the length of the months
+- Optional: [Mod Configuration Menu](https://www.nexusmods.com/kingdomcomedeliverance2/mods/1423), for the settings of the calendar, work and errands
 
 ## Source
 

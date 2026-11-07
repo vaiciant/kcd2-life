@@ -8,6 +8,8 @@
 -- goods are worth, or the money to buy them, and that business gives nothing more until it is
 -- paid. The journal has one quest per business, moved with tokens, and the dialog reads the
 -- variables below for the nearest employer (ml_order_dialog.xml).
+-- The settings change the pay, the 12 hours, the 7 days, the trust and points asked, the points lost and how many
+-- unpaid errands go to the guard (settings.lua).
 -- =============================================================================
 local ML = MedievalLife
 
@@ -85,6 +87,27 @@ for _, order in ipairs(ML.ORDERS) do
 	byId[order.id] = order
 end
 
+-- What the settings change.
+-- Days between two orders of a turn: days_between, or the setting.
+function Orders.Every()
+	return ML.Settings.Get("order_days")
+end
+
+-- Hours of the working day of the place an order ends at, to do it.
+function Orders.DeadlineHours()
+	return ML.Settings.Get("order_deadline")
+end
+
+-- What an order pays, in whole tenths of a groschen: with an economy mod, its pay, and the setting on top.
+function Orders.Pay(tenths)
+	return math.floor(ML.Economy.Money(tenths * ML.Settings.Factor("order_pay")) + 0.5)
+end
+
+-- The points of the panel that a kind asks for, with the setting.
+local function points(minimum)
+	return math.floor(minimum * ML.Settings.Factor("order_reputation") + 0.5)
+end
+
 local function siteByKey(key)
 	for _, site in ipairs(ML.JOB_SITES) do
 		if site.key == key then
@@ -135,7 +158,7 @@ local function firstDay(slot)
 	for i = 1, #slot do
 		seed = (seed * Orders.KEY_STEP + string.byte(slot, i)) % Orders.SEED_RANGE + 1
 	end
-	local every, sender = ML.ORDER_RULES.days_between, string.match(slot, "^(.-)" .. Orders.NEED_SUFFIX .. "$")
+	local every, sender = Orders.Every(), string.match(slot, "^(.-)" .. Orders.NEED_SUFFIX .. "$")
 	if not sender then
 		return mix(seed) % every + 1
 	end
@@ -148,7 +171,8 @@ end
 -- pickups together, both times trust_factor for each order that ran out, without a limit.
 local function trusted(key)
 	local trust, rules = ML.Store.Get(Orders.TRUST_KEY, {})[key] or {}, ML.ORDER_RULES
-	local factor = rules.trust_factor ^ math.min(trust.failed or 0, Orders.TRUST_FAILS_COUNTED)
+	-- The setting order_trust scales all of it: at 0 everything is trusted from the start.
+	local factor = rules.trust_factor ^ math.min(trust.failed or 0, Orders.TRUST_FAILS_COUNTED) * ML.Settings.Factor("order_trust")
 	local delivered, fetched = trust.delivered or 0, trust.fetched or 0
 	-- Or the work done for it: a steady hour counts whole, and a casual hour for casual_hours_weight.
 	local worked = (trust.steady_hours or 0) + (trust.casual_hours or 0) * rules.casual_hours_weight
@@ -171,7 +195,7 @@ end
 local function allowed(key)
 	local site, rules = siteByKey(key), ML.ORDER_RULES
 	local fetch, buy = trusted(key)
-	return fetch and ML.Reputation.Accepts(site, rules.rep_fetch), buy and ML.Reputation.Accepts(site, rules.rep_buy), fetch or buy
+	return fetch and ML.Reputation.Accepts(site, points(rules.rep_fetch)), buy and ML.Reputation.Accepts(site, points(rules.rep_buy)), fetch or buy
 end
 
 -- A force lasts until its order is taken, or until ml_order_trust: after that, the business asks
@@ -220,7 +244,7 @@ local function offerToday(key, day, turn)
 		local kind = forced.kind or (turn == Orders.NEED and (mix(seed) % 2 == 1 and "buy" or "fetch")) or nil
 		return choose(business, key, turn, seed, kind)
 	end
-	local place, every = firstDay(slotOf(key, turn)), ML.ORDER_RULES.days_between
+	local place, every = firstDay(slotOf(key, turn)), Orders.Every()
 	if day < place or (day - place) % every ~= 0 then
 		return nil
 	end
@@ -253,7 +277,7 @@ end
 
 -- Days until the next order of a turn: 1 is tomorrow.
 local function daysToNext(slot, day)
-	local place, every = firstDay(slot), ML.ORDER_RULES.days_between
+	local place, every = firstDay(slot), Orders.Every()
 	if day < place then
 		return place - day
 	end
@@ -297,7 +321,7 @@ local function stateFor(site, day, turn)
 		return Orders.STATE_NONE, 0
 	end
 	if not isForced(site.key, day, turn) then
-		if turn == Orders.SEND and not ML.Reputation.Accepts(site, ML.ORDER_RULES.rep_deliver) then
+		if turn == Orders.SEND and not ML.Reputation.Accepts(site, points(ML.ORDER_RULES.rep_deliver)) then
 			return Orders.STATE_LOW_POINTS, 0
 		end
 		local fetch, buy, earned = allowed(site.key)
@@ -339,8 +363,9 @@ end
 -- hour of the day now, and needs no calendar.
 local function dueTime(order)
 	local first, last = ML.Jobs.Day(siteByKey(endsAt(order)))
-	local hour, left, elapsed = Calendar.GetWorldHourOfDay(), ML.ORDER_RULES.deadline_hours, 0
-	for _ = 1, 30 do
+	local hour, left, elapsed = Calendar.GetWorldHourOfDay(), Orders.DeadlineHours(), 0
+	-- Up to three steps a day: with the longest setting, 72 hours, and a short working day, many days.
+	for _ = 1, 100 do
 		if hour < first then
 			elapsed, hour = elapsed + first - hour, first
 		elseif hour >= last then
@@ -351,12 +376,17 @@ local function dueTime(order)
 			elapsed, left, hour = elapsed + last - hour, left - (last - hour), last
 		end
 	end
-	return Calendar.GetWorldTime() + ML.ORDER_RULES.deadline_hours * Orders.HOUR_SECONDS
+	return Calendar.GetWorldTime() + Orders.DeadlineHours() * Orders.HOUR_SECONDS
 end
 
 -- An order taken before this version has no due time: then it is the hours of the clock, as it was.
 local function dueOf(taken)
 	return taken.due or taken.taken + ML.ORDER_RULES.deadline_hours * Orders.HOUR_SECONDS
+end
+
+-- The money to buy, with the profit of the setting.
+local function profit()
+	return ML.Economy.Money(ML.ORDER_RULES.buy_profit * ML.Settings.Factor("order_pay"))
 end
 
 -- An order that can be handed in at this site: with the goods, and fetched ones once picked up.
@@ -399,17 +429,19 @@ local function publishTurn(turn, site, day)
 	end
 	Variables.SetGlobal("ml_" .. turn .. "_state", state)
 	-- With an economy mod, the same offer saying its pay: the dialog has the offers of the turn again after them.
+	-- With the pay changed in the settings, the dialog goes to a set of its own, saying no amount, in the same order: the
+	-- slip says it.
 	local said = state == Orders.STATE_OFFER and byId[value].say or 0
-	if said > 0 and ML.Economy.active then
+	if said > 0 and ML.Economy.active and not ML.Settings.Changed("order_pay") then
 		said = said + ML.ORDER_OFFERS[turn]
 	end
 	Variables.SetGlobal("ml_" .. turn .. "_offer", said)
 	Variables.SetGlobal("ml_" .. turn .. "_wait", state == Orders.STATE_WAIT and value or 0)
-	-- The day the offer would be due, 0 today, 1 tomorrow, 2 the day after, and its kind: the business says it.
+	-- The day the offer would be due, 0 today, 1 tomorrow, 2 the day after, 3 later, with a longer time in the settings, and its kind: the business says it.
 	local order, dueDay, kind = state == Orders.STATE_OFFER and byId[value], 0, 0
 	if order then
 		local hours = Calendar.GetWorldHourOfDay() + (dueTime(order) - Calendar.GetWorldTime()) / Orders.HOUR_SECONDS
-		dueDay = math.min(math.floor(hours / 24), 2)
+		dueDay = math.min(math.floor(hours / 24), 3)
 		kind = order.kind == "fetch" and 1 or order.kind == "buy" and 2 or 0
 	end
 	Variables.SetGlobal("ml_" .. turn .. "_due", dueDay)
@@ -468,7 +500,7 @@ end
 -- its profit.
 local function moneyFor(goods, amount)
 	local rules = ML.ORDER_RULES
-	return math.ceil((ML.Economy.Price(goods) * amount * (goods.percent or rules.buy_percent) / 100 + ML.Economy.Money(rules.buy_profit)) / 10) * 10
+	return math.ceil((ML.Economy.Price(goods) * amount * (goods.percent or rules.buy_percent) / 100 + profit()) / 10) * 10
 end
 
 -- With the notice of the game: parted with.
@@ -624,14 +656,22 @@ local function slipPages(digits)
 		slipLine(parts, "@ml_order_slip_failed", string.format("%g ", record.debt / 10), "@ml_order_slip_gr")
 	else
 		-- The hour it runs out, from the hour of now: it can be tomorrow or, counting only working hours, the day after.
+		-- With a longer time in the settings, in so many days.
 		local left = ((record.due or record.taken + ML.ORDER_RULES.deadline_hours * Orders.HOUR_SECONDS) - Calendar.GetWorldTime()) / Orders.HOUR_SECONDS
 		local due = Calendar.GetWorldHourOfDay() + math.max(left, 0)
-		local day = due >= 48 and "@ml_order_slip_day_after" or due >= 24 and "@ml_order_slip_tomorrow" or "@ml_order_slip_today"
+		local days = math.floor(due / 24)
 		due = due % 24
-		slipLine(parts, "@ml_order_slip_due", day, string.format(" %02d:%02d", math.floor(due), math.floor(due % 1 * 60)))
+		local at = string.format(" %02d:%02d", math.floor(due), math.floor(due % 1 * 60))
+		-- The book translates each part with @ as a whole key, so the number goes in a part of its own.
+		if days >= 3 then
+			slipLine(parts, "@ml_order_slip_due", "@ml_order_slip_in", " " .. days .. " ", "@ml_order_slip_days_at", at)
+		else
+			slipLine(parts, "@ml_order_slip_due", days == 2 and "@ml_order_slip_day_after" or days == 1 and "@ml_order_slip_tomorrow" or "@ml_order_slip_today", at)
+		end
 	end
 	if order.kind ~= "buy" then
-		slipLine(parts, "@ml_order_slip_pay", string.format("%g ", ML.Economy.Money(order.pay) / 10), "@ml_order_slip_gr")
+		-- What it pays now: the settings may have changed since it was taken.
+		slipLine(parts, "@ml_order_slip_pay", string.format("%g ", Orders.Pay(order.pay) / 10), "@ml_order_slip_gr")
 	end
 	parts[#parts + 1] = "<newpage/>"
 	for _, part in ipairs(right) do
@@ -784,7 +824,7 @@ function Orders.Deliver()
 	take(goods.goods, amount)
 	dropSlip(taken.slip)
 	tell(order, "done")
-	give(ML.Life.COIN_ITEM, ML.Economy.Money(order.pay))
+	give(ML.Life.COIN_ITEM, Orders.Pay(order.pay))
 	local business = siteByKey(order.business)
 	local before = ML.Reputation.Points(business)
 	ML.Reputation.AddPoints(business, ML.ORDER_RULES.done_points)
@@ -930,7 +970,9 @@ local function checkCrime(key)
 			unpaid[#unpaid + 1] = digits
 		end
 	end
-	if #unpaid < ML.ORDER_RULES.crime_fails then
+	-- The setting order_guard, crime_fails by default: 0 is never.
+	local limit = ML.Settings.Get("order_guard")
+	if limit == 0 or #unpaid < limit then
 		return
 	end
 	local debts = ML.Store.Get(Orders.DEBTS_KEY, {})
@@ -1028,7 +1070,7 @@ local function fail(slot, taken)
 		end
 		tell(order, order.kind == "fetch" and not taken.picked and "lost" or "failed")
 		addTrust(key, "failed")
-		ML.Reputation.AddPoints(siteByKey(key), -ML.ORDER_RULES.fail_points)
+		ML.Reputation.AddPoints(siteByKey(key), -ML.Settings.Get("order_fail_points"))
 		ML.Log("order failed", key, order.kind, taken.id, "debt=", debts[key])
 	end
 	notice(text)
@@ -1151,7 +1193,7 @@ function Orders.Status()
 		local fetch, buy = trusted(key)
 		local fetchNow, buyNow = allowed(key)
 		ML.Log("orders trust", key, trust[key] or {}, "fetch=", fetch, "buy=", buy, "with points fetch=", fetchNow, "buy=", buyNow,
-			"deliver points=", ML.Reputation.Accepts(siteByKey(key), ML.ORDER_RULES.rep_deliver))
+			"deliver points=", ML.Reputation.Accepts(siteByKey(key), points(ML.ORDER_RULES.rep_deliver)))
 		for _, turn in ipairs({ Orders.SEND, Orders.NEED }) do
 			local slot, today = slotOf(key, turn), offerToday(key, day, turn)
 			local order = today and byId[today]

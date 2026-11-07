@@ -16,7 +16,7 @@
 				</SelectedSouls>
 				<Decision Name="dec_order" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
 					<Sequences>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_send_state') &gt; 0" EndType="Decision" Name="seq_order_ask">
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_send_state') &gt; 0 &amp; gvar('ml_order_pay_custom') != 1" EndType="Decision" Name="seq_order_ask">
 							<UiPrompt StringName="ui_ml_order_ask" />
 							<Elements>
 								<Response Role="HENRY" ReferenceLength="2.8">
@@ -1012,7 +1012,7 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_send_due') &gt;= 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_2">
+												<Sequence EntryCondition="gvar('ml_send_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_2">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -1020,6 +1020,21 @@
 														</Response>
 														<Response Role="role_ml_employer">
 															<Text StringName="ml_order_take_this_later" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_send_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_3">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_this_days" />
 															<Commands>
 																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
 																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
@@ -2250,7 +2265,7 @@
 								</Sequences>
 							</Decision>
 						</Sequence>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_need_state') &gt; 0" EndType="Decision" Name="seq_need_ask">
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_need_state') &gt; 0 &amp; gvar('ml_order_pay_custom') != 1" EndType="Decision" Name="seq_need_ask">
 							<UiPrompt StringName="ui_ml_order_need_ask" />
 							<Elements>
 								<Response Role="HENRY" ReferenceLength="3.17">
@@ -3249,7 +3264,7 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') &gt;= 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_2">
+												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_2">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -3257,6 +3272,17 @@
 														</Response>
 														<Response Role="role_ml_employer">
 															<Text StringName="ml_order_fetch_later" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_3">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_fetch_days" />
 														</Response>
 													</Elements>
 												</Sequence>
@@ -3290,7 +3316,7 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') &gt;= 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_2">
+												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_2">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -3298,6 +3324,21 @@
 														</Response>
 														<Response Role="role_ml_employer">
 															<Text StringName="ml_order_take_money_later" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_3">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_money_days" />
 															<Commands>
 																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
 																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
@@ -4533,6 +4574,3348 @@
 										</Elements>
 									</Sequence>
 									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 176" EndType="GoTo" GoToDecision="dec_need_take" Name="seq_need_offer_176">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_buy_offer" />
+											</Response>
+										</Elements>
+									</Sequence>
+								</Sequences>
+							</Decision>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_send_state') &gt; 0 &amp; gvar('ml_order_pay_custom') == 1" EndType="Decision" Name="seq_order_ask_plain">
+							<UiPrompt StringName="ui_ml_order_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.8">
+									<Text StringName="doml_henry_jenze_mne_na_t_72lu" />
+								</Response>
+							</Elements>
+							<Decision Name="dec_send_open_plain" Autoselect="true" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+								<Sequences>
+									<Sequence EntryCondition="gvar('ml_send_state') == 2" EndType="EndDialogue" Name="seq_send_plain_have">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_have" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 0" EndType="Decision" Name="seq_send_plain_debt">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt" />
+											</Response>
+										</Elements>
+										<Decision Name="dec_send_plain_pay" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+											<Sequences>
+												<Sequence EntryCondition="gvar('ml_order_can_pay') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.PayDebt()" Name="seq_send_plain_pay">
+													<UiPrompt StringName="ui_ml_order_pay" />
+													<Elements>
+														<Response Role="HENRY" />
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_paid" />
+															<Commands>
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_order_can_pay') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.ShowDebt()" Name="seq_send_plain_pay_short">
+													<UiPrompt StringName="ui_ml_order_pay" />
+													<Elements>
+														<Response Role="HENRY" />
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_short" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EndType="EndDialogue" Name="seq_send_plain_pay_later">
+													<UiPrompt StringName="ui_ml_never_mind" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+											</Sequences>
+										</Decision>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 1" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_1">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_1" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 2" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_2">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_2" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 3" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_3">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_3" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 4" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_4">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_4" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 5" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_5">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_5" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 6" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_6">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_6" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 7" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_7">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_7" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 8" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_8">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_8" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 9" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_9">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_9" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 10" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_10">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_10" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 11" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_11">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_11" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 12" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_12">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_12" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 13" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_13">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_13" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 14" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_14">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_14" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 15" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_15">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_15" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 16" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_16">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_16" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 17" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_17">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_17" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 18" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_18">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_18" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 19" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_19">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_19" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 20" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_20">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_20" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 21" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_21">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_21" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 22" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_22">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_22" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 23" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_23">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_23" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 24" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_24">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_24" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 25" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_25">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_25" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 26" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_26">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_26" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 27" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_27">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_27" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 28" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_28">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_28" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 29" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_29">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_29" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 30" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_30">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_30" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 31" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_31">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_31" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 32" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_32">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_32" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 33" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_33">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_33" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 34" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_34">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_34" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 35" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_35">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_35" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 36" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_36">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_36" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 37" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_37">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_37" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 38" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_38">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_38" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 39" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_39">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_39" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 40" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_40">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_40" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 41" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_41">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_41" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 42" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_42">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_42" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 43" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_43">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_43" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 44" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_44">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_44" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 45" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_45">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_45" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 46" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_46">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_46" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 47" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_47">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_47" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 48" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_48">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_48" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 49" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_49">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_49" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 50" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_50">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_50" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 51" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_51">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_51" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 52" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_52">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_52" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 53" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_53">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_53" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 54" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_54">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_54" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 55" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_55">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_55" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 56" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_56">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_56" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 57" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_57">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_57" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 58" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_58">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_58" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 60" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_60">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_60" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 61" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_61">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_61" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 62" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_62">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_62" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 63" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_63">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_63" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 64" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_64">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_64" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 65" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_65">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_65" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 66" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_66">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_66" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 67" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_67">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_67" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 68" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_68">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_68" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 69" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_69">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_69" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 70" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_70">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_70" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 72" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_72">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_72" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 73" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_73">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_73" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 75" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_75">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_75" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 76" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_76">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_76" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 77" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_77">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_77" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 79" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_79">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_79" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 80" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_80">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_80" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 82" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_82">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_82" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 84" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_84">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_84" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 85" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_85">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_85" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 86" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_86">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_86" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 87" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_87">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_87" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 88" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_88">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_88" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 90" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_90">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_90" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 92" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_92">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_92" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 95" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_95">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_95" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 96" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_96">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_96" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 100" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_100">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_100" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 104" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_104">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_104" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 105" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_105">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_105" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 108" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_108">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_108" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 109" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_109">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_109" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 110" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_110">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_110" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 114" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_114">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_114" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 115" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_115">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_115" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 120" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_120">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_120" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 122" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_122">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_122" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 124" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_124">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_124" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 125" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_125">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_125" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 127" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_127">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_127" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 128" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_128">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_128" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 130" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_130">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_130" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 136" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_136">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_136" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 141" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_141">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_141" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 146" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_146">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_146" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 150" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_150">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_150" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 151" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_151">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_151" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 156" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_156">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_156" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 158" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_158">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_158" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 160" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_160">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_160" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 171" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_171">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_171" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 180" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_180">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_180" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 200" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_200">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_200" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 218" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_218">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_218" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 228" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_228">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_228" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 272" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_272">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_272" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 300" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_300">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_300" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 315" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_315">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_315" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 3 &amp; gvar('ml_order_debt') == 436" EndType="GoTo" GoToDecision="dec_send_plain_pay" Name="seq_send_plain_debt_436">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_436" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 6" EndType="EndDialogue" Name="seq_send_plain_distrust">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_casual_distrust" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 8" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.ShowHours()" Name="seq_send_plain_closed">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_work_closed" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 9" EndType="EndDialogue" Name="seq_send_plain_late">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_late" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 4 &amp; gvar('ml_send_wait') == 1" EndType="EndDialogue" Name="seq_send_plain_wait_1">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_1" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 4 &amp; gvar('ml_send_wait') == 2" EndType="EndDialogue" Name="seq_send_plain_wait_2">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_2" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 4 &amp; gvar('ml_send_wait') == 3" EndType="EndDialogue" Name="seq_send_plain_wait_3">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_3" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 4 &amp; gvar('ml_send_wait') == 4" EndType="EndDialogue" Name="seq_send_plain_wait_4">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_4" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 4 &amp; gvar('ml_send_wait') == 5" EndType="EndDialogue" Name="seq_send_plain_wait_5">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_5" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 4 &amp; gvar('ml_send_wait') == 6" EndType="EndDialogue" Name="seq_send_plain_wait_6">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_6" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 4 &amp; gvar('ml_send_wait') == 7" EndType="EndDialogue" Name="seq_send_plain_wait_7">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_7" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 4 &amp; gvar('ml_send_wait') &gt; 7" EndType="EndDialogue" Name="seq_send_plain_wait_later">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_later" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 1" EndType="Decision" Name="seq_send_plain_offer_1">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_butcher_near_plain" />
+											</Response>
+										</Elements>
+										<Decision Name="dec_send_plain_take" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+											<Sequences>
+												<Sequence EntryCondition="gvar('ml_send_due') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_0">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_this" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_send_due') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_1">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_this_tomorrow" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_send_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_2">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_this_later" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_send_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_3">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_this_days" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EndType="EndDialogue" Name="seq_send_plain_decline">
+													<UiPrompt StringName="ui_ml_order_decline" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+											</Sequences>
+										</Decision>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 2" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_2">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_tailor_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 3" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_3">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_apothecary_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 4" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_4">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_scribe_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 5" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_5">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_merchant_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 6" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_6">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_carpenter_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 7" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_7">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_jakesh_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 8" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_8">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_inn_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 9" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_9">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_bathhouse_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 10" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_10">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_olbram_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 11" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_11">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_francis_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 12" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_12">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_zvyest_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 13" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_13">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_tachov_tavern_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 14" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_14">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_tachov_smithy_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 15" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_15">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_tachov_greengrocer_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 16" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_16">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_smithy_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 17" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_17">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_saddler_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 18" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_18">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_stables_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 19" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_19">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_archery_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 20" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_20">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_baths_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 21" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_21">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_kitchen_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 22" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_22">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_scribe_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 23" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_23">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_carpenter_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 24" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_24">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_slatego_greengrocer_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 25" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_25">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_krenovy_farm_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 26" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_26">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_schdiar_farm_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 27" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_27">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_tavern_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 28" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_28">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_tavern_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 29" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_29">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_butcher_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 30" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_30">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_tailor_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 31" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_31">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_apothecary_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 32" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_32">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_scribe_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 33" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_33">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_merchant_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 34" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_34">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_carpenter_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 35" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_35">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_jakesh_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 36" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_36">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_bathhouse_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 37" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_37">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_olbram_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 38" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_38">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_francis_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 39" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_39">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_zvyest_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 40" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_40">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_saddler_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 41" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_41">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_slavek_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 42" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_42">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_food_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 43" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_43">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_shoemaker_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 44" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_44">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_stables_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 45" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_45">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_kitchen_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 46" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_46">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_bozhena_hut_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 47" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_47">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_inn_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 48" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_48">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_tachov_smithy_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 49" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_49">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_tachov_greengrocer_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 50" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_50">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_vidlak_gamekeeper_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 51" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_51">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_vidlak_tanner_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 52" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_52">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_kopanina_herbalist_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 53" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_53">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_tachov_tavern_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 54" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_54">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_slavek_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 55" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_55">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_food_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 56" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_56">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_shoemaker_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 57" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_57">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_stables_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 58" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_58">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_kitchen_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 59" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_59">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_kreyzl_mill_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 60" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_60">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_woodcutters_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 61" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_61">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nebakov_mill_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 62" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_62">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nebakov_gamekeeper_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 63" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_63">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nomads_fence_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 64" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_64">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nomads_merchant_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 65" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_65">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nomads_horses_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 66" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_66">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nomads_herbalist_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 67" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_67">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_semine_saddler_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 68" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_68">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_saddler_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 69" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_69">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_stables_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 70" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_70">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_archery_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 71" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_71">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_baths_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 72" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_72">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_kitchen_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 73" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_73">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_scribe_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 74" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_74">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_carpenter_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 75" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_75">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_castle_smithy_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 76" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_76">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_woodcutters_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 77" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_77">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_kreyzl_mill_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 78" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_78">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nebakov_gamekeeper_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 79" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_79">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nebakov_mill_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 80" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_80">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_vidlak_tanner_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 81" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_81">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_vidlak_gamekeeper_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 82" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_82">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nomads_merchant_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 83" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_83">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nomads_horses_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 84" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_84">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nomads_herbalist_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 85" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_85">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_nomads_fence_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 86" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_86">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_krenovy_farm_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_send_state') == 1 &amp; gvar('ml_send_offer') == 87" EndType="GoTo" GoToDecision="dec_send_plain_take" Name="seq_send_plain_offer_87">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_offer_slatego_greengrocer_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+								</Sequences>
+							</Decision>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_need_state') &gt; 0 &amp; gvar('ml_order_pay_custom') == 1" EndType="Decision" Name="seq_need_ask_plain">
+							<UiPrompt StringName="ui_ml_order_need_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="3.17">
+									<Text StringName="os_k_henry_proste_bych_ra_SqDb" />
+								</Response>
+							</Elements>
+							<Decision Name="dec_need_open_plain" Autoselect="true" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+								<Sequences>
+									<Sequence EntryCondition="gvar('ml_need_state') == 2" EndType="EndDialogue" Name="seq_need_plain_have">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_have" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 0" EndType="Decision" Name="seq_need_plain_debt">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt" />
+											</Response>
+										</Elements>
+										<Decision Name="dec_need_plain_pay" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+											<Sequences>
+												<Sequence EntryCondition="gvar('ml_order_can_pay') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.PayDebt()" Name="seq_need_plain_pay">
+													<UiPrompt StringName="ui_ml_order_pay" />
+													<Elements>
+														<Response Role="HENRY" />
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_paid" />
+															<Commands>
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_order_can_pay') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.ShowDebt()" Name="seq_need_plain_pay_short">
+													<UiPrompt StringName="ui_ml_order_pay" />
+													<Elements>
+														<Response Role="HENRY" />
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_short" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EndType="EndDialogue" Name="seq_need_plain_pay_later">
+													<UiPrompt StringName="ui_ml_never_mind" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+											</Sequences>
+										</Decision>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 1" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_1">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_1" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 2" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_2">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_2" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 3" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_3">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_3" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 4" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_4">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_4" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 5" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_5">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_5" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 6" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_6">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_6" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 7" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_7">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_7" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 8" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_8">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_8" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 9" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_9">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_9" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 10" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_10">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_10" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 11" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_11">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_11" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 12" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_12">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_12" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 13" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_13">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_13" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 14" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_14">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_14" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 15" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_15">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_15" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 16" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_16">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_16" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 17" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_17">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_17" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 18" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_18">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_18" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 19" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_19">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_19" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 20" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_20">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_20" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 21" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_21">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_21" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 22" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_22">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_22" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 23" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_23">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_23" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 24" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_24">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_24" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 25" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_25">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_25" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 26" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_26">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_26" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 27" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_27">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_27" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 28" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_28">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_28" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 29" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_29">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_29" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 30" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_30">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_30" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 31" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_31">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_31" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 32" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_32">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_32" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 33" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_33">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_33" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 34" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_34">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_34" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 35" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_35">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_35" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 36" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_36">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_36" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 37" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_37">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_37" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 38" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_38">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_38" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 39" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_39">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_39" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 40" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_40">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_40" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 41" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_41">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_41" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 42" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_42">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_42" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 43" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_43">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_43" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 44" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_44">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_44" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 45" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_45">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_45" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 46" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_46">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_46" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 47" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_47">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_47" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 48" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_48">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_48" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 49" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_49">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_49" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 50" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_50">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_50" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 51" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_51">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_51" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 52" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_52">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_52" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 53" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_53">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_53" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 54" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_54">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_54" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 55" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_55">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_55" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 56" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_56">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_56" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 57" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_57">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_57" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 58" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_58">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_58" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 60" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_60">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_60" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 61" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_61">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_61" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 62" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_62">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_62" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 63" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_63">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_63" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 64" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_64">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_64" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 65" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_65">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_65" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 66" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_66">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_66" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 67" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_67">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_67" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 68" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_68">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_68" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 69" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_69">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_69" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 70" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_70">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_70" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 72" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_72">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_72" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 73" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_73">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_73" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 75" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_75">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_75" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 76" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_76">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_76" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 77" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_77">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_77" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 79" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_79">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_79" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 80" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_80">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_80" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 82" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_82">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_82" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 84" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_84">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_84" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 85" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_85">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_85" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 86" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_86">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_86" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 87" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_87">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_87" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 88" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_88">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_88" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 90" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_90">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_90" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 92" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_92">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_92" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 95" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_95">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_95" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 96" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_96">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_96" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 100" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_100">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_100" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 104" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_104">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_104" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 105" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_105">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_105" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 108" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_108">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_108" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 109" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_109">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_109" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 110" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_110">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_110" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 114" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_114">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_114" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 115" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_115">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_115" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 120" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_120">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_120" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 122" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_122">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_122" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 124" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_124">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_124" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 125" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_125">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_125" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 127" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_127">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_127" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 128" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_128">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_128" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 130" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_130">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_130" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 136" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_136">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_136" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 141" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_141">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_141" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 146" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_146">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_146" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 150" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_150">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_150" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 151" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_151">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_151" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 156" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_156">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_156" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 158" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_158">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_158" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 160" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_160">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_160" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 171" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_171">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_171" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 180" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_180">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_180" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 200" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_200">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_200" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 218" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_218">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_218" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 228" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_228">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_228" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 272" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_272">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_272" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 300" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_300">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_300" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 315" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_315">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_315" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 3 &amp; gvar('ml_order_debt') == 436" EndType="GoTo" GoToDecision="dec_need_plain_pay" Name="seq_need_plain_debt_436">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_debt_436" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 6" EndType="EndDialogue" Name="seq_need_plain_distrust">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_casual_distrust" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 8" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.ShowHours()" Name="seq_need_plain_closed">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_work_closed" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 9" EndType="EndDialogue" Name="seq_need_plain_late">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_late" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 5" EndType="EndDialogue" Name="seq_need_plain_untrusted">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_untrusted" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 7" EndType="EndDialogue" Name="seq_need_plain_lost_trust">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_lost_trust" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 4 &amp; gvar('ml_need_wait') == 1" EndType="EndDialogue" Name="seq_need_plain_wait_1">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_1" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 4 &amp; gvar('ml_need_wait') == 2" EndType="EndDialogue" Name="seq_need_plain_wait_2">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_2" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 4 &amp; gvar('ml_need_wait') == 3" EndType="EndDialogue" Name="seq_need_plain_wait_3">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_3" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 4 &amp; gvar('ml_need_wait') == 4" EndType="EndDialogue" Name="seq_need_plain_wait_4">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_4" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 4 &amp; gvar('ml_need_wait') == 5" EndType="EndDialogue" Name="seq_need_plain_wait_5">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_5" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 4 &amp; gvar('ml_need_wait') == 6" EndType="EndDialogue" Name="seq_need_plain_wait_6">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_6" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 4 &amp; gvar('ml_need_wait') == 7" EndType="EndDialogue" Name="seq_need_plain_wait_7">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_7" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 4 &amp; gvar('ml_need_wait') &gt; 7" EndType="EndDialogue" Name="seq_need_plain_wait_later">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_wait_later" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 1" EndType="Decision" Name="seq_need_plain_offer_1">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_butcher_near_plain" />
+											</Response>
+										</Elements>
+										<Decision Name="dec_need_plain_take" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+											<Sequences>
+												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_0">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_1">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_fetch_tomorrow" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_2">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_fetch_later" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_3">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_fetch_days" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_0">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_money" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_1">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_money_tomorrow" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_2">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_money_later" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_3">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_money_days" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EndType="EndDialogue" Name="seq_need_plain_decline">
+													<UiPrompt StringName="ui_ml_order_decline" />
+													<Elements>
+														<Response Role="HENRY" />
+													</Elements>
+												</Sequence>
+											</Sequences>
+										</Decision>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 2" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_2">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_tailor_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 3" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_3">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_apothecary_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 4" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_4">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_scribe_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 5" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_5">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_merchant_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 6" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_6">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_carpenter_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 7" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_7">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_jakesh_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 8" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_8">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_inn_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 9" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_9">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_bathhouse_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 10" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_10">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_olbram_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 11" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_11">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_francis_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 12" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_12">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_zvyest_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 13" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_13">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_tachov_tavern_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 14" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_14">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_tachov_smithy_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 15" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_15">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_tachov_greengrocer_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 16" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_16">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_smithy_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 17" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_17">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_saddler_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 18" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_18">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_stables_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 19" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_19">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_archery_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 20" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_20">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_baths_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 21" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_21">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_kitchen_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 22" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_22">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_scribe_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 23" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_23">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_carpenter_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 24" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_24">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_slatego_greengrocer_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 25" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_25">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_krenovy_farm_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 26" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_26">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_schdiar_farm_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 27" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_27">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_tavern_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 28" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_28">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_tavern_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 29" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_29">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_butcher_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 30" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_30">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_tailor_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 31" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_31">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_apothecary_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 32" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_32">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_scribe_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 33" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_33">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_merchant_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 34" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_34">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_carpenter_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 35" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_35">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_jakesh_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 36" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_36">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_bathhouse_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 37" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_37">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_olbram_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 38" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_38">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_francis_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 39" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_39">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_zvyest_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 40" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_40">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_saddler_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 41" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_41">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_slavek_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 42" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_42">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_food_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 43" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_43">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_shoemaker_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 44" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_44">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_stables_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 45" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_45">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_kitchen_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 46" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_46">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_bozhena_hut_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 47" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_47">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_inn_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 48" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_48">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_tachov_smithy_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 49" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_49">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_tachov_greengrocer_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 50" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_50">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_vidlak_gamekeeper_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 51" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_51">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_vidlak_tanner_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 52" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_52">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_kopanina_herbalist_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 53" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_53">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_tachov_tavern_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 54" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_54">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_slavek_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 55" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_55">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_food_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 56" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_56">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_shoemaker_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 57" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_57">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_stables_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 58" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_58">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_kitchen_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 59" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_59">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_kreyzl_mill_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 60" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_60">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_woodcutters_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 61" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_61">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nebakov_mill_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 62" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_62">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nebakov_gamekeeper_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 63" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_63">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nomads_fence_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 64" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_64">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nomads_merchant_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 65" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_65">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nomads_horses_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 66" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_66">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nomads_herbalist_far_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 67" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_67">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_semine_saddler_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 68" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_68">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_saddler_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 69" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_69">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_stables_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 70" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_70">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_archery_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 71" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_71">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_baths_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 72" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_72">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_kitchen_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 73" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_73">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_scribe_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 74" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_74">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_carpenter_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 75" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_75">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_castle_smithy_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 76" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_76">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_woodcutters_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 77" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_77">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_kreyzl_mill_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 78" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_78">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nebakov_gamekeeper_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 79" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_79">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nebakov_mill_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 80" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_80">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_vidlak_tanner_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 81" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_81">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_vidlak_gamekeeper_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 82" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_82">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nomads_merchant_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 83" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_83">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nomads_horses_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 84" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_84">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nomads_herbalist_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 85" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_85">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_nomads_fence_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 86" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_86">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_krenovy_farm_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 87" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_87">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_order_fetch_offer_slatego_greengrocer_near_plain" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_need_state') == 1 &amp; gvar('ml_need_offer') == 88" EndType="GoTo" GoToDecision="dec_need_plain_take" Name="seq_need_plain_offer_88">
 										<Elements>
 											<Response Role="role_ml_employer">
 												<Text StringName="ml_order_buy_offer" />

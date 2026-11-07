@@ -18,8 +18,20 @@
 				</SelectedSouls>
 				<Decision Name="dec_root" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
 					<Sequences>
+						<!-- With the pay changed in the settings the terms say no wage, and go on in the same decision. -->
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_custom">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_custom" />
+								</Response>
+							</Elements>
+						</Sequence>
 						<!-- With an economy mod the terms say its wage, and go on in the same decision. -->
-						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_economy') == 1" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_economy">
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_economy') == 1 &amp; gvar('ml_work_pay_custom') != 1" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_economy">
 							<UiPrompt StringName="ui_ml_job_ask" />
 							<Elements>
 								<Response Role="HENRY" ReferenceLength="2.73">
@@ -30,7 +42,7 @@
 								</Response>
 							</Elements>
 						</Sequence>
-						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_economy') != 1" EndType="Decision" Name="seq_job_ask">
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_economy') != 1 &amp; gvar('ml_work_pay_custom') != 1" EndType="Decision" Name="seq_job_ask">
 							<UiPrompt StringName="ui_ml_job_ask" />
 							<Elements>
 								<Response Role="HENRY" ReferenceLength="2.73">

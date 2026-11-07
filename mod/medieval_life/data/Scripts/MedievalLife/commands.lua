@@ -197,6 +197,10 @@ function Commands.Compass(line)
 	ML.Log("compass offset", ML.BedMarker.BEARING_OFFSET)
 end
 
+function Commands.Settings(line)
+	ML.Settings.Report(stripQuotes(line))
+end
+
 -- Moves whole days forward. Those days do not count as absences.
 function Commands.Days(line)
 	local days = tonumber(stripQuotes(line)) or 1
@@ -462,6 +466,7 @@ Commands.DEVELOPER = {
 	{ "ml_rep_panel", "MedievalLife.Commands.RepPanel(%line)", "Test S4: GetReputation and the panel of the rows with that text" },
 	{ "ml_rep_chain", "MedievalLife.Commands.RepChain(%line)", "Test S4: a faction and every one above it" },
 	{ "ml_rep_faction", "MedievalLife.Commands.RepFaction(%line)", "Test S4: applies a row to a faction, like ml_rep_faction <faction> ml_rep_up_100 1" },
+	{ "ml_settings", "MedievalLife.Commands.Settings(%line)", "Test shortcut: the settings of this save, or changes one as the menu does, like ml_settings order_deadline 24" },
 	{ "ml_orders", "MedievalLife.Orders.Status()", "Test F6: orders of today, taken orders and debts" },
 	{ "ml_order_force", "MedievalLife.Commands.OrderForce(%line)", "Test F6: that business gives its order today, like ml_order_force apothecary, or apothecary fetch, or apothecary buy" },
 	{ "ml_order_expire", "MedievalLife.Orders.Expire()", "Test F6: the taken orders run out at the next tick" },

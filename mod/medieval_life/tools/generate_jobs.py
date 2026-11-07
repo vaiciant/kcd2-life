@@ -204,6 +204,8 @@ def write_lua(mod_dir, data, sites, stats):
 		secondary = "{s["secondary"]}",
 		secondary_is_stat = {flag(s["secondary"])},
 		summary = "@ml_work_done_{s["main"]}_{s["secondary"]}_",
+		main_text = "@{game_key(s["main"])}",
+		secondary_text = "@{game_key(s["secondary"])}",
 		steady = {"true" if s.get("steady") else "false"},
 		steady_summary = "@ml_shift_done_{s["main"]}_{s["secondary"]}_",{bed(s)}{requires(s)}{hours(s)}{rent(s)}
 	}},
@@ -264,14 +266,23 @@ def write_storm(mod_dir, sites):
     edit(mod_dir / "data/Libs/Storm/roles/medieval_life.xml", change)
 
 
+SKILL_KEYS = {}
+
+
+def game_key(name):
+    """The key of the text of a skill or a stat in the game. skill.xml gives the one of each skill: the one of
+    horse_riding is ui_skill_horse_whispering. jobs.lua puts it in the summary of work when the settings change the pay."""
+    if not SKILL_KEYS:
+        SKILL_KEYS.update(re.findall(r'skill_name="([^"]+)"[^>]*ui_string_name="([^"]+)"', read(TABLES / "skill.xml")))
+    return SKILL_KEYS.get(name, f"ui_stat_{name}")
+
+
 def game_names(folder):
     """The names of the skills and stats, as the game shows them."""
     pak = zipfile.ZipFile(GAME / "Localization" / f"{folder}.pak")
     text = pak.read("text_ui_soul.xml").decode("utf-8", "replace")
     rows = dict(re.findall(r"<Row><Cell>(ui_(?:skill|stat)_[a-z_]+)</Cell><Cell>[^<]*</Cell><Cell>([^<]*)</Cell></Row>", text))
-    # skill.xml gives the text of each skill: the one of horse_riding is ui_skill_horse_whispering.
-    skills = dict(re.findall(r'skill_name="([^"]+)"[^>]*ui_string_name="([^"]+)"', read(TABLES / "skill.xml")))
-    return lambda name: rows[skills[name]] if name in skills else rows[f"ui_stat_{name}"]
+    return lambda name: rows[game_key(name)]
 
 
 def summaries(data, sites, folder):
