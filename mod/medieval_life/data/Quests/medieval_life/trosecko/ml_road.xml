@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- The road to Kuttenberg for the new character. The game goes there only with the coachman of the caravan camp
+	     by Slatejov, who sells the ride in a dialog and switches the level. His camp, the profile caravanCamp_slatejov_camp
+	     with him, his horses and the point on the map, streams only once Henry ends the quest at Trosky castle
+	     (vezniNaTroskach, caravancamp_slatejov.xml of the game). A new life can start long before, so this streams the same
+	     profile while the new character plays, and the game's own node still streams it for Henry when his story gets there.
+	     It hears the tokens of ml_map_beds: the one that reaches the new character on every load, when the life begins and
+	     on ml_switch to it, and the one that reaches Henry on ml_switch to him and on ml_uninstall (bed_marker.lua).
+	     -->
+	<Skald>
+		<Gameplay Name="ml_road">
+			<Nodes>
+				<ObjectProperties Name="henry" PositionY="0" PositionX="-900" DeclaringType="wh::rpgmodule::I_Soul">
+					<Asset Name="I_Soul" Alias="player" />
+				</ObjectProperties>
+				<ObjectProperties Name="new_life" PositionY="200" PositionX="-900" DeclaringType="wh::rpgmodule::I_Soul">
+					<Asset Name="I_Soul" Alias="new_life" />
+				</ObjectProperties>
+				<State Name="always_on" PositionY="-150" PositionX="-900" TypeT="bool">
+					<Constant Name="DefaultValue" Value="true" />
+				</State>
+				<Function Name="life_descriptor" PositionY="200" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="1a3b05f8-46c2-50c5-854b-c053ed8853f1" />
+					<Constant Name="Amount" Value="1" />
+				</Function>
+				<ItemDescriptorTrigger Name="life_token" PositionY="200" PositionX="-300">
+					<Edge From="new_life.Inventory" To="Inventory" />
+					<Edge From="life_descriptor.ItemDescriptor" To="ItemDescriptor" />
+					<Edge From="always_on.State" To="IsActive" />
+				</ItemDescriptorTrigger>
+				<Function Name="henry_descriptor" PositionY="500" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
+					<Constant Name="ItemClass" Value="f37cf988-4b03-58f4-b0ac-a0a34eadfbce" />
+					<Constant Name="Amount" Value="1" />
+				</Function>
+				<ItemDescriptorTrigger Name="henry_token" PositionY="500" PositionX="-300">
+					<Edge From="henry.Inventory" To="Inventory" />
+					<Edge From="henry_descriptor.ItemDescriptor" To="ItemDescriptor" />
+					<Edge From="always_on.State" To="IsActive" />
+				</ItemDescriptorTrigger>
+				<State Name="road_open" PositionY="300" PositionX="0" TypeT="bool">
+					<Constant Name="DefaultValue" Value="false" />
+					<Edge From="life_token.OnAcquire" To="SetTrue" />
+					<Edge From="henry_token.OnAcquire" To="SetFalse" />
+				</State>
+				<Layer Name="caravan_camp" PositionY="300" PositionX="300">
+					<Asset Name="Profiles" Alias="caravan_camp" />
+					<Edge From="road_open.State" To="IsActive" />
+				</Layer>
+			</Nodes>
+			<Assets>
+				<ProfileAsset Name="caravan_camp" AssetProfiles="caravanCamp_slatejov_camp" />
+				<SoulAsset Name="player" SharedSoulGuids="4c2dcffb-dea1-6263-72d7-b39f4db2d8b5" />
+				<SoulAsset Name="new_life" SharedSoulGuids="e9f088ff-48e3-5fa1-b733-80504a56d1dc" />
+			</Assets>
+			<Text Text="ml_road" />
+		</Gameplay>
+	</Skald>
+</Database>

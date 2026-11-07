@@ -10,6 +10,7 @@
 			<Definitions>
 				<Definition File="trosecko/ml_new_life.xml" />
 				<Definition File="trosecko/ml_story.xml" />
+				<Definition File="trosecko/ml_road.xml" />
 				<Definition File="trosecko/ml_clear_map.xml" />
 				<Definition File="trosecko/ml_work.xml" />
 				<Definition File="trosecko/ml_weapons.xml" />
@@ -68,6 +69,7 @@
 				</ml_clear_map>
 				<ml_work Name="ml_work" PositionY="400" PositionX="0" />
 				<ml_story Name="ml_story" PositionY="500" PositionX="0" />
+				<ml_road Name="ml_road" PositionY="700" PositionX="0" />
 				<ml_employment Name="ml_employment" PositionY="800" PositionX="0" RequiredForOutput="trosecko">
 					<Edge From="ml_work.hired" To="hired" />
 					<Edge From="ml_work.quit" To="quit" />
