@@ -118,10 +118,13 @@ local function lockDoors(rental)
 end
 
 -- One way to use the bed, for the click or the hold of its prompt. No owner is checked: the bed is the character's.
+-- The game still shows UseNotOwnerMessage when the bed has an owner who is not the player, as the bed of the game in
+-- Zhelejov, owned by the inn; its default, ui_hud_use_item_not_owner, says "Steal food". So it says the same.
 local function action(stance, message)
 	return {
 		bIsActive = true,
 		UseMessage = message,
+		UseNotOwnerMessage = message,
 		bAllowNoOwner = 0,
 		bCheckOwner = 0,
 		esActionType = "Stance",
@@ -130,11 +133,11 @@ local function action(stance, message)
 end
 
 -- The smart object of a high bed. Its prompt showed and could be used, but nothing happened, with a BasicEntity
--- as the low beds have (ml_rent: enabled, not blocked, can sleep). Three ways to try, with ml_rent_bed: stance, its own
--- StanceSmartObject, the class of the bed of the game, with its properties; game, the bed of the game itself, whose
--- owner the prompt of the mod does not check; basic, the BasicEntity of the low beds.
+-- as the low beds have (ml_rent: enabled, not blocked, can sleep). Three ways, with ml_rent_bed: game, the bed of the
+-- game itself, whose owner the prompt of the mod does not check, which works; stance, its own StanceSmartObject,
+-- the class of the bed of the game, with its properties; basic, the BasicEntity of the low beds, which does nothing.
 Rent.HIGH_BED_MODES = { stance = true, game = true, basic = true }
-Rent.highBedMode = "stance"
+Rent.highBedMode = "game"
 
 -- The smart object of the bed of the mod, built like the bed of the steady job (employee_bed.lua), with what the bed of
 -- the game has. Returns it and whether it is the mod's own.

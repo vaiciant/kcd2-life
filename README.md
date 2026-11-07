@@ -156,7 +156,7 @@ Players see three commands: `ml_status`, which writes the state of the mod in th
 | `ml_rep`, `ml_rep_*`, `ml_crime_test`, `ml_crime_forget` | Reputation and theft |
 | `ml_xp`, `ml_look_refresh`, `ml_w_dress`, `ml_w_gear`, `ml_w_shop` | Experience, the look, and women's clothes |
 | `ml_tutorials`, `ml_sites`, `ml_stash`, `ml_rent` | The notes of the first steps, again, every work site with where its NPC is, whose things the master chest holds, and the bed rented for the night, with whether its prompt can be used |
-| `ml_rent_bed stance`, `game` or `basic` | How a rented high bed, as in Zhelejov, is built, and the bed again with it |
+| `ml_rent_bed game`, `stance` or `basic` | How a rented high bed, as in Zhelejov, is built, and the bed again with it. By default, `game`: the game's own bed |
 | `ml_freeze` | Meant to stop the character's animation for videos and pictures. It does not stop it yet |
 | `ml_lua <code>` | Runs Lua. It needs `-devmode` |
 
