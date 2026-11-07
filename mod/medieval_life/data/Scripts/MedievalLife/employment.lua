@@ -277,12 +277,16 @@ local function isNear(site)
 	return dx * dx + dy * dy <= rules.steady_area * rules.steady_area
 end
 
--- Skald keeps the state, so it is told again after every load.
+-- Skald keeps the state, so it is told again after every load. The same state covers a rented bed while it is the
+-- character's (rent.lua): nobody reacts to trespassing around it either.
 local function updateArea(site)
-	local inside = site and site.bed and Employment.region == "trosky" and isNear(site) or false
-	if inside ~= (Employment.inArea or false) or (site and Employment.areaGen ~= ML.gen) then
+	local nearJob = site and site.bed and Employment.region == "trosky" and isNear(site) or false
+	local nearRent = ML.Try("rent bubble", ML.Rent.InBubble) or false
+	local inside = nearJob or nearRent
+	if inside ~= (Employment.inArea or false) or Employment.areaGen ~= ML.gen then
 		Employment.inArea, Employment.areaGen = inside, ML.gen
 		ML.Life.SendToken(inside and Employment.AREA_IN_TOKEN or Employment.AREA_OUT_TOKEN)
+		ML.Log("no trespass area", inside, "job bed", nearJob, "rented bed", nearRent)
 	end
 end
 

@@ -57,6 +57,9 @@ rent_until_hour = 10
 # Or for a week: this many nights, for the price of these.
 rent_week_days = 7
 rent_week_paid_nights = 5
+# Metres around a rented bed where nobody reacts to trespassing while it is the character's, as around the bed of the
+# steady job (steady_area). Theft stays a crime.
+rent_area = 5
 
 [[site]]
 key = "tavern"

@@ -40,7 +40,7 @@ GLOBALS = ("wage", "xp_main", "xp_secondary", "first_hour", "last_hour", "min_ho
            "steady_wage", "steady_work_days", "steady_days_off", "steady_min_hours", "steady_hire_last_hour", "steady_late_minutes", "steady_faults", "steady_fault_days",
            "steady_rehire_quit_days", "steady_rehire_fired_days", "steady_area", "steady_meal", "steady_role_en", "steady_role_es",
            "casual_meal", "casual_meal_min_hours", "casual_meal_health", "casual_meal_fresh",
-           "casual_min_reputation", "steady_min_reputation", "rent_until_hour", "rent_week_days", "rent_week_paid_nights")
+           "casual_min_reputation", "steady_min_reputation", "rent_until_hour", "rent_week_days", "rent_week_paid_nights", "rent_area")
 
 
 def read(path):
@@ -139,15 +139,27 @@ def rent_places(sites):
         if attr(prompt, "EntityClass") != "BedTrigger":
             fail(site, f"rent: the bed of {holder} has no BedTrigger")
         door = entities.get(link.get("asset['dvere']", ""), "")
+        # How the bed of the game is used. A low bed lies on a click. A high bed, as in Zhelejov and the smithy of
+        # Tachov, sits on a click and lies on a hold: its smart object has no way to lie down from standing.
+        click = re.search(r"<Click\b[^>]*>", prompt).group(0) if "<Click" in prompt else ""
+        hold = re.search(r"<Hold\b[^>]*>", prompt).group(0) if "<Hold" in prompt else ""
+        if attr(click, "sAction") == "lying":
+            sit = False
+        elif attr(hold, "sAction") == "lying" and attr(click, "sAction") in ("", "sitting"):
+            sit = True
+        else:
+            fail(site, f"rent: the BedTrigger of {holder} lies neither on a click nor on a hold")
         found[site["key"]] = {
             "price": round(site["rent_price"] * 10),
             "price_economy": round(site["rent_price_economy"] * 10) if "rent_price_economy" in site else 0,
             # The mark of the bed on the map and the compass: the game shows it while the bed is the character's, and the mod
             # takes the others off. Its id is the EntityGuid of the bed and "BED POI" in bytes, as in whdata_0.
             "mark": attr(bed, "EntityGuid") + "-4245-4420504f4900",
-            "object": dict(place(bed), helpers=attr(bed, "soclass_SmartObjectHelpers"), type=attr(bed, "guidSmartObjectType"),
+            # Its name: a high bed uses the smart object of the game.
+            "object": dict(place(bed), name=attr(bed, "Name"), helpers=attr(bed, "soclass_SmartObjectHelpers"), type=attr(bed, "guidSmartObjectType"),
                            bed=attr(bed, "esBedTypes"), sleep=attr(bed, "esSleepQuality"), reading=attr(bed, "esReadingQuality")),
-            "trigger": dict(place(prompt), name=attr(prompt, "Name"), scale=round(float(attr(prompt, "Scale", "1,1,1").split(",")[0]), 3)),
+            "trigger": dict(place(prompt), name=attr(prompt, "Name"), scale=round(float(attr(prompt, "Scale", "1,1,1").split(",")[0]), 3),
+                            **({"sit": True} if sit else {})),
             "door": attr(door, "Name") if door else "",
         }
     return found
@@ -168,7 +180,11 @@ def write_lua(mod_dir, data, sites, stats):
     places = rent_places(sites)
 
     def lua_table(values):
-        return "{ " + ", ".join(f'{k} = "{v}"' if isinstance(v, str) else f"{k} = {v}" for k, v in values.items()) + " }"
+        def lua(v):
+            if isinstance(v, bool):
+                return "true" if v else "false"
+            return f'"{v}"' if isinstance(v, str) else str(v)
+        return "{ " + ", ".join(f"{k} = {lua(v)}" for k, v in values.items()) + " }"
 
     def rent(site):
         if site["key"] not in places:
@@ -204,6 +220,8 @@ def write_lua(mod_dir, data, sites, stats):
 		secondary = "{s["secondary"]}",
 		secondary_is_stat = {flag(s["secondary"])},
 		summary = "@ml_work_done_{s["main"]}_{s["secondary"]}_",
+		main_text = "@{game_key(s["main"])}",
+		secondary_text = "@{game_key(s["secondary"])}",
 		steady = {"true" if s.get("steady") else "false"},
 		steady_summary = "@ml_shift_done_{s["main"]}_{s["secondary"]}_",{bed(s)}{requires(s)}{hours(s)}{rent(s)}
 	}},
@@ -234,9 +252,15 @@ MedievalLife.JOB_RULES = {{
 	rent_until_hour = {data["rent_until_hour"]},
 	rent_week_days = {data["rent_week_days"]},
 	rent_week_paid_nights = {data["rent_week_paid_nights"]},
+	rent_area = {data["rent_area"]},
 	steady_meal = {{ {steady_meal} }},
 	casual_meal = {{ {casual_meal} }},
 	casual_meal_min_hours = {data["casual_meal_min_hours"]},
+	-- The amounts with a key of their own for the summary with settings: ml_work_pay_<tenths>, ml_work_rate_<hundredths>
+	-- and ml_work_xp_<points>.
+	summary_pay_max = {custom_limits(data, sites)[0]},
+	summary_rate_max = {custom_limits(data, sites)[1]},
+	summary_xp_max = {custom_limits(data, sites)[2]},
 }}
 MedievalLife.JOB_SITES = {{
 {rows}}}
@@ -264,14 +288,23 @@ def write_storm(mod_dir, sites):
     edit(mod_dir / "data/Libs/Storm/roles/medieval_life.xml", change)
 
 
+SKILL_KEYS = {}
+
+
+def game_key(name):
+    """The key of the text of a skill or a stat in the game. skill.xml gives the one of each skill: the one of
+    horse_riding is ui_skill_horse_whispering. jobs.lua puts it in the summary of work when the settings change the pay."""
+    if not SKILL_KEYS:
+        SKILL_KEYS.update(re.findall(r'skill_name="([^"]+)"[^>]*ui_string_name="([^"]+)"', read(TABLES / "skill.xml")))
+    return SKILL_KEYS.get(name, f"ui_stat_{name}")
+
+
 def game_names(folder):
     """The names of the skills and stats, as the game shows them."""
     pak = zipfile.ZipFile(GAME / "Localization" / f"{folder}.pak")
     text = pak.read("text_ui_soul.xml").decode("utf-8", "replace")
     rows = dict(re.findall(r"<Row><Cell>(ui_(?:skill|stat)_[a-z_]+)</Cell><Cell>[^<]*</Cell><Cell>([^<]*)</Cell></Row>", text))
-    # skill.xml gives the text of each skill: the one of horse_riding is ui_skill_horse_whispering.
-    skills = dict(re.findall(r'skill_name="([^"]+)"[^>]*ui_string_name="([^"]+)"', read(TABLES / "skill.xml")))
-    return lambda name: rows[skills[name]] if name in skills else rows[f"ui_stat_{name}"]
+    return lambda name: rows[game_key(name)]
 
 
 def summaries(data, sites, folder):
@@ -290,7 +323,8 @@ def summaries(data, sites, folder):
             key = f"{prefix}_{main}_{secondary}_{hours}"
             fields = dict(hours=hours, main=name_of(main), xp_main=hours * data["xp_main"],
                           secondary=name_of(secondary), xp_secondary=hours * data["xp_secondary"])
-            rows[key] = SUMMARY[folder].format(wage=f"{wage:.1f}".replace(".", point), pay=f"{wage * hours:.1f}".replace(".", point), **fields)
+            # Amounts without trailing zeros, as the economy line and the line of the settings: "+9 g.", not "+9.0 g.".
+            rows[key] = SUMMARY[folder].format(wage=amount(wage), pay=amount(wage * hours), **fields)
             # With an economy mod, what it pays, as economy.lua rounds it: jobs.lua adds _economy.
             tenths = math.floor(round(wage * 10) * hours * factor + 0.5)
             rows[key + "_economy"] = SUMMARY[folder].format(wage=amount(wage * factor), pay=amount(tenths / 10), **fields)
@@ -302,17 +336,104 @@ def summaries(data, sites, folder):
     return "".join(f"  <Row><Cell>{key}</Cell><Cell>{key}</Cell><Cell>{text}</Cell></Row>\n" for key, text in rows.items())
 
 
+# The steps of the pay and the experience in the settings, 25 to 300 % (the sliders of settings.lua).
+PAY_PERCENTS = range(25, 301, 25)
+SETTINGS_FACTOR_MAX = max(PAY_PERCENTS) / 100
+# What the summary with settings says after the hours: the wage, as the usual line says it.
+RATE = {"English_xml": "h at {wage} g/h:", "Spanish_xml": "h a {wage} g/h:"}
+
+
+def custom_limits(data, sites):
+    """The highest pay, in tenths of a groschen, wage per hour, in hundredths, and experience of one stretch of work with
+    the settings at their top."""
+    hours = max([data["last_hour"] - data["first_hour"]] + [s["hours"][1] - s["hours"][0] for s in sites if "hours" in s])
+    wage = max(data["wage"], data["steady_wage"])
+    pay = math.ceil(hours * wage * 10 * SETTINGS_FACTOR_MAX)
+    rate = math.ceil(wage * 100 * SETTINGS_FACTOR_MAX)
+    xp = math.ceil(hours * max(data["xp_main"], data["xp_secondary"]) * SETTINGS_FACTOR_MAX)
+    return pay, rate, xp
+
+
+def steady_rates(data):
+    """The wages per hour of the steady job, in hundredths, that the pay of the settings gives, with and without the
+    economy mod, as jobs.lua works them out (Jobs.Rate). The terms of the job have one text for each."""
+    tenths = round(data["steady_wage"] * 10)
+    return sorted({math.floor(tenths * 10 * percent / 100 * factor + 0.5)
+                   for percent in PAY_PERCENTS for factor in (1, data["economy_factor"])})
+
+
+def plain(value, point):
+    """An amount without trailing zeros, as the summaries say it."""
+    return f"{value:.2f}".rstrip("0").rstrip(".").replace(".", point)
+
+
+def custom_pieces(data, sites, folder, text):
+    """The summary with the pay or the experience of the settings is built in jobs.lua. SendInfoText keeps only keys and
+    whole numbers, so each amount is a key: "h at 0.9 g/h:" for the wage, "+1.8 g." for the pay, "+6 XP," for the
+    first skill and "+2 XP." for the last one. And the terms of the steady job, one per wage that the
+    settings give, from the usual one with its wage changed."""
+    point = DECIMAL[folder]
+    pay_max, rate_max, xp_max = custom_limits(data, sites)
+    rows = {}
+    for hundredths in range(rate_max + 1):
+        rows[f"ml_work_rate_{hundredths}"] = RATE[folder].format(wage=plain(hundredths / 100, point))
+    for tenths in range(pay_max + 1):
+        rows[f"ml_work_pay_{tenths}"] = f"+{plain(tenths / 10, point)} g."
+    for xp in range(xp_max + 1):
+        rows[f"ml_work_xp_{xp}"] = f"+{xp} XP,"
+        rows[f"ml_work_xp_last_{xp}"] = f"+{xp} XP."
+    terms = re.search(r"<Row><Cell>ml_steady_terms</Cell><Cell>ml_steady_terms</Cell><Cell>([^<]*)</Cell></Row>", text)
+    usual = plain(data["steady_wage"], point) + " groschen"
+    if not terms or terms.group(1).count(usual) != 1:
+        raise SystemExit(f"{folder}: ml_steady_terms does not say its wage as '{usual}' once")
+    for hundredths in steady_rates(data):
+        rows[f"ml_steady_terms_wage_{hundredths}"] = terms.group(1).replace(usual, plain(hundredths / 100, point) + " groschen")
+    return "".join(f"  <Row><Cell>{key}</Cell><Cell>{key}</Cell><Cell>{text}</Cell></Row>\n" for key, text in rows.items())
+
+
+# The terms of the steady job with the pay of the settings, one sequence per wage, between two marks.
+TERMS_DIALOG = "data/Quests/medieval_life/trosecko/ml_work/zavodniPodkovy/ml_work_dialog.xml"
+TERMS_MARKS = (6 * '\t' + '<!-- BEGIN terms with the settings -->\n', 6 * '\t' + '<!-- END terms with the settings -->\n')
+TERMS_SEQUENCE = """						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == {n}" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_{n}">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_{n}" />
+								</Response>
+							</Elements>
+						</Sequence>
+"""
+
+
+def write_terms_dialog(mod_dir, data):
+    def change(text):
+        begin, end = TERMS_MARKS
+        if text.count(begin) != 1 or text.count(end) != 1:
+            raise SystemExit(f"{TERMS_DIALOG}: the marks of the terms with the settings are missing")
+        head, rest = text.split(begin)
+        _, tail = rest.split(end)
+        return head + begin + "".join(TERMS_SEQUENCE.format(n=n) for n in steady_rates(data)) + end + tail
+
+    edit(mod_dir / TERMS_DIALOG, change)
+
+
 def write_text(mod_dir, data, sites):
     for folder, language in LANGUAGES:
         def change(text):
             text = re.sub(r"  <Row><Cell>ml_job_[a-z_]+</Cell>[^\n]*\n", "", text)
             text = re.sub(r"  <Row><Cell>ml_book_(?:place_[a-z_]+|role|steady_role)</Cell>[^\n]*\n", "", text)
             text = re.sub(r"  <Row><Cell>ml_(?:work|shift)_done_[a-z_0-9]+</Cell>[^\n]*\n", "", text)
+            text = re.sub(r"  <Row><Cell>ml_work_(?:rate|pay|xp|xp_last)_[0-9]+</Cell>[^\n]*\n", "", text)
+            text = re.sub(r"  <Row><Cell>ml_steady_terms_wage_[0-9]+</Cell>[^\n]*\n", "", text)
             rows = "".join(f"  <Row><Cell>ml_job_{s['key']}</Cell><Cell>ml_job_{s['key']}</Cell><Cell>{s['name_' + language]}</Cell></Row>\n" for s in sites)
             rows += "".join(f"  <Row><Cell>ml_book_place_{s['key']}</Cell><Cell>ml_book_place_{s['key']}</Cell><Cell>{s['place_' + language]}</Cell></Row>\n" for s in sites)
             rows += f"  <Row><Cell>ml_book_role</Cell><Cell>ml_book_role</Cell><Cell>{data['role_' + language]}</Cell></Row>\n"
             rows += f"  <Row><Cell>ml_book_steady_role</Cell><Cell>ml_book_steady_role</Cell><Cell>{data['steady_role_' + language]}</Cell></Row>\n"
             rows += summaries(data, sites, folder)
+            rows += custom_pieces(data, sites, folder, text)
             if text.count("</Table>") != 1:
                 raise SystemExit(f"{folder}: cannot find the end of the table")
             return text.replace("</Table>", rows + "</Table>")
@@ -367,6 +488,7 @@ def main(mod_dir):
     write_lua(mod_dir, data, sites, stats)
     write_storm(mod_dir, sites)
     write_text(mod_dir, data, sites)
+    write_terms_dialog(mod_dir, data)
     write_rent_dialogs(mod_dir)
     print(f"{len(sites)} sites, {len(RENT_DIALOGS)} rent dialogs of the game for Henry only")
 

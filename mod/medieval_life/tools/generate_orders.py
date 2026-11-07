@@ -65,8 +65,9 @@ HANDS_IN = ((GIVE, "HENRY"), (TAKE, None))
 TEXTS = {
     "ui_ml_order_ask": ("Any errands for me?", "¿Tienes algún encargo para mí?"),
     "ui_ml_order_need_ask": ("Need me to fetch or buy you something?", "¿Necesitas que te traiga o te compre algo?"),
-    "ml_order_reported": ("You owe for three errands. The businesses reported you to the guard of",
-                          "Debes tres encargos. Los negocios te denunciaron a la guardia de"),
+    # How many unpaid errands go to the guard is a setting, so the texts do not say how many, nor the 12 hours.
+    "ml_order_reported": ("You owe for errands you never paid. The businesses reported you to the guard of",
+                          "Debes encargos que nunca pagaste. Los negocios te denunciaron a la guardia de"),
     "ml_order_lost_trust": ("You've let me down before. You'll have to earn my trust back by working more for me.",
                             "Ya me has fallado. Tendrás que recuperar mi confianza trabajando más para mí."),
     "ui_ml_order_remind": ("What was it you needed me to buy?", "¿Qué era lo que necesitabas que te comprara?"),
@@ -91,6 +92,13 @@ TEXTS = {
                                 "Hay tiempo: tráemelo mañana, a la hora de la boleta."),
     "ml_order_fetch_later": ("There's time: bring it back to me the day after tomorrow, by the hour on the slip.",
                              "Hay tiempo: tráemelo pasado mañana, a la hora de la boleta."),
+    # Due in three days or more, with a longer time in the settings.
+    "ml_order_take_this_days": ("Here, take it. No need to rush: you have a few days, until the day and hour on the slip.",
+                                "Toma. No hace falta correr: tienes unos días, hasta el día y la hora de la boleta."),
+    "ml_order_take_money_days": ("Here's the money. You have a few days: bring it to me by the day and hour on the slip.",
+                                 "Aquí tienes el dinero. Tienes unos días: tráemelo para el día y la hora de la boleta."),
+    "ml_order_fetch_days": ("There's time: you have a few days to bring it back to me, until the day and hour on the slip.",
+                            "Hay tiempo: tienes unos días para traérmelo, hasta el día y la hora de la boleta."),
     "ml_order_handed": ("Here it is, all of it. Don't lose it on the way.", "Aquí está todo. Que no se te pierda en el camino."),
     "ml_order_buy": ("Buy", "Compra"),
     "ml_order_failed_buy": ("You didn't bring it in time. Now you owe the money you were given.",
@@ -98,8 +106,8 @@ TEXTS = {
     "ml_order_failed_lost": ("You didn't pick up the order in time.", "No recogiste el pedido a tiempo."),
     "ml_order_log_picked": ("I have the order. Now to take it back.", "Ya tengo el pedido. Ahora hay que llevarlo de vuelta."),
     "ml_order_log_lost": ("I didn't get there in time. At least I owe nothing.", "No llegué a tiempo. Al menos no debo nada."),
-    "ml_order_log_buy": ("I took the money. I have twelve hours of their working day to bring what was asked.",
-                         "Recibí el dinero. Tengo doce horas de su jornada para traer lo pedido."),
+    "ml_order_log_buy": ("I took the money. The slip says by when I must bring what was asked.",
+                         "Recibí el dinero. La boleta dice para cuándo tengo que traer lo pedido."),
     "ml_order_log_buy_canceled": ("I didn't make it in time. They'll take me for a thief until I pay back the money.",
                                   "No llegué a tiempo. Me tomarán por ladrón hasta que devuelva el dinero."),
     "ui_ml_order_accept": ("I'll do it.", "Lo hago."),
@@ -120,8 +128,8 @@ TEXTS = {
     "ml_order_missing": ("That's not all of it. Come back when you have everything.", "Eso no está completo. Vuelve cuando lo tengas todo."),
     "ml_order_still_missing": ("Still missing:", "Todavía falta:"),
     "ml_order_failed": ("You didn't deliver in time. Now you owe the value of the goods.", "No cumpliste a tiempo. Ahora debes el valor de la mercancía."),
-    "ml_order_log_active": ("I took the errand. I have twelve hours of their working day, and the slip says by when.",
-                            "Acepté el encargo. Tengo doce horas de su jornada, y la boleta dice para cuándo."),
+    "ml_order_log_active": ("I took the errand. The slip says by when.",
+                            "Acepté el encargo. La boleta dice para cuándo."),
     "ml_order_log_done": ("Done and paid.", "Cumplido y pagado."),
     "ml_order_log_canceled": ("I didn't make it in time. They'll take me for a thief until I pay for the goods.",
                               "No llegué a tiempo. Me tomarán por ladrón hasta que pague la mercancía."),
@@ -145,13 +153,15 @@ TEXTS = {
     "ml_order_slip_today": ("today at", "hoy a las"),
     "ml_order_slip_tomorrow": ("tomorrow at", "mañana a las"),
     "ml_order_slip_day_after": ("the day after tomorrow at", "pasado mañana a las"),
+    # "Due in 5 days, at 14:00": ml_order_slip_in, the number and this.
+    "ml_order_slip_days_at": ("days, at", "días, a las"),
     "ml_order_slip_pay": ("Pay", "Pago"),
     "ml_order_slip_money": ("Money given", "Dinero entregado"),
     "ml_order_slip_gr": ("groschen", "groschen"),
     "ml_order_slip_reported": ("Reported to the guard of", "Denunciado a la guardia de"),
     "ml_order_slip_failed": ("Not done in time. Owed:", "No se cumplió a tiempo. Se debe:"),
-    "qdesc_ml_order": ("Someone in town trusted me with an errand. If I don't finish it within twelve hours of their working day, I'll owe the value of the goods.",
-                       "Alguien del pueblo me confió un encargo. Si no lo cumplo en doce horas de su jornada, deberé el valor de la mercancía."),
+    "qdesc_ml_order": ("Someone in town trusted me with an errand. If I don't finish it by the time on the slip, I'll owe the value of the goods.",
+                       "Alguien del pueblo me confió un encargo. Si no lo cumplo para la hora de la boleta, deberé el valor de la mercancía."),
 }
 # The waits of 2 days or more, and the sentence added to the offer when the destination is in the other town.
 WAIT = ("Nothing today. Come back in {days} days.", "Hoy no tengo nada. Vuelve en {days} días.")
@@ -172,6 +182,17 @@ WHERE = (" in {town}", ", en {town}")
 BRING = ("I bring a package from {sender}.", "Traigo un paquete de parte de {sender}.")
 FETCH_OFFER = ("{other} has an order of mine ready. Pick it up and bring it here, and I'll pay you {pay} groschen.",
                "{other} tiene listo un pedido mío. Ve a buscarlo y tráemelo, y te pagaré {pay} groschen.")
+# The same offers for a pay changed in the settings, in two lines: the first without the amount, and then the one
+# with it, from one line for each amount that the settings give. The dialog cannot put a number in a line.
+OFFER_PLAIN = ("I need a package taken to {other}.", "Necesito que le lleves un paquete a {other}.")
+FETCH_OFFER_PLAIN = ("{other} has an order of mine ready.", "{other} tiene listo un pedido mío.")
+PAY_LINE = {"deliver": ("You'll be paid {pay} groschen when you hand it over.", "Al recibirlo, te pagará {pay} groschen."),
+            "fetch": ("Pick it up and bring it here, and I'll pay you {pay} groschen.", "Ve a buscarlo y tráemelo, y te pagaré {pay} groschen.")}
+# For an amount without a line, which the settings do not give: the slip says it.
+PAY_SLIP = {"deliver": ("You'll be paid when you hand it over: the slip says how much.", "Al recibirlo, te pagará lo que dice la boleta."),
+            "fetch": ("Pick it up and bring it here, and I'll pay you what the slip says.", "Ve a buscarlo y tráemelo, y te pagaré lo que dice la boleta.")}
+# The steps of the pay of the errands in the settings, 25 to 300 % (the slider of settings.lua).
+ORDER_PAY_PERCENTS = range(25, 301, 25)
 PICK = ("Pick up the order of {sender} from {other}{where}", "Recoger el pedido de {sender} donde {other}{where}")
 BACK = ("Take the order back to {sender}{back}", "Llevarle el pedido a {sender}{back}")
 PICKUP = ("I've come for the order of {sender}.", "Vengo por el pedido de {sender}.")
@@ -377,8 +398,12 @@ def load(mod_dir):
                 template = OFFER if kind == "deliver" else FETCH_OFFER
                 twin = dict(fields, pay=amount(order["pay_economy"], language))
                 say(order, "offer_economy", order["offer_key"] + ECONOMY_SUFFIX, column, sentence(fix(template[column].format(**twin))) + note)
+                # And without the amount, for a pay changed in the settings.
+                plain = OFFER_PLAIN if kind == "deliver" else FETCH_OFFER_PLAIN
+                say(order, "offer_plain", order["offer_key"] + PLAIN_SUFFIX, column, sentence(fix(plain[column].format(**fields))) + note)
             else:
                 order["offer_economy_key"] = order["offer_key"]
+                order["offer_plain_key"] = order["offer_key"]
         orders.append(order)
 
     data["by_key"] = {b["key"]: b for b in data["business"]}
@@ -431,10 +456,25 @@ def load(mod_dir):
                 o[f"{name}_say"] = keys.index(o[f"{field}_key"]) + 1
     # With an economy mod the offers say its pay: the same offers again after them, in the same order, with their
     # twin texts. orders.lua adds the number of offers of the turn to the one it publishes.
-    data["economy_groups"] = {}
+    # With the pay changed in the settings, a third time, without the amount.
+    data["economy_groups"], data["plain_groups"] = {}, {}
+    # The kind of each offer of the third set: deliver and fetch go on to the line with the amount, buy does not.
+    kind_of = {o["offer_key"]: o["kind"] for o in orders}
+    data["plain_kinds"] = {name: [kind_of[key] for key in data["groups"][name]] for name in ("send", "need")}
+    # What an order pays with the settings, as orders.lua works it out (Orders.Pay), with and without the economy mod.
+    data["settings_pays"] = {kind: sorted({settings_pay(round(o["pay"] * 10), percent, economy, data)
+                                           for o in orders if o["kind"] == kind
+                                           for percent in ORDER_PAY_PERCENTS for economy in (False, True)})
+                             for kind in ("deliver", "fetch")}
+    for kind, pays in data["settings_pays"].items():
+        for tenths in pays:
+            said[f"ml_order_pay_{kind}_{tenths}"] = [sentence((spanish if c else (lambda x: x))(
+                PAY_LINE[kind][c].format(pay=groschen_text(tenths / 10, "es" if c else "en")))) for c in range(2)]
+        said[f"ml_order_pay_{kind}_slip"] = list(PAY_SLIP[kind])
     for name in ("send", "need"):
-        twin = {o["offer_key"]: o["offer_economy_key"] for o in orders if o.get(f"{name}_say")}
-        data["economy_groups"][name] = [twin[key] for key in data["groups"][name]]
+        for field, groups in (("offer_economy_key", data["economy_groups"]), ("offer_plain_key", data["plain_groups"])):
+            twin = {o["offer_key"]: o[field] for o in orders if o.get(f"{name}_say")}
+            groups[name] = [twin[key] for key in data["groups"][name]]
     # What can be owed, in whole groschen, as orders.lua works it out: the value of the goods that were being taken or
     # were picked up, rounded up, or the money that was given to buy. With an economy mod too.
     debts = set()
@@ -452,6 +492,23 @@ def load(mod_dir):
 
 # The twin of a text that says an amount, with the amount of the economy mod.
 ECONOMY_SUFFIX = "_economy"
+# And the one that says no amount.
+PLAIN_SUFFIX = "_plain"
+
+
+def settings_pay(tenths, percent, economy, data):
+    """What an order of that pay gives with the pay of the settings at percent, as Orders.Pay: Economy.Money of the
+    pay times the factor, to the nearest tenth."""
+    value = tenths * percent / 100
+    if economy:
+        value = math.floor(value * data["economy"]["price_factor"] + 0.5)
+    return math.floor(value + 0.5)
+
+
+def groschen_text(value, language):
+    """An amount of groschen as the offers say it: 1.5, 10, and with a comma in Spanish."""
+    text = f"{value:g}"
+    return text.replace(".", ",") if language == "es" else text
 
 
 def economy_money(tenths, data):
@@ -792,45 +849,48 @@ def put_sequences(path, parent, prefix, sequences, level):
 
 # What the business says on handing over an order, by the day it is due: today, tomorrow or the day after.
 TAKE_LINES = {
-    "deliver": ("ml_order_take_this", "ml_order_take_this_tomorrow", "ml_order_take_this_later"),
-    "buy": ("ml_order_take_money", "ml_order_take_money_tomorrow", "ml_order_take_money_later"),
-    "fetch": (None, "ml_order_fetch_tomorrow", "ml_order_fetch_later"),
+    "deliver": ("ml_order_take_this", "ml_order_take_this_tomorrow", "ml_order_take_this_later", "ml_order_take_this_days"),
+    "buy": ("ml_order_take_money", "ml_order_take_money_tomorrow", "ml_order_take_money_later", "ml_order_take_money_days"),
+    "fetch": (None, "ml_order_fetch_tomorrow", "ml_order_fetch_later", "ml_order_fetch_days"),
 }
 
 
-def turn_sequences(turn, data, offers):
+def turn_sequences(turn, data, offers, tag="", kinds=None):
     """What a business answers in one of its two turns: send, what it sends (delivering), or need, what it needs
-    (fetching or buying). Both read their variables, ml_<turn>_state, _offer and _wait, which orders.lua sets."""
+    (fetching or buying). Both read their variables, ml_<turn>_state, _offer and _wait, which orders.lua sets.
+    tag goes in the names of the sequences and decisions, for a second set in the same dialog. With kinds, the
+    kind of each offer, the offers of deliver and fetch say no amount and go on to a line that says it, by ml_<turn>_pay."""
+    prefix = turn + tag
     state, offer, wait = f"gvar('ml_{turn}_state')", f"gvar('ml_{turn}_offer')", f"gvar('ml_{turn}_wait')"
     found = [
-        sequence(f"seq_{turn}_have", f"{state} == 2", "EndDialogue", elements=[response("role_ml_employer", "ml_order_have")]),
-        *debt_sequences(turn, f"{state} == 3", data["debts"]),
+        sequence(f"seq_{prefix}_have", f"{state} == 2", "EndDialogue", elements=[response("role_ml_employer", "ml_order_have")]),
+        *debt_sequences(prefix, f"{state} == 3", data["debts"]),
         # Too few points in the panel with that business for that kind.
-        sequence(f"seq_{turn}_distrust", f"{state} == 6", "EndDialogue",
+        sequence(f"seq_{prefix}_distrust", f"{state} == 6", "EndDialogue",
                  elements=[response("role_ml_employer", "ml_casual_distrust")]),
     ]
     # Out of the working hours of the business, or too late to get there before the place to go closes.
-    found.append(sequence(f"seq_{turn}_closed", f"{state} == 8", "EndDialogue", script="MedievalLife.Jobs.ShowHours()",
+    found.append(sequence(f"seq_{prefix}_closed", f"{state} == 8", "EndDialogue", script="MedievalLife.Jobs.ShowHours()",
                           elements=[response("role_ml_employer", "ml_work_closed")]))
-    found.append(sequence(f"seq_{turn}_late", f"{state} == 9", "EndDialogue", elements=[response("role_ml_employer", "ml_order_late")]))
+    found.append(sequence(f"seq_{prefix}_late", f"{state} == 9", "EndDialogue", elements=[response("role_ml_employer", "ml_order_late")]))
     # Fetching and buying ask for trust with that business: deliveries and pickups done.
     if turn == "need":
-        found.append(sequence("seq_need_untrusted", f"{state} == 5", "EndDialogue", elements=[response("role_ml_employer", "ml_order_untrusted")]))
-        found.append(sequence("seq_need_lost_trust", f"{state} == 7", "EndDialogue", elements=[response("role_ml_employer", "ml_order_lost_trust")]))
+        found.append(sequence(f"seq_{prefix}_untrusted", f"{state} == 5", "EndDialogue", elements=[response("role_ml_employer", "ml_order_untrusted")]))
+        found.append(sequence(f"seq_{prefix}_lost_trust", f"{state} == 7", "EndDialogue", elements=[response("role_ml_employer", "ml_order_lost_trust")]))
     for days in range(1, data["days_between"] + 1):
-        found.append(sequence(f"seq_{turn}_wait_{days}", f"{state} == 4 & {wait} == {days}", "EndDialogue",
+        found.append(sequence(f"seq_{prefix}_wait_{days}", f"{state} == 4 & {wait} == {days}", "EndDialogue",
                               elements=[response("role_ml_employer", f"ml_order_wait_{days}")]))
     # Any other wait gets the line without days, so that the business always answers.
-    found.append(sequence(f"seq_{turn}_wait_later", f"{state} == 4 & {wait} > {data['days_between']}", "EndDialogue",
+    found.append(sequence(f"seq_{prefix}_wait_later", f"{state} == 4 & {wait} > {data['days_between']}", "EndDialogue",
                           elements=[response("role_ml_employer", "ml_order_wait_later")]))
     take = "TakeSend" if turn == "send" else "TakeNeed"
     # One way to take the order for all of them: the first offer has the decision, and the others jump to it with
     # GoTo, as the debts do. On accepting, the business hands over the goods when delivering and the money when buying,
     # nothing when fetching, and it says whether the order is for tomorrow or the day after: the deadline counts
-    # working hours. orders.lua sets ml_<turn>_due (0 today, 1 tomorrow, 2 the day after) and ml_need_kind (1
-    # fetch, 2 buy).
+    # working hours. orders.lua sets ml_<turn>_due (0 today, 1 tomorrow, 2 the day after, 3 later with a longer
+    # time in the settings) and ml_need_kind (1 fetch, 2 buy).
     due, kind = f"gvar('ml_{turn}_due')", "gvar('ml_need_kind')"
-    when = ((0, f"{due} == 0"), (1, f"{due} == 1"), (2, f"{due} >= 2"))
+    when = ((0, f"{due} == 0"), (1, f"{due} == 1"), (2, f"{due} == 2"), (3, f"{due} >= 3"))
     if turn == "send":
         cases = [("deliver", None, TAKE_LINES["deliver"], HANDS_OVER)]
     else:
@@ -842,16 +902,54 @@ def turn_sequences(turn, data, offers):
             if lines[day]:
                 agree.append(response("role_ml_employer", lines[day], moves=moves))
             full = f"{which} & {condition}" if which else condition
-            takes.append(sequence(f"seq_{turn}_accept_{name}_{day}", full, "EndDialogue", "ui_ml_order_accept",
+            takes.append(sequence(f"seq_{prefix}_accept_{name}_{day}", full, "EndDialogue", "ui_ml_order_accept",
                                   script=f"MedievalLife.Orders.{take}()", elements=agree))
-    takes.append(sequence(f"seq_{turn}_decline", None, "EndDialogue", "ui_ml_order_decline", elements=[response("HENRY")]))
+    takes.append(sequence(f"seq_{prefix}_decline", None, "EndDialogue", "ui_ml_order_decline", elements=[response("HENRY")]))
+    if kinds:
+        return found + offers_with_pay(turn, prefix, data, offers, kinds, takes)
     for i, said in enumerate(offers, 1):
         if i == 1:
-            found.append(sequence(f"seq_{turn}_offer_{i}", f"{state} == 1 & {offer} == {i}", "Decision",
-                                  elements=[response("role_ml_employer", said)], decision=decision(f"dec_{turn}_take", takes)))
+            found.append(sequence(f"seq_{prefix}_offer_{i}", f"{state} == 1 & {offer} == {i}", "Decision",
+                                  elements=[response("role_ml_employer", said)], decision=decision(f"dec_{prefix}_take", takes)))
         else:
-            found.append(sequence(f"seq_{turn}_offer_{i}", f"{state} == 1 & {offer} == {i}", "GoTo",
-                                  elements=[response("role_ml_employer", said)], goto=f"dec_{turn}_take"))
+            found.append(sequence(f"seq_{prefix}_offer_{i}", f"{state} == 1 & {offer} == {i}", "GoTo",
+                                  elements=[response("role_ml_employer", said)], goto=f"dec_{prefix}_take"))
+    return found
+
+
+def offers_with_pay(turn, prefix, data, offers, kinds, takes):
+    """The offers for a pay changed in the settings: each says no amount, and then the business says it, from one
+    line for each amount that the settings give, chosen by ml_<turn>_pay, in tenths (orders.lua). Buying says no amount,
+    and goes straight to taking it. The decision to take it goes in the first line with an amount."""
+    pay = f"gvar('ml_{turn}_pay')"
+    lines = []
+    for kind in ("deliver", "fetch"):
+        if kind not in kinds:
+            continue
+        lines += [(f"{pay} == {tenths}", f"ml_order_pay_{kind}_{tenths}") for tenths in data["settings_pays"][kind]]
+        # Any other amount: the line that leaves it to the slip.
+        lines.append((None, f"ml_order_pay_{kind}_slip"))
+    paid = []
+    for n, (condition, said) in enumerate(lines, 1):
+        if n == 1:
+            paid.append(sequence(f"seq_{prefix}_pay_{n}", condition, "Decision", elements=[response("role_ml_employer", said)],
+                                 decision=decision(f"dec_{prefix}_take", takes)))
+        else:
+            paid.append(sequence(f"seq_{prefix}_pay_{n}", condition, "GoTo", elements=[response("role_ml_employer", said)],
+                                 goto=f"dec_{prefix}_take"))
+    found, first = [], True
+    for i, (said, kind) in enumerate(zip(offers, kinds), 1):
+        condition = f"gvar('ml_{turn}_state') == 1 & gvar('ml_{turn}_offer') == {i}"
+        if kind == "buy":
+            found.append(sequence(f"seq_{prefix}_offer_{i}", condition, "GoTo", elements=[response("role_ml_employer", said)],
+                                  goto=f"dec_{prefix}_take"))
+        elif first:
+            first = False
+            found.append(sequence(f"seq_{prefix}_offer_{i}", condition, "Decision", elements=[response("role_ml_employer", said)],
+                                  decision=decision(f"dec_{prefix}_pay", paid, autoselect=True)))
+        else:
+            found.append(sequence(f"seq_{prefix}_offer_{i}", condition, "GoTo", elements=[response("role_ml_employer", said)],
+                                  goto=f"dec_{prefix}_pay"))
     return found
 
 
@@ -859,12 +957,19 @@ def write_dialog(mod_dir, data, orders):
     # The errands show also where the character has a steady job.
     asked = "gvar('ml_new_life') == 1"
     groups = data["groups"]
-    top = [
-        sequence("seq_order_ask", f"{asked} & gvar('ml_send_state') > 0", "Decision", "ui_ml_order_ask", elements=[response("HENRY", *HENRY_ASK)],
-                 decision=decision("dec_send_open", turn_sequences("send", data, groups["send"] + data["economy_groups"]["send"]), autoselect=True)),
-        sequence("seq_need_ask", f"{asked} & gvar('ml_need_state') > 0", "Decision", "ui_ml_order_need_ask", elements=[response("HENRY", *HENRY_NEED)],
-                 decision=decision("dec_need_open", turn_sequences("need", data, groups["need"] + data["economy_groups"]["need"]), autoselect=True)),
-    ]
+    # With the pay changed in the settings, the same questions lead to the offers without the amount, in decisions
+    # of their own: the three sets in one decision would pass the width that crashed the game.
+    # orders.lua then publishes the offer without adding anything, and settings.lua sets ml_order_pay_custom.
+    custom = "gvar('ml_order_pay_custom')"
+    top = []
+    for tag, which, offers, kinds in (("", f"{custom} != 1", {t: groups[t] + data["economy_groups"][t] for t in ("send", "need")}, {}),
+                                      ("_plain", f"{custom} == 1", data["plain_groups"], data["plain_kinds"])):
+        top.append(sequence(f"seq_order_ask{tag}", f"{asked} & gvar('ml_send_state') > 0 & {which}", "Decision", "ui_ml_order_ask",
+                            elements=[response("HENRY", *HENRY_ASK)],
+                            decision=decision(f"dec_send_open{tag}", turn_sequences("send", data, offers["send"], tag, kinds.get("send")), autoselect=True)))
+        top.append(sequence(f"seq_need_ask{tag}", f"{asked} & gvar('ml_need_state') > 0 & {which}", "Decision", "ui_ml_order_need_ask",
+                            elements=[response("HENRY", *HENRY_NEED)],
+                            decision=decision(f"dec_need_open{tag}", turn_sequences("need", data, offers["need"], tag, kinds.get("need")), autoselect=True)))
     # Handing over: to the destination when delivering, and to the business when fetching or buying. Picking up: where it
     # is picked up, when fetching. One option per text, and Lua knows which order it is.
     # The option shows with the order, whether or not what must be handed over is there. What the business answers is one

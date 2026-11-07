@@ -117,34 +117,79 @@ local function lockDoors(rental)
 	return all
 end
 
--- The bed of the mod, built like the bed of the steady job (employee_bed.lua), with what the bed of the game has.
+-- One way to use the bed, for the click or the hold of its prompt. No owner is checked: the bed is the character's.
+-- The game still shows UseNotOwnerMessage when the bed has an owner who is not the player, as the bed of the game in
+-- Zhelejov, owned by the inn; its default, ui_hud_use_item_not_owner, says "Steal food". So it says the same.
+local function action(stance, message)
+	return {
+		bIsActive = true,
+		UseMessage = message,
+		UseNotOwnerMessage = message,
+		bAllowNoOwner = 0,
+		bCheckOwner = 0,
+		esActionType = "Stance",
+		sAction = stance,
+	}
+end
+
+-- The smart object of a high bed. Its prompt showed and could be used, but nothing happened, with a BasicEntity
+-- as the low beds have (ml_rent: enabled, not blocked, can sleep). Three ways, with ml_rent_bed: game, the bed of the
+-- game itself, whose owner the prompt of the mod does not check, which works; stance, its own StanceSmartObject,
+-- the class of the bed of the game, with its properties; basic, the BasicEntity of the low beds, which does nothing.
+Rent.HIGH_BED_MODES = { stance = true, game = true, basic = true }
+Rent.highBedMode = "game"
+
+-- The smart object of the bed of the mod, built like the bed of the steady job (employee_bed.lua), with what the bed of
+-- the game has. Returns it and whether it is the mod's own.
+local function smartObject(object, high)
+	local mode = high and Rent.highBedMode or "basic"
+	if mode == "game" then
+		local bed = object.name and System.GetEntityByName(object.name)
+		if bed then
+			return bed, false
+		end
+		ML.Log("rent: no bed of the game named", object.name, "- the mod's own")
+		mode = "stance"
+	end
+	local properties = {
+		bSaved_by_game = false,
+		bSerialize = false,
+		guidSmartObjectType = object.type,
+		soclass_SmartObjectHelpers = object.helpers,
+		sWH_AI_EntityCategory = "Bed",
+		Script = { esBedTypes = object.bed },
+		Bed = { esSleepQuality = object.sleep, esReadingQuality = object.reading },
+	}
+	if mode == "basic" then
+		properties.object_Model = ML.EmployeeBed.MODEL
+		properties.sSittingTagGlobal = "sittingNoTable"
+		properties.fUsabilityDistance = 1.25
+		properties.bInteractiveCollisionClass = true
+		-- As the smart object of the game, which has no model: the mattress of the game is the body. A body of its own,
+		-- even unseen, got in the way under the high bed of Zhelejov.
+		properties.Physics = { bPhysicalize = false, bRigidBody = false }
+	end
+	local bed = System.SpawnEntity({
+		class = mode == "basic" and "BasicEntity" or "StanceSmartObject",
+		name = Rent.OBJECT_NAME,
+		position = { x = object.x, y = object.y, z = object.z },
+		properties = properties,
+	})
+	bed:SetAngles({ 0, 0, object.yaw })
+	if mode == "basic" then
+		-- The mattress of the game is already there.
+		ML.Try("rent model", function() bed:DrawSlot(0, 0) end)
+	end
+	return bed, true
+end
+
+-- Its prompt is used as the game's: a low bed lies on a click, and a high bed (trigger.sit) sits on a click and lies on
+-- a hold. Its smart object has no way to lie down from standing.
 local function place(site)
 	remove()
 	local object, trigger = site.rent.object, site.rent.trigger
-	local bed = System.SpawnEntity({
-		class = "BasicEntity",
-		name = Rent.OBJECT_NAME,
-		position = { x = object.x, y = object.y, z = object.z },
-		properties = {
-			object_Model = ML.EmployeeBed.MODEL,
-			bSaved_by_game = false,
-			bSerialize = false,
-			guidSmartObjectType = object.type,
-			soclass_SmartObjectHelpers = object.helpers,
-			sWH_AI_EntityCategory = "Bed",
-			sSittingTagGlobal = "sittingNoTable",
-			fUsabilityDistance = 1.25,
-			bInteractiveCollisionClass = true,
-			-- As the smart object of the game, which has no model: the mattress of the game is the body. A body of its own,
-			-- even unseen, got in the way under the high bed of Zhelejov, and the character could not lie down.
-			Physics = { bPhysicalize = false, bRigidBody = false },
-			Script = { esBedTypes = object.bed },
-			Bed = { esSleepQuality = object.sleep, esReadingQuality = object.reading },
-		},
-	})
-	bed:SetAngles({ 0, 0, object.yaw })
-	-- The mattress of the game is already there.
-	ML.Try("rent model", function() bed:DrawSlot(0, 0) end)
+	local bed, own = smartObject(object, trigger.sit)
+	local sleep = action("lying", "@ui_hud_sleep_and_save")
 	local prompt = System.SpawnEntity({
 		class = "BedTrigger",
 		name = Rent.TRIGGER_NAME,
@@ -154,22 +199,39 @@ local function place(site)
 			InteractorPriorityOverride = 1,
 			bSaved_by_game = false,
 			bSerialize = false,
-			Click = {
-				bIsActive = true,
-				UseMessage = "@ui_hud_sleep_and_save",
-				bAllowNoOwner = 0,
-				bCheckOwner = 0,
-				esActionType = "Stance",
-				sAction = "lying",
-			},
+			Click = trigger.sit and action("sitting", "@ui_use_sit") or sleep,
+			Hold = trigger.sit and sleep or nil,
 		},
 	})
 	prompt:SetAngles({ 0, 0, trigger.yaw })
 	prompt:CreateLink("", bed.id)
-	bed:CreateLink("mTrigger", prompt.id)
+	-- The bed of the game keeps its own links.
+	if own then
+		bed:CreateLink("mTrigger", prompt.id)
+	end
 	showGame(site, false)
 	placedGen = ML.gen
-	ML.Log("rent bed in place at", site.key)
+	ML.Log("rent bed in place at", site.key, "high", trigger.sit == true, "mode", trigger.sit and Rent.highBedMode or "basic",
+		"class", bed.class)
+end
+
+-- For ml_rent_bed: how a high bed is built, stance, game or basic, and the bed of a rental again with it.
+function Rent.BedMode(line)
+	local mode = string.match(line or "", "(%a+)")
+	if mode and Rent.HIGH_BED_MODES[mode] then
+		Rent.highBedMode = mode
+		if active() then
+			place(siteByKey(active().site))
+		end
+	end
+	ML.Log("rent high bed mode", Rent.highBedMode, "(stance, game or basic)")
+end
+
+-- Within rent_area metres of the bed of a site.
+local function near(site)
+	local position, area = player:GetWorldPos(), ML.JOB_RULES.rent_area
+	local dx, dy = site.rent.object.x - position.x, site.rent.object.y - position.y
+	return dx * dx + dy * dy <= area * area
 end
 
 -- The rental ends: the bed of the mod goes, and the game's comes back.
@@ -264,6 +326,20 @@ function Rent.Place()
 	end
 end
 
+-- Whether the character is near the rented bed while it is theirs: within rent_area metres, as the bed of the steady
+-- job does with steady_area. employment.lua turns off the reactions to trespassing there, with the same Skald state. The bed of the game stays the inn's, so on waking up in Zhelejov the innkeeper threw the character out; Henry's rental is left as it is.
+-- It lasts as long as the rental, not up to its hour: the rental waits for the character to wake up, and a bubble that
+-- went at 10:00 in the middle of the sleep woke them up. Once the rental ends, nothing is left: the place is as
+-- the game has it, and the character may sleep there without leave, as anyone.
+function Rent.InBubble()
+	if not ML.Life.IsStarted() or ML.Region() ~= "trosky" then
+		return false
+	end
+	local rental = active()
+	local site = rental and siteByKey(rental.site)
+	return site and site.rent and near(site) or false
+end
+
 -- From the dialog: a week, for the price of rent_week_paid_nights nights.
 function Rent.TakeWeek()
 	Rent.Take(ML.JOB_RULES.rent_week_days)
@@ -291,9 +367,30 @@ end
 
 -- Test shortcut: the rental, and the place nearby. And what there is of the bed of the place nearby: the bed of the
 -- mod, the prompt of the game hidden or not, and the door locked or not.
+-- Whether a bed prompt can be used now, as the game decides it when showing the prompt (BedTrigger.lua): the click and
+-- the hold, with the reason when not, whether its smart object is found and taken, and whether the player can sleep.
+-- For the high bed of Zhelejov, which shows its prompt and does nothing.
+local function reportPrompt(label, prompt)
+	if not prompt then
+		ML.Log("rent", label, "prompt: none")
+		return
+	end
+	ML.Try("rent prompt check", function()
+		local properties = prompt.Properties or {}
+		local click, hold = properties.Click or {}, properties.Hold or {}
+		local clickOn, clickWhy = prompt:IsEnabled(player)
+		local holdOn, holdWhy = prompt:IsEnabledHold(player)
+		local link = prompt.GetLinkedSmartObject and prompt:GetLinkedSmartObject()
+		local blocked = link and link.smartObject and XGenAIModule.IsStanceBlocked(link.smartObject.__this)
+		ML.Log("rent", label, "prompt: click", click.esActionType, click.sAction, clickOn, clickWhy, "hold", hold.bIsActive,
+			hold.esActionType, hold.sAction, holdOn, holdWhy, "smart object", link ~= nil, "stance blocked", blocked)
+	end)
+end
+
 function Rent.Report()
 	local rental = active()
-	local site = ML.Try("rent site", ML.Jobs.NearestSite)
+	-- The rented place, even upstairs, far from its owner; else the nearest.
+	local site = rental and siteByKey(rental.site) or ML.Try("rent site", ML.Jobs.NearestSite)
 	ML.Log("rent:", rental and rental.site or "none", "days=", rental and rental.days or 0, "hours left=", rental and (rental.until_time - Calendar.GetWorldTime()) / Rent.HOUR_SECONDS or 0,
 		"here=", site and site.rent and site.key or "nobody rents", "price=", site and site.rent and price(site) / 10 or 0)
 	if site and site.rent then
@@ -302,6 +399,12 @@ function Rent.Report()
 		ML.Log("rent bed of the mod:", System.GetEntityByName(Rent.OBJECT_NAME) ~= nil, System.GetEntityByName(Rent.TRIGGER_NAME) ~= nil,
 			"game prompt:", prompt ~= nil, prompt and ML.Try("rent hidden", function() return prompt:IsHidden() end),
 			"door locked:", door and door.bLocked, "game mark:", site.rent.mark)
+		reportPrompt("mod", System.GetEntityByName(Rent.TRIGGER_NAME))
+		reportPrompt("game", prompt)
+		ML.Try("rent can sleep", function()
+			local can, why = player.player.CanSleep()
+			ML.Log("rent can sleep", can, why, "bed helpers", site.rent.object.helpers, "sit", site.rent.trigger.sit == true)
+		end)
 	end
 	ML.BedMarker.Dump()
 end

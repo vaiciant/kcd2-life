@@ -34,6 +34,8 @@ Life.DOG_EXILE_RANGE = 10
 -- potion that stops tiredness it stays as it was.
 Life.SLEEP_TOKEN = "aaee9462-4303-5c2e-8454-11d1696e29bd"
 Life.SLEEP_MIN_RISE = 0.05
+-- A wait or a sleep shorter than this, in hours of the game, says in the log what stopped it.
+Life.SHORT_SKIP_HOURS = 0.25
 
 -- KCD2 Life needs both frameworks: without the men's one, a man keeps Henry's look. Each one sets LOADED when it loads.
 -- It is checked once the game runs, never at load, because the load order of mods is not fixed.
@@ -212,10 +214,24 @@ local function checkSleep()
 		ML.Try("sleep token", function() player.inventory:DeleteItemOfClass(Life.SLEEP_TOKEN, amount) end)
 		if amount == 1 then
 			Life.sleepStart = Life.exhaust
+			Life.skipStartTime = Calendar.GetWorldTime()
 		else
 			local before = Life.sleepStart or Life.exhaust or exhaust
 			Life.sleepStart = nil
 			ML.Log("skip ended, tiredness", before, "->", exhaust)
+			-- A wait or a sleep that the game stops at once: what the game looks at to let time pass, so the log says why
+			-- (after a rental ended, sleeping and waiting with T stopped at once).
+			local hours = Life.skipStartTime and (Calendar.GetWorldTime() - Life.skipStartTime) / 3600
+			Life.skipStartTime = nil
+			if hours and hours < Life.SHORT_SKIP_HOURS then
+				ML.Try("short skip", function()
+					local soul = player.soul
+					local canSleep, why = player.player.CanSleep()
+					ML.Log("skip cut short after", hours, "h: hunger", soul:GetState("hunger"), "tiredness", exhaust, "health",
+						soul:GetState("health"), "tense", soul:IsInTenseCircumstance(), "combat danger", soul:IsInCombatDanger(),
+						"can sleep", canSleep, why, "no trespass area", ML.Employment.inArea)
+				end)
+			end
 			if exhaust - before >= Life.SLEEP_MIN_RISE and Life.IsStarted() then
 				ML.Log("sleep save returned", ML.Try("sleep save", function() return Game.SaveGameViaResting() end))
 			end

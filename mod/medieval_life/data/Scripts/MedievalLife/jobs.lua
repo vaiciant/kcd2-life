@@ -44,9 +44,10 @@ local function paint(hoursLeft)
 	end)
 end
 
+-- The setting work_cost scales it: 50 is what the game takes, 0 nothing.
 local function applyCost(hours)
 	ML.Try("work cost", function()
-		local soul, cost = player.soul, hours * Jobs.COST_PER_HOUR
+		local soul, cost = player.soul, hours * Jobs.COST_PER_HOUR * ML.Settings.Factor("work_cost")
 		soul:SetState("hunger", math.max(0, soul:GetState("hunger") - cost))
 		soul:SetState("exhaust", math.max(0, soul:GetState("exhaust") - cost))
 	end)
@@ -72,15 +73,53 @@ local function giveMeal(meal)
 	end
 end
 
+-- With the pay or the experience changed in the settings, the written lines do not fit: the summary is put together
+-- here, with the names of the skills as the game writes them. The amounts go with a point.
+-- SendInfoText shows each word of the line on its own: a key with @ is translated and a whole number stays, but any
+-- other word, as "h:", "+1.8" or "XP,", is dropped. So everything but the hours is a key, and each amount has a
+-- key of its own, written by generate_jobs.py. The line reads as the written ones:
+-- "Worked 2 h at 0.9 g/h: +1.8 g. Speech +12 XP, Craftsmanship +4 XP."
+Jobs.CUSTOM_SUMMARY = "@ml_work_summary_custom %d @ml_work_rate_%d @ml_work_pay_%d %s @ml_work_xp_%d %s @ml_work_xp_last_%d"
+-- Past the amounts with a key, which the settings do not reach: the line without the pay.
+Jobs.CUSTOM_SUMMARY_SHORT = "@ml_work_summary_custom %d @ml_work_summary_custom_hours %d @ml_work_summary_custom_xp_in %s "
+	.. "@ml_work_summary_custom_and %d @ml_work_summary_custom_xp_in %s"
+
+-- The wage per hour with the pay of the settings and the economy mod, in hundredths of a groschen: from a wage of the
+-- rules, in tenths. generate_jobs.py works it out the same way for the texts (steady_rates).
+function Jobs.Rate(tenths)
+	local rate = tenths * 10 * ML.Settings.Factor("work_pay")
+	if ML.Economy.active then
+		rate = rate * ML.ECONOMY.price_factor
+	end
+	return math.floor(rate + 0.5)
+end
+
+local function summary(site, hours, steady, amount, xpMain, xpSecondary)
+	if ML.Settings.Changed("work_pay") or ML.Settings.Changed("work_xp") then
+		local rules = ML.JOB_RULES
+		local rate = Jobs.Rate(steady and rules.steady_wage or rules.wage)
+		if amount <= rules.summary_pay_max and rate <= rules.summary_rate_max and math.max(xpMain, xpSecondary) <= rules.summary_xp_max then
+			return string.format(Jobs.CUSTOM_SUMMARY, hours, rate, amount, site.main_text, xpMain, site.secondary_text, xpSecondary)
+		end
+		return string.format(Jobs.CUSTOM_SUMMARY_SHORT, hours, xpMain, site.main_text, xpSecondary, site.secondary_text)
+	end
+	-- Lua cannot read translated text, so there is one written line for each length of work.
+	-- With an economy mod, the line that says its pay.
+	return (steady and site.steady_summary or site.summary) .. hours .. (ML.Economy.active and "_economy" or "")
+end
+
 local function pay(site, hours, steady)
 	local rules = ML.JOB_RULES
-	local amount = ML.Economy.Money(hours * (steady and rules.steady_wage or rules.wage))
+	-- The settings scale the pay and the experience. Money goes in whole tenths of a groschen.
+	local amount = math.floor(ML.Economy.Money(hours * (steady and rules.steady_wage or rules.wage) * ML.Settings.Factor("work_pay")) + 0.5)
+	local xp = ML.Settings.Factor("work_xp")
+	local xpMain, xpSecondary = math.floor(hours * rules.xp_main * xp + 0.5), math.floor(hours * rules.xp_secondary * xp + 0.5)
 	ML.Try("work pay", function()
 		player.inventory:CreateItem(ML.Life.COIN_ITEM, 1, amount)
 		Game.ShowItemsTransfer(ML.Life.COIN_ITEM, amount)
 	end)
-	addExperience(site.main, site.main_is_stat, hours * rules.xp_main)
-	addExperience(site.secondary, site.secondary_is_stat, hours * rules.xp_secondary)
+	addExperience(site.main, site.main_is_stat, xpMain)
+	addExperience(site.secondary, site.secondary_is_stat, xpSecondary)
 	ML.WorkBook.Record(site.key, hours, steady)
 	-- With The Nutrition Mod, the hours of work use up food and drink too.
 	ML.Try("work nutrition", ML.Nutrition.Pass, hours)
@@ -89,10 +128,7 @@ local function pay(site, hours, steady)
 	-- The clock moves the calendar by hand, so the game does not count those hours as awake,
 	-- and it would go on saying that the character has slept too much.
 	ML.Try("work oversleep", function() player.soul:RemoveAllBuffsByGuid(Jobs.OVERSLEEP_BUFF) end)
-	-- Lua cannot read translated text, so there is one written line for each length of work.
-	-- With an economy mod, the line that says its pay.
-	local economy = ML.Economy.active and "_economy" or ""
-	ML.Try("work summary", function() Game.SendInfoText((steady and site.steady_summary or site.summary) .. hours .. economy, false, nil, Jobs.SUMMARY_SECONDS) end)
+	ML.Try("work summary", function() Game.SendInfoText(summary(site, hours, steady, amount, xpMain, xpSecondary), false, nil, Jobs.SUMMARY_SECONDS) end)
 	if steady then
 		giveMeal(rules.steady_meal)
 	elseif hours >= rules.casual_meal_min_hours then
