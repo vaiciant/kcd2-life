@@ -78,7 +78,24 @@ def main() -> int:
     if modid not in (l.strip() for l in lines):
         print(f"WARNING: {modid} is not enabled in mod_order.txt. "
               f"Enable it with: python -I tools/mod_profile.py clean {modid}")
+    for copy in workshop_copies(modid):
+        print(f"WARNING: the Steam Workshop has {modid} too, in {copy}. The game loads that copy and not the one in Mods/: "
+              f"unsubscribe from it in Steam to test this build.")
     return 0
+
+
+def workshop_copies(modid: str) -> list[pathlib.Path]:
+    """The folders of the Steam Workshop with a mod of the same modid. With one, the game opens that copy and leaves
+    out the one in Mods/ (kcd.log of 2026-11-07: the published 0.1.0 loaded instead of 0.1.12)."""
+    workshop = GAME.parent.parent / "workshop" / "content" / "1771300"
+    copies = []
+    for manifest in sorted(workshop.glob("*/mod.manifest")) if workshop.is_dir() else []:
+        try:
+            if read_modid(manifest) == modid:
+                copies.append(manifest.parent)
+        except (OSError, ValueError, SystemExit):
+            continue
+    return copies
 
 
 if __name__ == "__main__":

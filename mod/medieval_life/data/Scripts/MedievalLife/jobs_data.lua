@@ -169,7 +169,7 @@ MedievalLife.JOB_SITES = {
 			price = 200,
 			mark = "8b84586f-f515-085a-4245-4420504f4900",
 			object = { x = 1658.151, y = 2150.985, z = 38.729, yaw = 0.1396, helpers = "Bed_1Place_High", type = "425d4fdf-8dcd-4a2b-fdc5-cbb1b5d25b89", bed = "NormalBed", sleep = "high", reading = "bed_common" },
-			trigger = { x = 1658.204, y = 2150.96, z = 39.088, yaw = 1.7104, name = "BedTrigger9[Bed.bed_high49_d334ec0e-a5b1-4685-8e53-be0d9556c733]", scale = 0.39 },
+			trigger = { x = 1658.204, y = 2150.96, z = 39.088, yaw = 1.7104, name = "BedTrigger9[Bed.bed_high49_d334ec0e-a5b1-4685-8e53-be0d9556c733]", scale = 0.39, sit = true },
 			door = "AnimDoor[structures/municipal/pubs/unique/zelejov/zelejov_pub1:Door/door_village_left2[structures/municipal/pubs/unique/zelejov/zelejov_pub1]_2ec1d188-bcf3-009f-000e-05584969acb2]",
 			price_economy = 100,
 		},
@@ -268,7 +268,7 @@ MedievalLife.JOB_SITES = {
 			price = 50,
 			mark = "b3d21288-94a8-05bf-4245-4420504f4900",
 			object = { x = 1995.661, y = 2483.862, z = 115.328, yaw = 3.0194, helpers = "Bed_1Place_High", type = "425d4fdf-8dcd-4a2b-fdc5-cbb1b5d25b89", bed = "NormalBed", sleep = "mediumPlus", reading = "bed_common" },
-			trigger = { x = 1995.616, y = 2483.9, z = 115.687, yaw = -1.693, name = "BedTrigger9[Bed/bed_high8_eb62a6e9-c40c-4b60-9ee1-81dccb4f5372]", scale = 0.39 },
+			trigger = { x = 1995.616, y = 2483.9, z = 115.687, yaw = -1.693, name = "BedTrigger9[Bed/bed_high8_eb62a6e9-c40c-4b60-9ee1-81dccb4f5372]", scale = 0.39, sit = true },
 		},
 	},
 	{

@@ -139,6 +139,16 @@ def rent_places(sites):
         if attr(prompt, "EntityClass") != "BedTrigger":
             fail(site, f"rent: the bed of {holder} has no BedTrigger")
         door = entities.get(link.get("asset['dvere']", ""), "")
+        # How the bed of the game is used. A low bed lies on a click. A high bed, as in Zhelejov and the smithy of
+        # Tachov, sits on a click and lies on a hold: its smart object has no way to lie down from standing.
+        click = re.search(r"<Click\b[^>]*>", prompt).group(0) if "<Click" in prompt else ""
+        hold = re.search(r"<Hold\b[^>]*>", prompt).group(0) if "<Hold" in prompt else ""
+        if attr(click, "sAction") == "lying":
+            sit = False
+        elif attr(hold, "sAction") == "lying" and attr(click, "sAction") in ("", "sitting"):
+            sit = True
+        else:
+            fail(site, f"rent: the BedTrigger of {holder} lies neither on a click nor on a hold")
         found[site["key"]] = {
             "price": round(site["rent_price"] * 10),
             "price_economy": round(site["rent_price_economy"] * 10) if "rent_price_economy" in site else 0,
@@ -147,7 +157,8 @@ def rent_places(sites):
             "mark": attr(bed, "EntityGuid") + "-4245-4420504f4900",
             "object": dict(place(bed), helpers=attr(bed, "soclass_SmartObjectHelpers"), type=attr(bed, "guidSmartObjectType"),
                            bed=attr(bed, "esBedTypes"), sleep=attr(bed, "esSleepQuality"), reading=attr(bed, "esReadingQuality")),
-            "trigger": dict(place(prompt), name=attr(prompt, "Name"), scale=round(float(attr(prompt, "Scale", "1,1,1").split(",")[0]), 3)),
+            "trigger": dict(place(prompt), name=attr(prompt, "Name"), scale=round(float(attr(prompt, "Scale", "1,1,1").split(",")[0]), 3),
+                            **({"sit": True} if sit else {})),
             "door": attr(door, "Name") if door else "",
         }
     return found
@@ -168,7 +179,11 @@ def write_lua(mod_dir, data, sites, stats):
     places = rent_places(sites)
 
     def lua_table(values):
-        return "{ " + ", ".join(f'{k} = "{v}"' if isinstance(v, str) else f"{k} = {v}" for k, v in values.items()) + " }"
+        def lua(v):
+            if isinstance(v, bool):
+                return "true" if v else "false"
+            return f'"{v}"' if isinstance(v, str) else str(v)
+        return "{ " + ", ".join(f"{k} = {lua(v)}" for k, v in values.items()) + " }"
 
     def rent(site):
         if site["key"] not in places:

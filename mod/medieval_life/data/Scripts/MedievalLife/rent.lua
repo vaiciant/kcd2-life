@@ -117,7 +117,21 @@ local function lockDoors(rental)
 	return all
 end
 
+-- One way to use the bed, for the click or the hold of its prompt. No owner is checked: the bed is the character's.
+local function action(stance, message)
+	return {
+		bIsActive = true,
+		UseMessage = message,
+		bAllowNoOwner = 0,
+		bCheckOwner = 0,
+		esActionType = "Stance",
+		sAction = stance,
+	}
+end
+
 -- The bed of the mod, built like the bed of the steady job (employee_bed.lua), with what the bed of the game has.
+-- Its prompt is used as the game's: a low bed lies on a click, and a high bed (trigger.sit) sits on a click and lies on
+-- a hold. Its smart object has no way to lie down from standing, and the character could not sleep in Zhelejov.
 local function place(site)
 	remove()
 	local object, trigger = site.rent.object, site.rent.trigger
@@ -145,6 +159,7 @@ local function place(site)
 	bed:SetAngles({ 0, 0, object.yaw })
 	-- The mattress of the game is already there.
 	ML.Try("rent model", function() bed:DrawSlot(0, 0) end)
+	local sleep = action("lying", "@ui_hud_sleep_and_save")
 	local prompt = System.SpawnEntity({
 		class = "BedTrigger",
 		name = Rent.TRIGGER_NAME,
@@ -154,14 +169,8 @@ local function place(site)
 			InteractorPriorityOverride = 1,
 			bSaved_by_game = false,
 			bSerialize = false,
-			Click = {
-				bIsActive = true,
-				UseMessage = "@ui_hud_sleep_and_save",
-				bAllowNoOwner = 0,
-				bCheckOwner = 0,
-				esActionType = "Stance",
-				sAction = "lying",
-			},
+			Click = trigger.sit and action("sitting", "@ui_use_sit") or sleep,
+			Hold = trigger.sit and sleep or nil,
 		},
 	})
 	prompt:SetAngles({ 0, 0, trigger.yaw })
