@@ -429,8 +429,8 @@ local function publishTurn(turn, site, day)
 	end
 	Variables.SetGlobal("ml_" .. turn .. "_state", state)
 	-- With an economy mod, the same offer saying its pay: the dialog has the offers of the turn again after them.
-	-- With the pay changed in the settings, the dialog goes to a set of its own, saying no amount, in the same order: the
-	-- slip says it.
+	-- With the pay changed in the settings, the dialog goes to a set of its own, in the same order, whose offers say the
+	-- amount in a second line, by ml_<turn>_pay.
 	local said = state == Orders.STATE_OFFER and byId[value].say or 0
 	if said > 0 and ML.Economy.active and not ML.Settings.Changed("order_pay") then
 		said = said + ML.ORDER_OFFERS[turn]
@@ -445,6 +445,9 @@ local function publishTurn(turn, site, day)
 		kind = order.kind == "fetch" and 1 or order.kind == "buy" and 2 or 0
 	end
 	Variables.SetGlobal("ml_" .. turn .. "_due", dueDay)
+	-- What it pays, in tenths: with the pay changed in the settings, the offer says it in a line of its own, one per
+	-- amount.
+	Variables.SetGlobal("ml_" .. turn .. "_pay", order and order.pay and Orders.Pay(order.pay) or 0)
 	if turn == Orders.NEED then
 		Variables.SetGlobal("ml_need_kind", kind)
 	end

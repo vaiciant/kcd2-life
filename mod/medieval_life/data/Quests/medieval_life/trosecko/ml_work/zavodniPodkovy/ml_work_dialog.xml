@@ -18,18 +18,242 @@
 				</SelectedSouls>
 				<Decision Name="dec_root" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
 					<Sequences>
-						<!-- With the pay changed in the settings the terms say no wage, and go on in the same decision. -->
-						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_custom">
+						<!-- With the pay changed in the settings the terms say its wage, from one text for each wage that the settings give,
+					     and go on in the same decision. jobs.lua sets ml_work_wage, in hundredths of a groschen. The
+					     sequences between the two marks are written by tools/generate_jobs.py. -->
+						<!-- BEGIN terms with the settings -->
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 5" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_5">
 							<UiPrompt StringName="ui_ml_job_ask" />
 							<Elements>
 								<Response Role="HENRY" ReferenceLength="2.73">
 									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
 								</Response>
 								<Response Role="role_ml_employer">
-									<Text StringName="ml_steady_terms_custom" />
+									<Text StringName="ml_steady_terms_wage_5" />
 								</Response>
 							</Elements>
 						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 10" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_10">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_10" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 15" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_15">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_15" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 20" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_20">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_20" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 25" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_25">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_25" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 30" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_30">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_30" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 35" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_35">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_35" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 40" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_40">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_40" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 45" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_45">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_45" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 50" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_50">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_50" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 55" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_55">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_55" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 60" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_60">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_60" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 80" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_80">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_80" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 100" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_100">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_100" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 120" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_120">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_120" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 140" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_140">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_140" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 160" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_160">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_160" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 180" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_180">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_180" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 200" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_200">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_200" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 220" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_220">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_220" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_work_pay_custom') == 1 &amp; gvar('ml_work_wage') == 240" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_wage_240">
+							<UiPrompt StringName="ui_ml_job_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.73">
+									<Text StringName="cele_henry_hledam_praci_n_SI9N" />
+								</Response>
+								<Response Role="role_ml_employer">
+									<Text StringName="ml_steady_terms_wage_240" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<!-- END terms with the settings -->
 						<!-- With an economy mod the terms say its wage, and go on in the same decision. -->
 						<Sequence EntryCondition="gvar('ml_job_offer') == 1 &amp; gvar('ml_economy') == 1 &amp; gvar('ml_work_pay_custom') != 1" EndType="GoTo" GoToDecision="dec_job" Name="seq_job_ask_economy">
 							<UiPrompt StringName="ui_ml_job_ask" />

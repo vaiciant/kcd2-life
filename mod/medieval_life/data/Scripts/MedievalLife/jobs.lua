@@ -77,18 +77,29 @@ end
 -- here, with the names of the skills as the game writes them. The amounts go with a point.
 -- SendInfoText shows each word of the line on its own: a key with @ is translated and a whole number stays, but any
 -- other word, as "h:", "+1.8" or "XP,", is dropped. So everything but the hours is a key, and each amount has a
--- key of its own, written by generate_jobs.py: "Worked 2 h: +1.8 g. Speech +6 XP, Craftsmanship +2 XP.".
-Jobs.CUSTOM_SUMMARY = "@ml_work_summary_custom %d @ml_work_summary_custom_hours @ml_work_pay_%d %s @ml_work_xp_%d %s "
-	.. "@ml_work_xp_last_%d"
+-- key of its own, written by generate_jobs.py. The line reads as the written ones:
+-- "Worked 2 h at 0.9 g/h: +1.8 g. Speech +12 XP, Craftsmanship +4 XP."
+Jobs.CUSTOM_SUMMARY = "@ml_work_summary_custom %d @ml_work_rate_%d @ml_work_pay_%d %s @ml_work_xp_%d %s @ml_work_xp_last_%d"
 -- Past the amounts with a key, which the settings do not reach: the line without the pay.
 Jobs.CUSTOM_SUMMARY_SHORT = "@ml_work_summary_custom %d @ml_work_summary_custom_hours %d @ml_work_summary_custom_xp_in %s "
 	.. "@ml_work_summary_custom_and %d @ml_work_summary_custom_xp_in %s"
 
+-- The wage per hour with the pay of the settings and the economy mod, in hundredths of a groschen: from a wage of the
+-- rules, in tenths. generate_jobs.py works it out the same way for the texts (steady_rates).
+function Jobs.Rate(tenths)
+	local rate = tenths * 10 * ML.Settings.Factor("work_pay")
+	if ML.Economy.active then
+		rate = rate * ML.ECONOMY.price_factor
+	end
+	return math.floor(rate + 0.5)
+end
+
 local function summary(site, hours, steady, amount, xpMain, xpSecondary)
 	if ML.Settings.Changed("work_pay") or ML.Settings.Changed("work_xp") then
 		local rules = ML.JOB_RULES
-		if amount <= rules.summary_pay_max and math.max(xpMain, xpSecondary) <= rules.summary_xp_max then
-			return string.format(Jobs.CUSTOM_SUMMARY, hours, amount, site.main_text, xpMain, site.secondary_text, xpSecondary)
+		local rate = Jobs.Rate(steady and rules.steady_wage or rules.wage)
+		if amount <= rules.summary_pay_max and rate <= rules.summary_rate_max and math.max(xpMain, xpSecondary) <= rules.summary_xp_max then
+			return string.format(Jobs.CUSTOM_SUMMARY, hours, rate, amount, site.main_text, xpMain, site.secondary_text, xpSecondary)
 		end
 		return string.format(Jobs.CUSTOM_SUMMARY_SHORT, hours, xpMain, site.main_text, xpSecondary, site.secondary_text)
 	end

@@ -16,8 +16,9 @@ Settings.MONTH_DAYS = "month_days"
 -- In the order of the menu, which counts from 0.
 Settings.MONTH_CHOICES = { 7, 14, ML.Days.REAL }
 Settings.KEY = "settings"
--- 1 while the pay of work is not the usual one: the dialog of the steady job then says its terms without the wage.
+-- 1 while the pay of work is not the usual one: the dialog of the steady job then says its terms with ml_work_wage.
 Settings.WORK_PAY_VARIABLE = "ml_work_pay_custom"
+Settings.WORK_WAGE_VARIABLE = "ml_work_wage"
 -- And the same for the errands: the offers say no amount (ml_order_dialog.xml).
 Settings.ORDER_PAY_VARIABLE = "ml_order_pay_custom"
 
@@ -155,4 +156,6 @@ end
 ML.TickHandlers[#ML.TickHandlers + 1] = function()
 	Variables.SetGlobal(Settings.WORK_PAY_VARIABLE, Settings.Changed("work_pay") and 1 or 0)
 	Variables.SetGlobal(Settings.ORDER_PAY_VARIABLE, Settings.Changed("order_pay") and 1 or 0)
+	-- The wage of the steady job, in hundredths: its terms say it from one text per wage.
+	Variables.SetGlobal(Settings.WORK_WAGE_VARIABLE, ML.Jobs.Rate(ML.JOB_RULES.steady_wage))
 end

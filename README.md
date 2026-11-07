@@ -75,7 +75,7 @@ With JerryYOJ's optional [Mod Configuration Menu](https://www.nexusmods.com/king
 | Errands: reputation lost | 10 | 0 to 20 | Points a business takes off when one of its errands runs out |
 | Errands: unpaid errands before the guard | 3 | 0 to 10 | Unpaid slips in one town before its guards hear of it. 0: never |
 
-With the pay changed, the owners stop saying the amount in the dialog: the summary after work and the slip of each errand say it, with a decimal point in every language.
+With the pay changed, the summary after work, the terms of the steady job, the errand offers and the slips say the new amounts. An errand offer says them in a second line: the dialog cannot put a number inside a line, so each amount the settings can give has a line of its own.
 
 ## How it works
 
