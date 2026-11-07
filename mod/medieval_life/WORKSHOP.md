@@ -23,7 +23,7 @@ Henry goes back to Rattay, and you stay behind as a nobody in the Trosky region:
 - **Day work** in every town and village of the Trosky region. Talk to the owner or the foreman in working hours, mostly 08:00 to 18:00, and choose your hours. Some keep shorter ones, and they tell you when. Each hour pays, trains the skills of the trade, and makes you hungry and tired.
 - **A steady job**, with a shift every day, 6 days on and 1 off, a meal, and a bed by your workplace. Come late two days in a row, miss a shift, or turn up drunk or naked, and that is a fault. Three faults and you are out.
 - **The book of trades** keeps your record: your name, your birth date, your parents, and where you worked and for how long.
-- **A bed for the night,** or for a week at the price of five nights, at the taverns, the inn and the other places that rent one: ask the owner when you talk about work, and the map shows you where it is. The game's own offer to rent a bed is Henry's.
+- **A bed for the night,** or for a week at the price of five nights, at the taverns, the inn and the other places that rent one: ask the owner when you talk about work, and the map shows you where it is. Nobody minds you by it while it is yours. The game's own offer to rent a bed is Henry's.
 - **Every bed saves the game,** even a stranger's.
 - **A stash of your own.** Your chests are yours, not Henry's, also those of The KCD2 Camping Mod and Mercenaries. Henry's stash waits for him.
 
@@ -47,7 +47,7 @@ Every business asks for errands on its own day of the week, never farther than t
 - **Any save will do.** Add it to the save you are playing: no new game needed. In that save, Henry's alchemy recipes are hidden while the mod is installed, because your new character must start with none. They come back when you remove the mods.
 - **In a new game,** Henry's own playthrough works with no problems.
 - **Keep a save from before the new life.** It is the safest way back to Henry.
-- **Kuttenberg** opens to the new character once Henry's story has reached it, with the coachman by Slatejov, as for Henry.
+- **Kuttenberg** opens to you once Henry's story reaches it.
 - Women speak with Henry's voice.
 - It changes the game's alchemy recipe list, so mods that change the game's own recipes can clash with it. Mods that add new potions, like ldpotions, work.
 - It works with the game alone, and with other mods too.
