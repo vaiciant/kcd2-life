@@ -24,7 +24,7 @@ KCD2 Life turns *Kingdom Come: Deliverance II* (PC, game version 1.5) into a lif
   | Innkeeper family | Hunting sword | 40 groschen, and the steady job at the tavern |
   | Burgher family | Sword | 300 groschen |
 
-- **A fresh map.** The places Henry found are hidden again, and so are his beds and homes on the map. The compass can still show one of his beds. The new character has no dog.
+- **A fresh map.** The places Henry found are hidden again, and so are his beds and homes on the map. The compass can still show one of his beds. The new character has no dog, though the inventory still shows Mutt: for the game he stays the player's dog.
 - **Kuttenberg** opens to the new character as it does to Henry: the coachman by Slatejov takes you there once Henry's story has reached the city. Before that, the game crashes while loading the city, so the mod does not open the road early.
 - **A calendar of your own.** Your life starts on 1 June 1403, and the book of trades keeps the date. Months last 7 days, so a month is a week of work. With the optional [settings](#settings), you can switch to 14-day months or the real calendar.
 

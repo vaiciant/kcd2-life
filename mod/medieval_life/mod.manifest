@@ -5,7 +5,7 @@
 		<modid>medieval_life</modid>
 		<description>Start a new life in Bohemia as someone else: work, earn and make your own way.</description>
 		<author>KCD2 Life</author>
-		<version>0.1.5</version>
+		<version>0.1.6</version>
 		<created_on>2026-10-31</created_on>
 		<modifies_level>false</modifies_level>
 	</info>

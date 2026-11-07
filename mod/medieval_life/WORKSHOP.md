@@ -15,7 +15,7 @@ Henry goes back to Rattay, and you stay behind as a nobody in the Trosky region:
   - a peasant family: a mace and 15 groschen;
   - an innkeeper family: a hunting sword, 40 groschen and a job at the tavern;
   - a burgher family: a sword and 300 groschen.
-- **A fresh map.** The places Henry found are hidden again, and so are his beds and homes on the map. You have no dog.
+- **A fresh map.** The places Henry found are hidden again, and so are his beds and homes on the map. You have no dog, though Mutt shows in your inventory.
 - **Your own calendar.** Your life starts on 1 June 1403. A month lasts a week of work, or 14 days, or the real calendar if you use Mod Configuration Menu.
 
 ## Work
