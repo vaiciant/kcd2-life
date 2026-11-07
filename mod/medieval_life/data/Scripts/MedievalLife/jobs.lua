@@ -76,14 +76,21 @@ end
 -- With the pay or the experience changed in the settings, the written lines do not fit: the summary is put together
 -- here, with the names of the skills as the game writes them. The amounts go with a point.
 -- SendInfoText shows each word of the line on its own: a key with @ is translated and a whole number stays, but any
--- other word, as "h:", "+1.8" or "XP,", is dropped. So everything but the numbers is a key, and the pay is left
--- to the notice of the game, which already says how many groschen came in.
-Jobs.CUSTOM_SUMMARY = "@ml_work_summary_custom %d @ml_work_summary_custom_hours %d @ml_work_summary_custom_xp_in %s "
+-- other word, as "h:", "+1.8" or "XP,", is dropped. So everything but the hours is a key, and each amount has a
+-- key of its own, written by generate_jobs.py: "Worked 2 h: +1.8 g. Speech +6 XP, Craftsmanship +2 XP.".
+Jobs.CUSTOM_SUMMARY = "@ml_work_summary_custom %d @ml_work_summary_custom_hours @ml_work_pay_%d %s @ml_work_xp_%d %s "
+	.. "@ml_work_xp_last_%d"
+-- Past the amounts with a key, which the settings do not reach: the line without the pay.
+Jobs.CUSTOM_SUMMARY_SHORT = "@ml_work_summary_custom %d @ml_work_summary_custom_hours %d @ml_work_summary_custom_xp_in %s "
 	.. "@ml_work_summary_custom_and %d @ml_work_summary_custom_xp_in %s"
 
 local function summary(site, hours, steady, amount, xpMain, xpSecondary)
 	if ML.Settings.Changed("work_pay") or ML.Settings.Changed("work_xp") then
-		return string.format(Jobs.CUSTOM_SUMMARY, hours, xpMain, site.main_text, xpSecondary, site.secondary_text)
+		local rules = ML.JOB_RULES
+		if amount <= rules.summary_pay_max and math.max(xpMain, xpSecondary) <= rules.summary_xp_max then
+			return string.format(Jobs.CUSTOM_SUMMARY, hours, amount, site.main_text, xpMain, site.secondary_text, xpSecondary)
+		end
+		return string.format(Jobs.CUSTOM_SUMMARY_SHORT, hours, xpMain, site.main_text, xpSecondary, site.secondary_text)
 	end
 	-- Lua cannot read translated text, so there is one written line for each length of work.
 	-- With an economy mod, the line that says its pay.

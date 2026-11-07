@@ -254,6 +254,9 @@ MedievalLife.JOB_RULES = {{
 	steady_meal = {{ {steady_meal} }},
 	casual_meal = {{ {casual_meal} }},
 	casual_meal_min_hours = {data["casual_meal_min_hours"]},
+	-- The amounts with a key of their own for the summary with settings: ml_work_pay_<tenths> and ml_work_xp_<points>.
+	summary_pay_max = {custom_limits(data, sites)[0]},
+	summary_xp_max = {custom_limits(data, sites)[1]},
 }}
 MedievalLife.JOB_SITES = {{
 {rows}}}
@@ -328,17 +331,47 @@ def summaries(data, sites, folder):
     return "".join(f"  <Row><Cell>{key}</Cell><Cell>{key}</Cell><Cell>{text}</Cell></Row>\n" for key, text in rows.items())
 
 
+# The highest pay and experience in the settings, 300 % (settings.lua).
+SETTINGS_FACTOR_MAX = 3
+
+
+def custom_limits(data, sites):
+    """The highest pay, in tenths of a groschen, and experience of one stretch of work with the settings at their top."""
+    hours = max([data["last_hour"] - data["first_hour"]] + [s["hours"][1] - s["hours"][0] for s in sites if "hours" in s])
+    pay = math.ceil(hours * max(data["wage"], data["steady_wage"]) * 10 * SETTINGS_FACTOR_MAX)
+    xp = math.ceil(hours * max(data["xp_main"], data["xp_secondary"]) * SETTINGS_FACTOR_MAX)
+    return pay, xp
+
+
+def custom_pieces(data, sites, folder):
+    """The summary with the pay or the experience of the settings is built in jobs.lua. SendInfoText keeps only keys and
+    whole numbers, so each amount is a key: +1.8 g. for the pay, +6 XP, for the first skill and +2 XP. for the
+    last one."""
+    point = DECIMAL[folder]
+    pay_max, xp_max = custom_limits(data, sites)
+    rows = {}
+    for tenths in range(pay_max + 1):
+        text = str(tenths // 10) if tenths % 10 == 0 else f"{tenths / 10:.1f}".replace(".", point)
+        rows[f"ml_work_pay_{tenths}"] = f"+{text} g."
+    for xp in range(xp_max + 1):
+        rows[f"ml_work_xp_{xp}"] = f"+{xp} XP,"
+        rows[f"ml_work_xp_last_{xp}"] = f"+{xp} XP."
+    return "".join(f"  <Row><Cell>{key}</Cell><Cell>{key}</Cell><Cell>{text}</Cell></Row>\n" for key, text in rows.items())
+
+
 def write_text(mod_dir, data, sites):
     for folder, language in LANGUAGES:
         def change(text):
             text = re.sub(r"  <Row><Cell>ml_job_[a-z_]+</Cell>[^\n]*\n", "", text)
             text = re.sub(r"  <Row><Cell>ml_book_(?:place_[a-z_]+|role|steady_role)</Cell>[^\n]*\n", "", text)
             text = re.sub(r"  <Row><Cell>ml_(?:work|shift)_done_[a-z_0-9]+</Cell>[^\n]*\n", "", text)
+            text = re.sub(r"  <Row><Cell>ml_work_(?:pay|xp|xp_last)_[0-9]+</Cell>[^\n]*\n", "", text)
             rows = "".join(f"  <Row><Cell>ml_job_{s['key']}</Cell><Cell>ml_job_{s['key']}</Cell><Cell>{s['name_' + language]}</Cell></Row>\n" for s in sites)
             rows += "".join(f"  <Row><Cell>ml_book_place_{s['key']}</Cell><Cell>ml_book_place_{s['key']}</Cell><Cell>{s['place_' + language]}</Cell></Row>\n" for s in sites)
             rows += f"  <Row><Cell>ml_book_role</Cell><Cell>ml_book_role</Cell><Cell>{data['role_' + language]}</Cell></Row>\n"
             rows += f"  <Row><Cell>ml_book_steady_role</Cell><Cell>ml_book_steady_role</Cell><Cell>{data['steady_role_' + language]}</Cell></Row>\n"
             rows += summaries(data, sites, folder)
+            rows += custom_pieces(data, sites, folder)
             if text.count("</Table>") != 1:
                 raise SystemExit(f"{folder}: cannot find the end of the table")
             return text.replace("</Table>", rows + "</Table>")

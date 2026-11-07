@@ -26,6 +26,9 @@ MedievalLife.JOB_RULES = {
 	steady_meal = { { "ca873759-2d0d-4f2f-ba05-49b6c1872a9e", 1 }, { "0cb47176-06c5-42a9-8d70-969e917eb999", 1 }, { "2ac0499c-a18f-425f-ab8c-bc81eaa0142a", 1 }, { "9373471a-28cd-4719-a343-4669dd501a0a", 1 }, { "7ae2e77b-bdae-46cb-b6ac-f532cf225748", 1 } },
 	casual_meal = { { "c352d8ae-4021-4f9b-b49c-b1f087f2cd2c", 0.6 }, { "0cb47176-06c5-42a9-8d70-969e917eb999", 1 }, { "2485a0f4-22b5-40d1-9025-b57345f08ce2", 0.6 }, { "3bebc0b5-dcf8-4449-b37a-a5a362995826", 0.6 }, { "7ae2e77b-bdae-46cb-b6ac-f532cf225748", 0.6 } },
 	casual_meal_min_hours = 6,
+	-- The amounts with a key of their own for the summary with settings: ml_work_pay_<tenths> and ml_work_xp_<points>.
+	summary_pay_max = 540,
+	summary_xp_max = 180,
 }
 MedievalLife.JOB_SITES = {
 	{

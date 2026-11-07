@@ -7,9 +7,15 @@
 	     profile while the new character plays, and the game's own node still streams it for Henry when his story gets there.
 	     It hears the tokens of ml_map_beds: the one that reaches the new character on every load, when the life begins and
 	     on ml_switch to it, and the one that reaches Henry on ml_switch to him and on ml_uninstall (bed_marker.lua).
-	     -->
+	     The triggers wait for in_life, as in ml_employment: active from the load of a save of Henry's, they never heard
+	     the new character, who did not exist yet, and the camp stayed away in a life begun after that load.
+	     life_started opens the road at once. -->
 	<Skald>
 		<Gameplay Name="ml_road">
+			<Ports>
+				<Port Name="in_life" Direction="In" Type="bool" />
+				<Port Name="life_started" Direction="In" Type="trigger" />
+			</Ports>
 			<Nodes>
 				<ObjectProperties Name="henry" PositionY="0" PositionX="-900" DeclaringType="wh::rpgmodule::I_Soul">
 					<Asset Name="I_Soul" Alias="player" />
@@ -17,9 +23,6 @@
 				<ObjectProperties Name="new_life" PositionY="200" PositionX="-900" DeclaringType="wh::rpgmodule::I_Soul">
 					<Asset Name="I_Soul" Alias="new_life" />
 				</ObjectProperties>
-				<State Name="always_on" PositionY="-150" PositionX="-900" TypeT="bool">
-					<Constant Name="DefaultValue" Value="true" />
-				</State>
 				<Function Name="life_descriptor" PositionY="200" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
 					<Constant Name="ItemClass" Value="1a3b05f8-46c2-50c5-854b-c053ed8853f1" />
 					<Constant Name="Amount" Value="1" />
@@ -27,7 +30,7 @@
 				<ItemDescriptorTrigger Name="life_token" PositionY="200" PositionX="-300">
 					<Edge From="new_life.Inventory" To="Inventory" />
 					<Edge From="life_descriptor.ItemDescriptor" To="ItemDescriptor" />
-					<Edge From="always_on.State" To="IsActive" />
+					<Edge From="in_life" To="IsActive" />
 				</ItemDescriptorTrigger>
 				<Function Name="henry_descriptor" PositionY="500" PositionX="-600" MethodName="wh::entitymodule::CreateItemClassDescriptor" DeclaringType="wh::entitymodule">
 					<Constant Name="ItemClass" Value="f37cf988-4b03-58f4-b0ac-a0a34eadfbce" />
@@ -36,11 +39,12 @@
 				<ItemDescriptorTrigger Name="henry_token" PositionY="500" PositionX="-300">
 					<Edge From="henry.Inventory" To="Inventory" />
 					<Edge From="henry_descriptor.ItemDescriptor" To="ItemDescriptor" />
-					<Edge From="always_on.State" To="IsActive" />
+					<Edge From="in_life" To="IsActive" />
 				</ItemDescriptorTrigger>
 				<State Name="road_open" PositionY="300" PositionX="0" TypeT="bool">
 					<Constant Name="DefaultValue" Value="false" />
 					<Edge From="life_token.OnAcquire" To="SetTrue" />
+					<Edge From="life_started" To="SetTrue" />
 					<Edge From="henry_token.OnAcquire" To="SetFalse" />
 				</State>
 				<Layer Name="caravan_camp" PositionY="300" PositionX="300">
