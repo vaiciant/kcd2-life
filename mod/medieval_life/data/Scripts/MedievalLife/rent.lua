@@ -319,6 +319,18 @@ function Rent.Place()
 	end
 end
 
+-- Whether the character is near the rented bed while it is theirs: within rent_area metres, as the bed of the steady
+-- job does with steady_area. employment.lua turns off the reactions to trespassing there, with the same Skald state. The bed of the game stays the inn's, so on waking up in Zhelejov the innkeeper threw the character out; Henry's rental is left as it is.
+function Rent.InBubble()
+	local place = Rent.Place()
+	if not place then
+		return false
+	end
+	local position, area = player:GetWorldPos(), ML.JOB_RULES.rent_area
+	local dx, dy = place[1] - position.x, place[2] - position.y
+	return dx * dx + dy * dy <= area * area
+end
+
 -- From the dialog: a week, for the price of rent_week_paid_nights nights.
 function Rent.TakeWeek()
 	Rent.Take(ML.JOB_RULES.rent_week_days)

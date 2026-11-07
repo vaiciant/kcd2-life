@@ -40,7 +40,7 @@ GLOBALS = ("wage", "xp_main", "xp_secondary", "first_hour", "last_hour", "min_ho
            "steady_wage", "steady_work_days", "steady_days_off", "steady_min_hours", "steady_hire_last_hour", "steady_late_minutes", "steady_faults", "steady_fault_days",
            "steady_rehire_quit_days", "steady_rehire_fired_days", "steady_area", "steady_meal", "steady_role_en", "steady_role_es",
            "casual_meal", "casual_meal_min_hours", "casual_meal_health", "casual_meal_fresh",
-           "casual_min_reputation", "steady_min_reputation", "rent_until_hour", "rent_week_days", "rent_week_paid_nights")
+           "casual_min_reputation", "steady_min_reputation", "rent_until_hour", "rent_week_days", "rent_week_paid_nights", "rent_area")
 
 
 def read(path):
@@ -252,6 +252,7 @@ MedievalLife.JOB_RULES = {{
 	rent_until_hour = {data["rent_until_hour"]},
 	rent_week_days = {data["rent_week_days"]},
 	rent_week_paid_nights = {data["rent_week_paid_nights"]},
+	rent_area = {data["rent_area"]},
 	steady_meal = {{ {steady_meal} }},
 	casual_meal = {{ {casual_meal} }},
 	casual_meal_min_hours = {data["casual_meal_min_hours"]},
