@@ -7,7 +7,8 @@ KCD2 Life turns *Kingdom Come: Deliverance II* (PC, game version 1.5) into a lif
 > **From the pillory on, in any save.** The new life is there once Henry has been through the pillory in Troskowitz,
 > early in the story: you do not need to finish the game. Add the mods to the save you are playing, with no new game.
 > In that save, Henry's alchemy recipes are hidden while the mods are installed: the new character must start with none,
-> and the game has no way to erase the recipes a player knows. Removing the mods gives them back. In a new game, Henry's
+> and the game has no way to erase the recipes a player knows. Removing the mods gives them back. Henry keeps the two he
+> knows from the start, chamomile decoction and Saviour schnapps, so the prologue at Bozhena's works. In a new game, Henry's
 > own playthrough works with no problems. Keep a save from before the new life: it is the safest way back to Henry,
 > since nobody has tested whether what the new character does can break one of his quests.
 
@@ -106,7 +107,7 @@ KCD2 Life works with the game alone, and is built to clash with as few mods as p
 
 | What the mod does | Clashes with |
 |---|---|
-| Replaces the whole table `Libs/Tables/minigame/AlchemyRecipe.xml`: the game's recipes are hidden and the mod's copies take their place, so Henry does not see his recipes while the mod is installed | A mod that changes the game's own recipes, or replaces that table too. Mods that add new recipes with a table patch, such as ldpotions, work: the new character learns their recipes as Henry would |
+| Replaces the whole table `Libs/Tables/minigame/AlchemyRecipe.xml`: the game's recipes are hidden and the mod's copies take their place, so Henry does not see his recipes while the mod is installed, except the copies of chamomile decoction and Saviour schnapps, which he knows from the start | A mod that changes the game's own recipes, or replaces that table too. Mods that add new recipes with a table patch, such as ldpotions, work: the new character learns their recipes as Henry would |
 | Replaces the four dialogs of the game's room rental, in `Quests/Final/Barbora/utils/roomrenting/` | A mod that replaces those dialogs too. Realish Economy changes the rental itself, `roomrent.xml`, and not its dialogs: they work together |
 | Replaces eight files of horse buying: the horse traders of Semine and Kutná Hora, the horse handler of Trosky and four of `Quests/Final/Barbora/utils/horsebuying_utils/`. Where the game asks Henry about his horse, his money or his saddle, they ask whoever plays | A mod that replaces those files too. Realish Economy changes the washing of horses, `horsebuying_washinstance.xml`, which KCD2 Life leaves alone |
 
@@ -204,4 +205,4 @@ python -I tools/install_mod.py mod/medieval_life
 
 ## License
 
-Free for any use, also in closed or paid work. The only condition: credit KCD2 Life where people can see it, like a line in your mod's description or credits. You do not need to include the license or publish your source. It does not cover the game's files or anything derived from them, such as the pictures of the recipes. See [LICENSE](LICENSE).
+Free for any use, also in closed work. The only condition: credit KCD2 Life where people can see it, like a line in your mod's description or credits. Asking for donations or Patreon support is fine, as long as nothing in your mod is only for those who pay: Warhorse's rules do not allow selling KCD2 mods. You do not need to include the license or publish your source. It does not cover the game's files or anything derived from them, such as the pictures of the recipes. See [LICENSE](LICENSE).

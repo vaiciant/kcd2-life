@@ -37,6 +37,7 @@ Script.LoadScript("Scripts/MedievalLife/map_points.lua")
 Script.LoadScript("Scripts/MedievalLife/map_marks.lua")
 Script.LoadScript("Scripts/MedievalLife/fast_travel.lua")
 Script.LoadScript("Scripts/MedievalLife/story.lua")
+Script.LoadScript("Scripts/MedievalLife/henry_recipes.lua")
 Script.LoadScript("Scripts/MedievalLife/tutorial.lua")
 Script.LoadScript("Scripts/MedievalLife/stash.lua")
 Script.LoadScript("Scripts/MedievalLife/switch.lua")
@@ -45,7 +46,7 @@ Script.LoadScript("Scripts/MedievalLife/commands.lua")
 
 local ML = MedievalLife
 
-if not (ML.Log and ML.Store and ML.Economy and ML.Days and ML.Reputation and ML.Settings and ML.Screen and ML.Names and ML.Typing and ML.Look and ML.Origins and ML.Life and ML.WorkBook and ML.EmployeeBed and ML.Jobs and ML.Employment and ML.Orders and ML.Rent and ML.Nutrition and ML.BedMarker and ML.WomanTest and ML.Female and ML.Selector and ML.Host and ML.MapMarks and ML.FastTravel and ML.Story and ML.Tutorial and ML.Stash and ML.Switch and ML.Uninstall and ML.Commands) then
+if not (ML.Log and ML.Store and ML.Economy and ML.Days and ML.Reputation and ML.Settings and ML.Screen and ML.Names and ML.Typing and ML.Look and ML.Origins and ML.Life and ML.WorkBook and ML.EmployeeBed and ML.Jobs and ML.Employment and ML.Orders and ML.Rent and ML.Nutrition and ML.BedMarker and ML.WomanTest and ML.Female and ML.Selector and ML.Host and ML.MapMarks and ML.FastTravel and ML.Story and ML.HenryRecipes and ML.Tutorial and ML.Stash and ML.Switch and ML.Uninstall and ML.Commands) then
 	System.LogAlways("[ML] ERROR a module did not load")
 	return
 end
