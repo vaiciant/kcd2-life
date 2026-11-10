@@ -2,6 +2,13 @@
 
 Every release is listed here, as it went out on Steam Workshop, Nexus Mods and GitHub. The builds made while working on one are not listed.
 
+## 0.1.2
+
+Henry's prologue with the mods installed.
+
+- **Henry's first recipes.** In Henry's own game, he keeps the two recipes he knows from the start, chamomile decoction and Saviour schnapps, so the prologue at Bozhena's can be finished. Before, the mod hid them with the rest of the game's recipes. The new character still starts with none.
+- **License:** asking for donations or Patreon support for a mod that uses KCD2 Life is fine, as long as nothing in it is only for those who pay. Warhorse's rules do not allow selling KCD2 mods.
+
 ## 0.1.1
 
 Settings for work and errands, the rented beds, and horses.

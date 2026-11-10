@@ -9,7 +9,7 @@ Henry goes back to Rattay, and you stay behind as a nobody in the Trosky region:
 ## A new life
 
 - **A new start.** In Troskowitz, a wayfarer by the tavern wall offers you a new life, from 08:00 to 20:00.
-- **A few words to start.** Short notes tell you how to get by: where to sleep, how to find work and errands, and where to get a fresh look.
+- **A few words to start.** Short notes tell you how to get by.
 - **Who you are.** Choose a man or a woman, and look through the faces of the common folk: Czech, Hungarian or Romani. Type a name, or draw one from the names of the time and of that people.
 - **From scratch.** Your attributes start at 0, your skills at 1, and you know no recipes. Your family gives you clothes, a weapon and money:
   - a peasant family: a mace and 15 groschen;
@@ -44,13 +44,12 @@ Every business asks for errands on its own day of the week, never farther than t
 ## Good to know
 
 - **From the pillory on.** The new life is there once Henry has been through the pillory in Troskowitz, early in the story. You do not need to finish the game.
-- **Any save will do.** Add it to the save you are playing: no new game needed. In that save, Henry's alchemy recipes are hidden while the mod is installed, because your new character must start with none. They come back when you remove the mods.
+- **Any save will do.** Add it to the save you are playing: no new game needed. Henry's alchemy recipes are hidden while the mod is installed, since your new character starts with none, except the two he needs in the prologue. They come back when you remove the mods.
 - **In a new game,** Henry's own playthrough works with no problems.
 - **Keep a save from before the new life.** It is the safest way back to Henry.
 - **Kuttenberg** opens to you once Henry's story reaches it.
 - Women speak with Henry's voice.
-- It changes the game's alchemy recipe list, so mods that change the game's own recipes can clash with it. Mods that add new potions, like ldpotions, work.
-- It works with the game alone, and with other mods too.
+- Mods that change the game's own alchemy recipes can clash with it. Mods that add new potions, like ldpotions, work.
 
 ## Played with other mods
 
@@ -63,7 +62,7 @@ KCD2 Life has been played together with 47 other mods at once. These make a new 
 - **The KCD2 Cooking Mod:** cook your own meals. Buy the food with your wages and feed yourself.
 - **Realish Wounds and Realish Crime:** wounds and the law closer to the real thing, so a fight or a theft costs a nobody dearly.
 - **ldpotions:** more potions to brew, and more recipes for your new character to learn.
-- **Mod Configuration Menu:** settings in the game's menu: how long a month lasts, what work pays and teaches, how hungry and tired it makes you, and how hard errands are.
+- **Mod Configuration Menu:** settings for the calendar, work and errands.
 
 The full list is on [GitHub](https://github.com/vaiciant/kcd2-life/blob/main/mod/medieval_life/TESTED_MODS.md). Others should work too.
 
@@ -74,8 +73,6 @@ Type `ml_switch yes` in the console to switch between Henry and your new charact
 ## Removing it
 
 Go to the Trosky region and type `ml_uninstall yes` in the console. It closes the mod's quests, your job and your errands, gives the game back to Henry with Mutt, and saves. To remove the mods, quit and take them out: Henry gets his recipes back.
-
-The safest way back to Henry is a save from before the new life: nobody has tested whether what the new character does can break one of his quests.
 
 ## Installing
 
