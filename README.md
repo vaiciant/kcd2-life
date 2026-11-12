@@ -15,7 +15,7 @@ KCD2 Life turns *Kingdom Come: Deliverance II* (PC, game version 1.5) into a lif
 ## A new life
 
 - **A new start.** In Troskowitz, a wayfarer by the tavern wall offers a new life, from 08:00 to 20:00. Henry waits in that save, and you can play him again with `ml_switch`.
-- **First steps.** Once the new life begins, five short notes in the game's tutorial window, in the voice of the world, tell you what you can do: sleep in any bed to save, work, run errands, and get a first haircut for free at any barber, such as Fiala in Zhelejov.
+- **First steps.** Once the new life begins, five short notes in the game's tutorial window tell you what you can do: sleep in any bed to save, work, run errands, and get a first haircut for free at any barber, such as Fiala in Zhelejov.
 - **Who you are.** Choose a man or a woman, then go through the faces on the pillory stage with *Next Czech*, *Next Hungarian* or *Next Romani*. Every face is one of the game's common folk, never a lord or a character of the story. Type a name, or draw one from the names of the time and of that people.
 - **From scratch.** Attributes start at 0 and skills at 1, and you know no alchemy recipes: you learn them as Henry did, from recipe pages and perks. Your clothes, weapon and money come from your origin, and everyone gets a torch:
 
@@ -145,7 +145,6 @@ These are plans, not promises.
 - **Careers:** higher posts and better pay, earned with the record in your book of trades.
 - **Older faces,** with a choice of age.
 - **Daily objectives** of the steady job in the journal.
-- **Voices** for the people who hand you goods.
 - **Allegiance:** swear loyalty to a lord, such as von Bergow or Jan Žižka.
 - **Rank and property:** a house first, and with time a keep and a village to run.
 - **War:** campaigns, sieges and raids.
