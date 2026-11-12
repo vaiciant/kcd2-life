@@ -4,7 +4,9 @@
 	     is by the distance (jobs.lua). Lua keeps ml_new_life, ml_work_hours, ml_site_open, ml_has_book and ml_can_buy_book up to date, and orders.lua ml_order_owed.
 	     ml_site_open is 0 at a site that Henry's story does not have in the world, like Trosky castle before it opens.
 	     The sequences seq_work_debt* at the start of dec_open are written by tools/generate_orders.py: what is owed, and paying it.
-	     Only Henry's lines to ask and to agree have a voice: see ../nebakovObrana.xml. The rest are silent subtitles. -->
+	     Only Henry's lines to ask and to agree have a voice: see ../nebakovObrana.xml. The rest are silent subtitles.
+	     The beds for rent are in ml_rent_dialog.xml. Its priority, the one before Default, puts casual work and then the
+	     steady job (ml_work_dialog.xml, the same) over the errands and the beds (Default). -->
 	<Skald>
 		<FaderDialog Name="ml_casual_dialog">
 			<Text Text="ml_casual_dialog" />
@@ -13,9 +15,9 @@
 					<SelectedSoul Role="HENRY" Voice="tomMcKay" Type="Wave" Language="ENG" />
 					<SelectedSoul Role="role_ml_employer" Voice="bobBordeaux" Type="Wave" Language="ENG" />
 				</SelectedSouls>
-				<Decision Name="dec_casual" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+				<Decision Name="dec_casual" Priority="SideQuestAdditionals" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
 					<Sequences>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_shift_state') == 0 &amp; gvar('ml_site_open') == 1" EndType="Decision" Name="seq_work">
+						<Sequence EntryCondition="(gvar('ml_new_life') == 1 &amp; gvar('ml_shift_state') == 0 &amp; gvar('ml_site_open') == 1) &amp; gvar('ml_text_only') == 0" EndType="Decision" Name="seq_work">
 							<UiPrompt StringName="ui_ml_work" />
 							<Elements>
 								<Response Role="HENRY" ReferenceLength="1.4">
@@ -961,7 +963,7 @@
 										</Elements>
 										<Decision Name="dec_hours" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
 											<Sequences>
-											<Sequence EntryCondition="gvar('ml_work_hours') &gt;= 10" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(10)" Name="seq_h10">
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 10) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(10)" Name="seq_h10">
 												<UiPrompt StringName="ui_ml_work_h10" />
 												<Elements>
 													<Response Role="HENRY" ReferenceLength="1.85">
@@ -972,7 +974,18 @@
 													</Response>
 												</Elements>
 											</Sequence>
-											<Sequence EntryCondition="gvar('ml_work_hours') &gt;= 9" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(9)" Name="seq_h9">
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 10) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(10)" Name="seq_h10_text">
+												<UiPrompt StringName="ui_ml_work_h10" />
+												<Elements>
+													<Response Role="HENRY" ReferenceLength="1.85">
+														<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+													</Response>
+													<Response Role="role_ml_employer">
+														<Text StringName="ml_work_go" />
+													</Response>
+												</Elements>
+											</Sequence>
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 9) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(9)" Name="seq_h9">
 												<UiPrompt StringName="ui_ml_work_h9" />
 												<Elements>
 													<Response Role="HENRY" ReferenceLength="1.85">
@@ -983,7 +996,18 @@
 													</Response>
 												</Elements>
 											</Sequence>
-											<Sequence EntryCondition="gvar('ml_work_hours') &gt;= 8" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(8)" Name="seq_h8">
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 9) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(9)" Name="seq_h9_text">
+												<UiPrompt StringName="ui_ml_work_h9" />
+												<Elements>
+													<Response Role="HENRY" ReferenceLength="1.85">
+														<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+													</Response>
+													<Response Role="role_ml_employer">
+														<Text StringName="ml_work_go" />
+													</Response>
+												</Elements>
+											</Sequence>
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 8) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(8)" Name="seq_h8">
 												<UiPrompt StringName="ui_ml_work_h8" />
 												<Elements>
 													<Response Role="HENRY" ReferenceLength="1.85">
@@ -994,7 +1018,18 @@
 													</Response>
 												</Elements>
 											</Sequence>
-											<Sequence EntryCondition="gvar('ml_work_hours') &gt;= 7" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(7)" Name="seq_h7">
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 8) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(8)" Name="seq_h8_text">
+												<UiPrompt StringName="ui_ml_work_h8" />
+												<Elements>
+													<Response Role="HENRY" ReferenceLength="1.85">
+														<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+													</Response>
+													<Response Role="role_ml_employer">
+														<Text StringName="ml_work_go" />
+													</Response>
+												</Elements>
+											</Sequence>
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 7) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(7)" Name="seq_h7">
 												<UiPrompt StringName="ui_ml_work_h7" />
 												<Elements>
 													<Response Role="HENRY" ReferenceLength="1.85">
@@ -1005,7 +1040,18 @@
 													</Response>
 												</Elements>
 											</Sequence>
-											<Sequence EntryCondition="gvar('ml_work_hours') &gt;= 6" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(6)" Name="seq_h6">
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 7) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(7)" Name="seq_h7_text">
+												<UiPrompt StringName="ui_ml_work_h7" />
+												<Elements>
+													<Response Role="HENRY" ReferenceLength="1.85">
+														<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+													</Response>
+													<Response Role="role_ml_employer">
+														<Text StringName="ml_work_go" />
+													</Response>
+												</Elements>
+											</Sequence>
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 6) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(6)" Name="seq_h6">
 												<UiPrompt StringName="ui_ml_work_h6" />
 												<Elements>
 													<Response Role="HENRY" ReferenceLength="1.85">
@@ -1016,7 +1062,18 @@
 													</Response>
 												</Elements>
 											</Sequence>
-											<Sequence EntryCondition="gvar('ml_work_hours') &gt;= 5" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(5)" Name="seq_h5">
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 6) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(6)" Name="seq_h6_text">
+												<UiPrompt StringName="ui_ml_work_h6" />
+												<Elements>
+													<Response Role="HENRY" ReferenceLength="1.85">
+														<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+													</Response>
+													<Response Role="role_ml_employer">
+														<Text StringName="ml_work_go" />
+													</Response>
+												</Elements>
+											</Sequence>
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 5) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(5)" Name="seq_h5">
 												<UiPrompt StringName="ui_ml_work_h5" />
 												<Elements>
 													<Response Role="HENRY" ReferenceLength="1.85">
@@ -1027,7 +1084,18 @@
 													</Response>
 												</Elements>
 											</Sequence>
-											<Sequence EntryCondition="gvar('ml_work_hours') &gt;= 4" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(4)" Name="seq_h4">
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 5) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(5)" Name="seq_h5_text">
+												<UiPrompt StringName="ui_ml_work_h5" />
+												<Elements>
+													<Response Role="HENRY" ReferenceLength="1.85">
+														<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+													</Response>
+													<Response Role="role_ml_employer">
+														<Text StringName="ml_work_go" />
+													</Response>
+												</Elements>
+											</Sequence>
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 4) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(4)" Name="seq_h4">
 												<UiPrompt StringName="ui_ml_work_h4" />
 												<Elements>
 													<Response Role="HENRY" ReferenceLength="1.85">
@@ -1038,7 +1106,18 @@
 													</Response>
 												</Elements>
 											</Sequence>
-											<Sequence EntryCondition="gvar('ml_work_hours') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(3)" Name="seq_h3">
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 4) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(4)" Name="seq_h4_text">
+												<UiPrompt StringName="ui_ml_work_h4" />
+												<Elements>
+													<Response Role="HENRY" ReferenceLength="1.85">
+														<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+													</Response>
+													<Response Role="role_ml_employer">
+														<Text StringName="ml_work_go" />
+													</Response>
+												</Elements>
+											</Sequence>
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 3) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(3)" Name="seq_h3">
 												<UiPrompt StringName="ui_ml_work_h3" />
 												<Elements>
 													<Response Role="HENRY" ReferenceLength="1.85">
@@ -1049,11 +1128,33 @@
 													</Response>
 												</Elements>
 											</Sequence>
-											<Sequence EntryCondition="gvar('ml_work_hours') &gt;= 2" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(2)" Name="seq_h2">
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 3) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(3)" Name="seq_h3_text">
+												<UiPrompt StringName="ui_ml_work_h3" />
+												<Elements>
+													<Response Role="HENRY" ReferenceLength="1.85">
+														<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+													</Response>
+													<Response Role="role_ml_employer">
+														<Text StringName="ml_work_go" />
+													</Response>
+												</Elements>
+											</Sequence>
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 2) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(2)" Name="seq_h2">
 												<UiPrompt StringName="ui_ml_work_h2" />
 												<Elements>
 													<Response Role="HENRY" ReferenceLength="1.85">
 														<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+													</Response>
+													<Response Role="role_ml_employer">
+														<Text StringName="ml_work_go" />
+													</Response>
+												</Elements>
+											</Sequence>
+											<Sequence EntryCondition="(gvar('ml_work_hours') &gt;= 2) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Jobs.Start(2)" Name="seq_h2_text">
+												<UiPrompt StringName="ui_ml_work_h2" />
+												<Elements>
+													<Response Role="HENRY" ReferenceLength="1.85">
+														<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
 													</Response>
 													<Response Role="role_ml_employer">
 														<Text StringName="ml_work_go" />
@@ -1072,99 +1173,12 @@
 								</Sequences>
 							</Decision>
 						</Sequence>
-						<!-- A bed for the night, where the game rents one. rent.lua sets ml_rent_price, the price nearby in whole
-						     groschen, 0 where nobody rents, and ml_rent_state: 1 it can be paid, 2 the money is short, 3 the bed here is
-						     the character's already. One option per price, and the others jump to the decision of the first. -->
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_price') == 5" EndType="Decision" Name="seq_rent_5">
-							<UiPrompt StringName="ui_ml_rent_5" />
+						<Sequence EntryCondition="(gvar('ml_new_life') == 1 &amp; gvar('ml_shift_state') == 0 &amp; gvar('ml_site_open') == 1) &amp; gvar('ml_text_only') == 1" EndType="GoTo" GoToDecision="dec_open" Name="seq_work_text">
+							<UiPrompt StringName="ui_ml_work" />
 							<Elements>
-								<Response Role="HENRY" />
-							</Elements>
-							<Decision Name="dec_rent" Autoselect="true" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
-								<Sequences>
-									<Sequence EntryCondition="gvar('ml_rent_state') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Rent.Take()" Name="seq_rent_take">
-										<Elements>
-											<Response Role="role_ml_employer">
-												<Text StringName="ml_rent_given" />
-											</Response>
-										</Elements>
-									</Sequence>
-									<Sequence EntryCondition="gvar('ml_rent_state') == 2" EndType="EndDialogue" Name="seq_rent_short">
-										<Elements>
-											<Response Role="role_ml_employer">
-												<Text StringName="ml_rent_no_money" />
-											</Response>
-										</Elements>
-									</Sequence>
-									<Sequence EntryCondition="gvar('ml_rent_state') == 3" EndType="EndDialogue" Name="seq_rent_have">
-										<Elements>
-											<Response Role="role_ml_employer">
-												<Text StringName="ml_rent_already" />
-											</Response>
-										</Elements>
-									</Sequence>
-								</Sequences>
-							</Decision>
-						</Sequence>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_price') == 1" EndType="GoTo" GoToDecision="dec_rent" Name="seq_rent_1">
-							<UiPrompt StringName="ui_ml_rent_1" />
-							<Elements>
-								<Response Role="HENRY" />
-							</Elements>
-						</Sequence>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_price') == 10" EndType="GoTo" GoToDecision="dec_rent" Name="seq_rent_10">
-							<UiPrompt StringName="ui_ml_rent_10" />
-							<Elements>
-								<Response Role="HENRY" />
-							</Elements>
-						</Sequence>
-						<!-- Or a week, for the price of five nights, while the bed here is not the character's already. -->
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_state') != 3 &amp; gvar('ml_rent_week_price') == 25" EndType="Decision" Name="seq_rent_week_25">
-							<UiPrompt StringName="ui_ml_rent_week_25" />
-							<Elements>
-								<Response Role="HENRY" />
-							</Elements>
-							<Decision Name="dec_rent_week" Autoselect="true" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
-								<Sequences>
-									<Sequence EntryCondition="gvar('ml_rent_week_state') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Rent.TakeWeek()" Name="seq_rent_week_take">
-										<Elements>
-											<Response Role="role_ml_employer">
-												<Text StringName="ml_rent_given_week" />
-											</Response>
-										</Elements>
-									</Sequence>
-									<Sequence EntryCondition="gvar('ml_rent_week_state') == 2" EndType="EndDialogue" Name="seq_rent_week_short">
-										<Elements>
-											<Response Role="role_ml_employer">
-												<Text StringName="ml_rent_no_money" />
-											</Response>
-										</Elements>
-									</Sequence>
-								</Sequences>
-							</Decision>
-						</Sequence>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_state') != 3 &amp; gvar('ml_rent_week_price') == 6" EndType="GoTo" GoToDecision="dec_rent_week" Name="seq_rent_week_6">
-							<UiPrompt StringName="ui_ml_rent_week_6" />
-							<Elements>
-								<Response Role="HENRY" />
-							</Elements>
-						</Sequence>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_state') != 3 &amp; gvar('ml_rent_week_price') == 50" EndType="GoTo" GoToDecision="dec_rent_week" Name="seq_rent_week_50">
-							<UiPrompt StringName="ui_ml_rent_week_50" />
-							<Elements>
-								<Response Role="HENRY" />
-							</Elements>
-						</Sequence>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_state') != 3 &amp; gvar('ml_rent_week_price') == 100" EndType="GoTo" GoToDecision="dec_rent_week" Name="seq_rent_week_100">
-							<UiPrompt StringName="ui_ml_rent_week_100" />
-							<Elements>
-								<Response Role="HENRY" />
-							</Elements>
-						</Sequence>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_price') == 20" EndType="GoTo" GoToDecision="dec_rent" Name="seq_rent_20">
-							<UiPrompt StringName="ui_ml_rent_20" />
-							<Elements>
-								<Response Role="HENRY" />
+								<Response Role="HENRY" ReferenceLength="1.4">
+									<Text StringName="ml_text_bejk_henry_potrebujes_s_n_2i4e" />
+								</Response>
 							</Elements>
 						</Sequence>
 					</Sequences>

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
+	<!-- A bed for the night or for a week, in the dialog of every employer that rents one: role_ml_employer,
+	     as ml_casual_dialog. In a dialog of its own, it is registered first in nebakovObrana.xml,
+	     so that the beds come last of the options of the mod: the game lists the dialogs in the reverse of that order. -->
+	<Skald>
+		<FaderDialog Name="ml_rent_dialog">
+			<Text Text="ml_rent_dialog" />
+			<Dialogue TechnicalStatus="Enabled">
+				<SelectedSouls>
+					<SelectedSoul Role="HENRY" Voice="tomMcKay" Type="Wave" Language="ENG" />
+					<SelectedSoul Role="role_ml_employer" Voice="bobBordeaux" Type="Wave" Language="ENG" />
+				</SelectedSouls>
+				<Decision Name="dec_rent_root" Priority="Default" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+					<Sequences>
+						<!-- A bed for the night, where the game rents one. rent.lua sets ml_rent_price, the price nearby in whole
+						     groschen, 0 where nobody rents, and ml_rent_state: 1 it can be paid, 2 the money is short, 3 the bed here is
+						     the character's already. One option per price, and the others jump to the decision of the first. -->
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_price') == 5" EndType="Decision" Name="seq_rent_5">
+							<UiPrompt StringName="ui_ml_rent_5" />
+							<Elements>
+								<Response Role="HENRY" />
+							</Elements>
+							<Decision Name="dec_rent" Autoselect="true" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+								<Sequences>
+									<Sequence EntryCondition="gvar('ml_rent_state') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Rent.Take()" Name="seq_rent_take">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_rent_given" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_rent_state') == 2" EndType="EndDialogue" Name="seq_rent_short">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_rent_no_money" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_rent_state') == 3" EndType="EndDialogue" Name="seq_rent_have">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_rent_already" />
+											</Response>
+										</Elements>
+									</Sequence>
+								</Sequences>
+							</Decision>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_price') == 1" EndType="GoTo" GoToDecision="dec_rent" Name="seq_rent_1">
+							<UiPrompt StringName="ui_ml_rent_1" />
+							<Elements>
+								<Response Role="HENRY" />
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_price') == 10" EndType="GoTo" GoToDecision="dec_rent" Name="seq_rent_10">
+							<UiPrompt StringName="ui_ml_rent_10" />
+							<Elements>
+								<Response Role="HENRY" />
+							</Elements>
+						</Sequence>
+						<!-- Or a week, for the price of five nights, while the bed here is not the character's already. -->
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_state') != 3 &amp; gvar('ml_rent_week_price') == 25" EndType="Decision" Name="seq_rent_week_25">
+							<UiPrompt StringName="ui_ml_rent_week_25" />
+							<Elements>
+								<Response Role="HENRY" />
+							</Elements>
+							<Decision Name="dec_rent_week" Autoselect="true" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+								<Sequences>
+									<Sequence EntryCondition="gvar('ml_rent_week_state') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Rent.TakeWeek()" Name="seq_rent_week_take">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_rent_given_week" />
+											</Response>
+										</Elements>
+									</Sequence>
+									<Sequence EntryCondition="gvar('ml_rent_week_state') == 2" EndType="EndDialogue" Name="seq_rent_week_short">
+										<Elements>
+											<Response Role="role_ml_employer">
+												<Text StringName="ml_rent_no_money" />
+											</Response>
+										</Elements>
+									</Sequence>
+								</Sequences>
+							</Decision>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_state') != 3 &amp; gvar('ml_rent_week_price') == 6" EndType="GoTo" GoToDecision="dec_rent_week" Name="seq_rent_week_6">
+							<UiPrompt StringName="ui_ml_rent_week_6" />
+							<Elements>
+								<Response Role="HENRY" />
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_state') != 3 &amp; gvar('ml_rent_week_price') == 50" EndType="GoTo" GoToDecision="dec_rent_week" Name="seq_rent_week_50">
+							<UiPrompt StringName="ui_ml_rent_week_50" />
+							<Elements>
+								<Response Role="HENRY" />
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_state') != 3 &amp; gvar('ml_rent_week_price') == 100" EndType="GoTo" GoToDecision="dec_rent_week" Name="seq_rent_week_100">
+							<UiPrompt StringName="ui_ml_rent_week_100" />
+							<Elements>
+								<Response Role="HENRY" />
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_rent_price') == 20" EndType="GoTo" GoToDecision="dec_rent" Name="seq_rent_20">
+							<UiPrompt StringName="ui_ml_rent_20" />
+							<Elements>
+								<Response Role="HENRY" />
+							</Elements>
+						</Sequence>
+					</Sequences>
+				</Decision>
+			</Dialogue>
+		</FaderDialog>
+	</Skald>
+</Database>

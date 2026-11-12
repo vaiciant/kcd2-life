@@ -115,3 +115,186 @@ function WomanTest.Shop()
 	end
 	ML.Log("woman shop given", #ML.WOMAN_CLOTHES_SAMPLE)
 end
+
+-- Henry's double in the cutscenes of the engine. A double is an AnimChar that takes its
+-- look from the soul in Properties.Body.guidBodyPresetId. 202 doubles name the player's soul; 27 name a soul of their
+-- own that the game's Storm rules give Henry's head: wet, injured, whipped, naked, dreaming. These commands put doubles
+-- in front of the player to see whether one with the player's soul shows her, and how a double can change its soul
+-- while the game runs.
+WomanTest.ACTOR_NAME = "ml_actor_test_"
+WomanTest.ACTOR_DISTANCE = 2.5
+WomanTest.ACTOR_SPACING = 1.0
+WomanTest.ACTOR_ROW = 4
+WomanTest.PLAYER_SOUL = "4c2dcffb-dea1-6263-72d7-b39f4db2d8b5"
+WomanTest.ACTOR_SOULS = {
+	player = WomanTest.PLAYER_SOUL,
+	injured = "734090a0-9276-4783-9d31-d6a66c69673b", -- prepadeni_jindrichInjured: the fall
+	wet = "2a15d6ae-46cf-4172-825e-ab4cd504dcc0", -- prepadeni_jindrichWet: the lake
+	dream = "4407e676-8058-4f2b-ad2f-8228f9c1989f", -- kkut_henry: the dream with Martin
+}
+-- Every soul of Henry's own in the doubles of the game 1.5.6, the ones ml_w_actor_hook changes.
+WomanTest.HENRY_SOULS = {
+	["734090a0-9276-4783-9d31-d6a66c69673b"] = "prepadeni_jindrichInjured",
+	["2a15d6ae-46cf-4172-825e-ab4cd504dcc0"] = "prepadeni_jindrichWet",
+	["4407e676-8058-4f2b-ad2f-8228f9c1989f"] = "kkut_henry",
+	["e0831215-924c-43b2-8bd9-8c26a5b15b81"] = "cutscene_henry_injured_arm",
+	["d47c88db-0a13-4140-870f-b06824b5e3a7"] = "cutscene_henry_whipped_mild",
+	["e41ba721-1f76-4182-afbb-46b207b0850c"] = "cutscene_henry_whipped_severe",
+	["ff8cd1f5-5470-40d9-b9bb-5262ce4738ad"] = "cutscene_really_naked_henry",
+}
+WomanTest.actors = {}
+
+local function firstWord(line)
+	return (tostring(line or ""):gsub('"', ""):match("%S+"))
+end
+
+local function soulOf(word)
+	return WomanTest.ACTOR_SOULS[word or "player"] or word
+end
+
+local function lastActor()
+	local actor = WomanTest.actors[#WomanTest.actors]
+	if not actor then
+		ML.Log("actor: no test double, ml_w_actor first")
+	end
+	return actor
+end
+
+local function copyTable(source)
+	local copy = {}
+	for key, value in pairs(source) do
+		copy[key] = type(value) == "table" and copyTable(value) or value
+	end
+	return copy
+end
+
+-- The properties of a double as the class has them, in case a spawn takes the table as it comes.
+local function actorProperties(soul)
+	local properties = AnimChar and AnimChar.Properties and copyTable(AnimChar.Properties) or {
+		object_Model = "Objects/Characters/humans/male/skeleton/male.cdf",
+		esClothingConfig = "male2",
+		characterDetail = 0,
+		guidBeardHairOverrideId = "0",
+		Body = { guidClothingPresetId = "0", guidWeaponPresetId = "0", fDirtOverride = -1, fBloodOverride = -1,
+			fScratchesOverride = -1, bIsMortal = false, guidSubstituteBodyPresetId = "0", bVisorClosed = false },
+	}
+	properties.bSaved_by_game = false
+	properties.bSerialize = false
+	properties.bClothingRemoveHelmet = false
+	properties.Body.guidBodyPresetId = soul
+	return properties
+end
+
+local function describe(actor)
+	local body = actor.Properties and actor.Properties.Body or {}
+	local soul = body.guidBodyPresetId
+	local known = WomanTest.HENRY_SOULS[soul] or (soul == WomanTest.PLAYER_SOUL and "player") or "?"
+	return string.format("%s soul %s (%s)", tostring(actor:GetName()), tostring(soul), known)
+end
+
+-- ml_w_actor [player|injured|wet|dream|<soul id>]: a double in front, facing the player, next to the ones before.
+function WomanTest.Actor(line)
+	local word = firstWord(line) or "player"
+	ML.Try("actor", function()
+		local index = #WomanTest.actors + 1
+		local position, yaw = player:GetWorldPos(), player:GetWorldAngles().z
+		local side = ((index - 1) % WomanTest.ACTOR_ROW - (WomanTest.ACTOR_ROW - 1) / 2) * WomanTest.ACTOR_SPACING
+		local actor = System.SpawnEntity({
+			class = "AnimChar",
+			name = WomanTest.ACTOR_NAME .. index,
+			position = {
+				x = position.x - math.sin(yaw) * WomanTest.ACTOR_DISTANCE + math.cos(yaw) * side,
+				y = position.y + math.cos(yaw) * WomanTest.ACTOR_DISTANCE + math.sin(yaw) * side,
+				z = position.z,
+			},
+			properties = actorProperties(soulOf(word)),
+		})
+		actor:SetAngles({ 0, 0, yaw + math.pi })
+		WomanTest.actors[index] = actor
+		ML.Log("actor", index, word, describe(actor))
+	end)
+end
+
+-- ml_w_actor_set <soul>: the last double gets another soul in its properties, and its script resets.
+function WomanTest.ActorSet(line)
+	local actor = lastActor()
+	if not actor then
+		return
+	end
+	local word = firstWord(line) or "player"
+	ML.Try("actor set", function() actor.Properties.Body.guidBodyPresetId = soulOf(word) end)
+	ML.Try("actor reset", function() actor:OnReset() end)
+	ML.Log("actor set", word, describe(actor))
+end
+
+-- ml_w_actor_copy [reverse]: the engine's EntityModule.AnimCharCopyVisual, which no script of the game calls. With no
+-- arguments first, so the log says what it asks for, then with the double and the player, or the other way round.
+function WomanTest.ActorCopy(line)
+	local actor = lastActor()
+	if not actor then
+		return
+	end
+	local copy = EntityModule and EntityModule.AnimCharCopyVisual
+	ML.Log("actor copy: AnimCharCopyVisual is", type(copy))
+	if type(copy) ~= "function" then
+		return
+	end
+	local ok, result = pcall(copy)
+	ML.Log("actor copy with no arguments:", ok, tostring(result))
+	local first, second = actor.id, player.id
+	if firstWord(line) == "reverse" then
+		first, second = second, first
+	end
+	ok, result = pcall(copy, first, second)
+	ML.Log("actor copy", first == actor.id and "(double, player)" or "(player, double)", ok, tostring(result))
+end
+
+-- ml_w_actor_hook: from now on until the game closes, a double that spawns with a soul of Henry's own spawns with the
+-- player's soul. The log names each one, so a cutscene that spawns its doubles shows them.
+function WomanTest.ActorHook()
+	if WomanTest.hooked then
+		ML.Log("actor hook is on already")
+		return
+	end
+	if not (AnimChar and AnimChar.OnSpawn) then
+		ML.Log("actor hook: the class AnimChar is not loaded yet, ml_w_actor first")
+		return
+	end
+	local original = AnimChar.OnSpawn
+	AnimChar.OnSpawn = function(self, ...)
+		local body = self.Properties and self.Properties.Body
+		local soul = body and body.guidBodyPresetId
+		if WomanTest.HENRY_SOULS[soul] then
+			body.guidBodyPresetId = WomanTest.PLAYER_SOUL
+			ML.Log("actor hook:", tostring(self:GetName()), WomanTest.HENRY_SOULS[soul], "-> player")
+		end
+		return original(self, ...)
+	end
+	WomanTest.hooked = true
+	ML.Log("actor hook on")
+end
+
+-- ml_w_actor_find: the doubles of Henry that exist now, out of the cutscenes too, with their souls.
+function WomanTest.ActorFind()
+	ML.Try("actor find", function()
+		local total, henry = 0, 0
+		for _, entity in pairs(System.GetEntitiesByClass("AnimChar") or {}) do
+			total = total + 1
+			local name = string.lower(tostring(entity:GetName()))
+			if string.find(name, "henry", 1, true) or string.find(name, "jindr", 1, true) then
+				henry = henry + 1
+				local hidden = ML.Try("actor hidden", function() return entity:IsHidden() end)
+				ML.Log("actor find:", describe(entity), "hidden", tostring(hidden))
+			end
+		end
+		ML.Log("actor find:", total, "AnimChar,", henry, "of Henry")
+	end)
+end
+
+function WomanTest.ActorRemove()
+	for _, actor in ipairs(WomanTest.actors) do
+		ML.Try("actor remove", function() System.RemoveEntity(actor.id) end)
+	end
+	ML.Log("actor remove:", #WomanTest.actors)
+	WomanTest.actors = {}
+end

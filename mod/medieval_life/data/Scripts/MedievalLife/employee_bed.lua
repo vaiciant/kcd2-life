@@ -50,7 +50,9 @@ function EmployeeBed.Place(position, yaw)
 			fUsabilityDistance = 1.25,
 			bInteractiveCollisionClass = true,
 			Script = { esBedTypes = "GroundBed" },
-			Bed = { esSleepQuality = "low", esReadingQuality = "bed_ground" },
+			-- A good bed, 0.8 in rpg/sleeping_spot_type: with "low", 0.4, 12 hours gave back 22 of tiredness and a shift
+			-- of 10 hours took 42.
+			Bed = { esSleepQuality = "high", esReadingQuality = "bed_ground" },
 		},
 	})
 	bed:SetAngles({ 0, 0, yaw })

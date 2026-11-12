@@ -7,6 +7,10 @@
 -- in the hours left. The money, the experience and the entry in the book of trades
 -- arrive when the clock closes, so their notices show, along with a line that sums up
 -- the work.
+-- The window is only painted: StartAction and FadeOutDialog are not called. StartAction is its confirm button:
+-- it sent the engine onConfirm, the start of the fade and onStatsSimulation on every frame, and FadeOutDialog the end
+-- of the fade, for a wait the engine had not opened. After a work, the game crashed as the book was opened, every time. With the window open the game draws no other interface under it, so no black either:
+-- the fade of the HUD and a black element of the mod did not show.
 -- =============================================================================
 local ML = MedievalLife
 
@@ -27,29 +31,54 @@ Jobs.CLOCK_START_MS = 800
 Jobs.CLOCK_END_MS = 300
 Jobs.SUMMARY_SECONDS = 6
 Jobs.OVERSLEEP_BUFF = "a5e4791a-f5a6-403e-9161-5b8a22966751"
--- Hunger and tiredness per hour: twice what the game takes on its own.
-Jobs.COST_PER_HOUR = 4.2
+-- Hunger per hour: twice what the game takes on its own. Tiredness: one and a half. A shift of 10 hours cost 42
+-- and 12 hours in the bed of the steady job gave back 22; that bed is a good one now (employee_bed.lua), and a shift and
+-- 10 hours of sleep come out about even.
+Jobs.HUNGER_PER_HOUR = 4.2
+Jobs.EXHAUST_PER_HOUR = 3.1
 
 local function clock(name, ...)
 	local args = ML.Pack(...)
 	ML.Try("clock " .. name, function() UIAction.CallFunction("SkipTime", 0, name, unpack(args, 1, args.n)) end)
 end
 
-local function paint(hoursLeft)
-	clock("SetTime", Calendar.GetWorldHourOfDay())
-	clock("SetInterval", hoursLeft)
+local function stats()
 	ML.Try("clock stats", function()
 		local soul = player.soul
 		clock("SetStats", soul:GetState("health"), soul:GetState("exhaust"), soul:GetState("hunger"), 0, false, false, false, false, false)
 	end)
 end
 
+-- With no StartAction, SetInterval of the window asks the engine to simulate the stats of a wait (SetInterval in
+-- SkipTime.gfx calls onStatsSimulation while the window is not going), and the engine paints its own a moment later:
+-- food and energy went up on the clock. Put in again at once, they flickered. With the interval only once, the
+-- wheel turned and the hand stood still: SetInterval is what places the hand, the gold arc and the number of
+-- hours. Once an hour of the game worked, but went by jumps. So the wheel turns on every step, with SetTime,
+-- which asks the engine nothing, and the interval goes in every INTERVAL_TICKS steps, a third of an hour, about half a
+-- second: the hand slides there on its own. The stats of the character go in on every step, and again after the
+-- engine's answer to each interval.
+Jobs.STATS_AGAIN_MS = { 1, 40, 120 }
+Jobs.INTERVAL_TICKS = 5
+
+local function paint(hoursLeft, withInterval)
+	clock("SetTime", Calendar.GetWorldHourOfDay())
+	if withInterval then
+		clock("SetInterval", hoursLeft)
+	end
+	stats()
+	if withInterval then
+		for _, ms in ipairs(Jobs.STATS_AGAIN_MS) do
+			Script.SetTimer(ms, stats)
+		end
+	end
+end
+
 -- The setting work_cost scales it: 50 is what the game takes, 0 nothing.
 local function applyCost(hours)
 	ML.Try("work cost", function()
-		local soul, cost = player.soul, hours * Jobs.COST_PER_HOUR * ML.Settings.Factor("work_cost")
-		soul:SetState("hunger", math.max(0, soul:GetState("hunger") - cost))
-		soul:SetState("exhaust", math.max(0, soul:GetState("exhaust") - cost))
+		local soul, factor = player.soul, hours * ML.Settings.Factor("work_cost")
+		soul:SetState("hunger", math.max(0, soul:GetState("hunger") - Jobs.HUNGER_PER_HOUR * factor))
+		soul:SetState("exhaust", math.max(0, soul:GetState("exhaust") - Jobs.EXHAUST_PER_HOUR * factor))
 	end)
 end
 
@@ -64,11 +93,15 @@ local function addExperience(name, isStat, amount)
 end
 
 -- Food to take away, to eat when the player wants to.
+-- Each food with how many of it. One at a time, as the game makes several (player.lua), and one notice each.
 local function giveMeal(meal)
 	for _, item in ipairs(meal) do
 		ML.Try("work meal", function()
-			player.inventory:CreateItem(item[1], item[2], 1)
-			Game.ShowItemsTransfer(item[1], 1)
+			local count = item[3] or 1
+			for _ = 1, count do
+				player.inventory:CreateItem(item[1], item[2], 1)
+			end
+			Game.ShowItemsTransfer(item[1], count)
 		end)
 	end
 end
@@ -137,7 +170,7 @@ local function pay(site, hours, steady)
 	ML.Log("work paid", site.key, "hours=", hours, "money=", player.inventory:GetMoney())
 end
 
-local function runClock(site, hours, steady)
+local function runClock(site, hours, steady, onDone)
 	local steps = math.ceil(hours * Jobs.CLOCK_HOUR_MS / Jobs.CLOCK_TICK_MS)
 	local stepHours = hours / steps
 	local done, finished = 0, false
@@ -151,6 +184,10 @@ local function runClock(site, hours, steady)
 		ML.Try("clock hide", function() UIAction.HideElement("SkipTime", 0) end)
 		ML.Try("recalculate", function() XGenAIModule.SendMessageToEntity(player.this.id, "timekeeper:recalculate", "") end)
 		pay(site, hours, steady)
+		-- The clock is over: the black screen goes.
+		if onDone then
+			ML.Try("clock done", onDone)
+		end
 	end
 	local function tick()
 		if finished then
@@ -160,21 +197,47 @@ local function runClock(site, hours, steady)
 		ML.Screen.LockInput(true)
 		ML.Try("clock time", function() Calendar.SetWorldTime(Calendar.GetWorldTime() + stepHours * 3600) end)
 		applyCost(stepHours)
-		paint(hours - done * stepHours)
+		paint(hours - done * stepHours, done % Jobs.INTERVAL_TICKS == 0 or done == steps)
 		if done < steps then
 			Script.SetTimer(Jobs.CLOCK_TICK_MS, tick)
 			return
 		end
-		clock("FadeOutDialog")
 		Script.SetTimer(Jobs.CLOCK_END_MS, finish)
 	end
 	ML.Try("clock show", function() UIAction.ShowElement("SkipTime", 0) end)
 	clock("AddDialog", Jobs.CLOCK_TYPE, site.text, "wait", "", 0, 0)
-	paint(hours)
-	clock("StartAction")
+	paint(hours, true)
 	Script.SetTimer(Jobs.CLOCK_START_MS, tick)
 	-- If something cuts the chain of timers, the player must not stay locked.
 	Script.SetTimer(Jobs.CLOCK_START_MS + steps * Jobs.CLOCK_TICK_MS * 2 + 5000, finish)
+end
+
+-- The black screen of the mod first, with the text of the work, as the one of the name: it keeps the player still from
+-- the moment they agree. The clock opens a moment later, as it was, and the screen goes when the clock is over,
+-- or by itself a little after the clock's own way out. The clock is set on a timer of its own before the screen, so
+-- nothing of the screen can keep it from starting.
+Jobs.SCREEN_LEAD_MS = 1500
+Jobs.SCREEN_SPARE_MS = 3000
+
+local function startOnScreen(site, hours, steady)
+	local token = {}
+	Jobs.screen = token
+	local function done()
+		if Jobs.screen == token then
+			Jobs.screen = nil
+			ML.Screen.Hide()
+		end
+	end
+	local steps = math.ceil(hours * Jobs.CLOCK_HOUR_MS / Jobs.CLOCK_TICK_MS)
+	local opens = Jobs.START_DELAY_MS + Jobs.SCREEN_LEAD_MS
+	Script.SetTimer(opens, function() runClock(site, hours, steady, done) end)
+	Script.SetTimer(opens + Jobs.CLOCK_START_MS + steps * Jobs.CLOCK_TICK_MS * 2 + 5000 + Jobs.SCREEN_SPARE_MS, function()
+		if Jobs.screen == token then
+			ML.Log("work screen: gone by its limit")
+			done()
+		end
+	end)
+	ML.Try("work screen", ML.Screen.Show, site.text)
 end
 
 function Jobs.NearestSite()
@@ -202,13 +265,13 @@ function Jobs.Start(hours)
 	end
 	ML.Log("work starts", site.key, "hours=", hours)
 	ML.Screen.LockInput(true)
-	Script.SetTimer(Jobs.START_DELAY_MS, function() runClock(site, hours) end)
+	startOnScreen(site, hours)
 end
 
 function Jobs.StartShift(site, hours)
 	ML.Log("shift starts", site.key, "hours=", hours)
 	ML.Screen.LockInput(true)
-	Script.SetTimer(Jobs.START_DELAY_MS, function() runClock(site, hours, true) end)
+	startOnScreen(site, hours, true)
 end
 
 -- The working day of a site: its own hours, when its NPC keeps other hours in the game, or the mod's.

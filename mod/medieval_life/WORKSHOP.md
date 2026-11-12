@@ -22,8 +22,8 @@ Henry goes back to Rattay, and you stay behind as a nobody in the Trosky region:
 
 - **Day work** in every town and village of the Trosky region. Talk to the owner or the foreman in working hours, mostly 08:00 to 18:00, and choose your hours. Some keep shorter ones, and they tell you when. Each hour pays, trains the skills of the trade, and makes you hungry and tired.
 - **A steady job**, with a shift every day, 6 days on and 1 off, a meal, and a bed by your workplace. Come late two days in a row, miss a shift, or turn up drunk or naked, and that is a fault. Three faults and you are out.
-- **The book of trades** keeps your record: your name, your birth date, your parents, and where you worked and for how long.
-- **A bed for the night,** or for a week at the price of five nights, at the taverns, the inn and the other places that rent one: ask the owner when you talk about work, and the map shows you where it is. Nobody minds you by it while it is yours. The game's own offer to rent a bed is Henry's.
+- **The book of trades** keeps your record: your name, birth date, parents, and where you worked and for how long. It also shows the hours of the businesses you know nearby, and when their next errands come. Lose it, and a new one starts empty.
+- **A bed for the night,** or for a week at the price of five nights, at the taverns, the inn and the other places that rent one: ask the owner, and the map shows you where it is. Nobody minds you by it while it is yours. The game's own offer to rent a bed is Henry's.
 - **Every bed saves the game,** even a stranger's.
 - **A stash of your own.** Your chests are yours, not Henry's, also those of The KCD2 Camping Mod and Mercenaries. Henry's stash waits for him.
 
@@ -39,13 +39,13 @@ Every business asks for errands on its own day of the week, never farther than t
 - **Businesses keep their hours:** errands are given and delivered only while they are open, and the owner tells you when an errand can wait until tomorrow.
 - **Fail an errand** and you owe the value of the goods, and that business gives you no work until you pay.
 - **Steal too much** and the guards come for you: three unpaid slips in one town, and they will be waiting.
-- **Too hard?** With Mod Configuration Menu you choose the time to do an errand, its pay, how often businesses ask, the trust and reputation they need, what a failure costs and when the guards come.
+- **Too hard?** Mod Configuration Menu changes the time, pay and frequency of errands, the trust and reputation they need, what a failure costs and when the guards come.
 
 ## Good to know
 
 - **From the pillory on.** The new life is there once Henry has been through the pillory in Troskowitz, early in the story. You do not need to finish the game.
 - **Any save will do.** Add it to the save you are playing: no new game needed. Henry's alchemy recipes are hidden while the mod is installed, since your new character starts with none, except the two he needs in the prologue. They come back when you remove the mods.
-- **In a new game,** Henry's own playthrough works with no problems.
+- **In a new game,** Henry's playthrough works as usual.
 - **Keep a save from before the new life.** It is the safest way back to Henry.
 - **Kuttenberg** opens to you once Henry's story reaches it.
 - Women speak with Henry's voice.
@@ -62,7 +62,7 @@ KCD2 Life has been played together with 47 other mods at once. These make a new 
 - **The KCD2 Cooking Mod:** cook your own meals. Buy the food with your wages and feed yourself.
 - **Realish Wounds and Realish Crime:** wounds and the law closer to the real thing, so a fight or a theft costs a nobody dearly.
 - **ldpotions:** more potions to brew, and more recipes for your new character to learn.
-- **Mod Configuration Menu:** settings for the calendar, work and errands.
+- **Mod Configuration Menu:** settings for the calendar, work, errands and voice.
 
 The full list is on [GitHub](https://github.com/vaiciant/kcd2-life/blob/main/mod/medieval_life/TESTED_MODS.md). Others should work too.
 
@@ -85,7 +85,7 @@ Do it when Henry is ready to hand over: save next to the wayfarer by the tavern 
 - Kingdom Come: Deliverance II 1.5
 - KCD2 Female Framework
 - KCD2 Male Framework
-- Optional: [Mod Configuration Menu](https://www.nexusmods.com/kingdomcomedeliverance2/mods/1423), for the settings of the calendar, work and errands
+- Optional: [Mod Configuration Menu](https://www.nexusmods.com/kingdomcomedeliverance2/mods/1423), for the settings of the calendar, work, errands and voice
 
 ## Source
 

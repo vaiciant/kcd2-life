@@ -21,16 +21,23 @@ Settings.WORK_PAY_VARIABLE = "ml_work_pay_custom"
 Settings.WORK_WAGE_VARIABLE = "ml_work_wage"
 -- And the same for the errands: the offers say no amount (ml_order_dialog.xml).
 Settings.ORDER_PAY_VARIABLE = "ml_order_pay_custom"
+-- 1 with Voice off: the dialogs of the mod take the twin of each sequence where the new character says a line recorded
+-- by Henry, with the same line as text only (tools/generate_voice.py).
+Settings.TEXT_ONLY_VARIABLE = "ml_text_only"
 
 -- The sliders, by category, in the order of the menu. Each value is a whole number: a percent, hours, days or points.
 -- The texts are ui_ml_settings_<id> and ui_ml_settings_<id>_tip. A percent is 100 by default; the others take their
--- default from orders.toml (rule), which is loaded after this file.
+-- default from orders.toml (rule) or jobs.toml (job_rule), which are loaded after this file. The reputation that work
+-- gives and the reputation it asks for came later.
 Settings.CATEGORIES = {
 	{
 		id = "work",
 		{ id = "work_pay", min = 25, max = 300, step = 25, default = 100, suffix = "%" },
 		{ id = "work_xp", min = 25, max = 300, step = 25, default = 100, suffix = "%" },
 		{ id = "work_cost", min = 0, max = 200, step = 25, default = 100, suffix = "%" },
+		{ id = "work_reputation", min = 0, max = 500, step = 25, default = 100, suffix = "%" },
+		{ id = "work_min_casual", min = 0, max = 100, step = 5, job_rule = "casual_min_reputation", suffix = "" },
+		{ id = "work_min_steady", min = 0, max = 100, step = 5, job_rule = "steady_min_reputation", suffix = "" },
 	},
 	{
 		id = "orders",
@@ -44,10 +51,21 @@ Settings.CATEGORIES = {
 	},
 }
 
+-- The switches, after the sliders. On is 1. Voice: whether the new character speaks their lines in the dialogs of the
+-- mod, or they show as text only.
+Settings.TOGGLES = {
+	{
+		id = "dialogs",
+		{ id = "voice", default = 1, toggle = true },
+	},
+}
+
 local byId = {}
-for _, category in ipairs(Settings.CATEGORIES) do
-	for _, setting in ipairs(category) do
-		byId[setting.id] = setting
+for _, list in ipairs({ Settings.CATEGORIES, Settings.TOGGLES }) do
+	for _, category in ipairs(list) do
+		for _, setting in ipairs(category) do
+			byId[setting.id] = setting
+		end
 	end
 end
 
@@ -63,6 +81,9 @@ local function monthChoice()
 end
 
 local function default(setting)
+	if setting.job_rule then
+		return ML.JOB_RULES[setting.job_rule]
+	end
 	return setting.rule and ML.ORDER_RULES[setting.rule] or setting.default
 end
 
@@ -98,6 +119,14 @@ local function build()
 			MCM.SetValue(Settings.MOD_ID, setting.id, Settings.Get(setting.id))
 		end
 	end
+	for _, category in ipairs(Settings.TOGGLES) do
+		MCM.AddCategory(Settings.MOD_ID, "@ui_ml_settings_" .. category.id, "@ui_ml_settings_" .. category.id .. "_tip")
+		for _, setting in ipairs(category) do
+			local text = "@ui_ml_settings_" .. setting.id
+			MCM.AddToggle(Settings.MOD_ID, setting.id, text, text .. "_tip", default(setting))
+			MCM.SetValue(Settings.MOD_ID, setting.id, Settings.Get(setting.id))
+		end
+	end
 end
 
 -- A value from the menu, inside the range and on a step of the slider.
@@ -116,12 +145,20 @@ local function changed(id, value)
 		return
 	end
 	local setting, number = byId[id], tonumber(value)
+	-- A switch may come as true or false.
+	if type(value) == "boolean" then
+		number = value and 1 or 0
+	end
 	if not setting or not number or not player then
 		ML.Log("setting ignored", id, value)
 		return
 	end
 	local values = ML.Store.Get(Settings.KEY, {})
-	values[id] = fit(setting, number)
+	if setting.toggle then
+		values[id] = number ~= 0 and 1 or 0
+	else
+		values[id] = fit(setting, number)
+	end
 	ML.Store.Set(Settings.KEY, values)
 	ML.Log("setting", id, value, "->", values[id])
 end
@@ -144,9 +181,11 @@ function Settings.Report(line)
 	if id then
 		changed(id, value)
 	end
-	for _, category in ipairs(Settings.CATEGORIES) do
-		for _, setting in ipairs(category) do
-			ML.Log("setting", setting.id, "=", Settings.Get(setting.id), "default", default(setting))
+	for _, list in ipairs({ Settings.CATEGORIES, Settings.TOGGLES }) do
+		for _, category in ipairs(list) do
+			for _, setting in ipairs(category) do
+				ML.Log("setting", setting.id, "=", Settings.Get(setting.id), "default", default(setting))
+			end
 		end
 	end
 	ML.Log("setting", Settings.MONTH_DAYS, "=", ML.Days.MonthDays())
@@ -156,6 +195,7 @@ end
 ML.TickHandlers[#ML.TickHandlers + 1] = function()
 	Variables.SetGlobal(Settings.WORK_PAY_VARIABLE, Settings.Changed("work_pay") and 1 or 0)
 	Variables.SetGlobal(Settings.ORDER_PAY_VARIABLE, Settings.Changed("order_pay") and 1 or 0)
+	Variables.SetGlobal(Settings.TEXT_ONLY_VARIABLE, Settings.Get("voice") == 0 and 1 or 0)
 	-- The wage of the steady job, in hundredths: its terms say it from one text per wage.
 	Variables.SetGlobal(Settings.WORK_WAGE_VARIABLE, ML.Jobs.Rate(ML.JOB_RULES.steady_wage))
 end

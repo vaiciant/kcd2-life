@@ -2,6 +2,29 @@
 
 Every release is listed here, as it went out on Steam Workshop, Nexus Mods and GitHub. The builds made while working on one are not listed.
 
+## 0.1.3
+
+The book of trades keeps track of errands, the talks of work come first, and the work clock is steadier. A crash when opening a book after working is gone. Use it with KCD2 Female Framework and KCD2 Male Framework 0.4.0.
+
+### New
+
+- **Errands in the book of trades.** Its second page lists the businesses you know in the region you are in, town by town in the order you came to them: their hours, once you have talked to their people, and in how many days the next delivery and the next pickup or shopping come, once you have asked them for errands, worked there or taken one. What you do not know yet shows as "?", and so do pickups and shopping until the business trusts you with them. A slip says the hours of both businesses.
+- **Each book keeps its own record.** Lose it and a new one starts empty; find it again and all of it is there.
+- **The talks of work come first.** With an employer, work, the steady job, errands, pickup or shopping and the beds come before the game's own options, right after those of quests.
+- **Voice** in Mod Configuration Menu, under Dialogs: off, the new character's lines in those talks show only as text at the bottom of the screen, with no voice and no lips moving.
+- **More work settings:** the reputation an hour of work gives, a tenth of a point by default, up to 80; and the reputation needed for work by the hour, 35, and for a steady job, 50.
+- **Going to work.** Agreeing turns the screen black with what you go to do, and you stay still from that moment. Then the clock opens and turns smoothly, with your hunger and tiredness going down.
+- **Bigger meals.** A shift gives two bread rolls, three plums, two parsnips, an egg and water. A long day of work by the hour gives two pretzels, three peaches, three leeks, an egg and water, not fresh.
+- **Rest.** The bed of the steady job is a good one now, and work tires you less: one and a half times what the game takes, while hunger stays at twice. A shift and a long night's sleep come out about even.
+- **The notes of the first steps** all come at the start, a second apart, and wait while the inventory or a book is open.
+- **Immersive Eating.** Reading the book of trades or a slip no longer plays its eating or drinking animation.
+
+### Fixes
+
+- **The game could crash when opening a book after working.** The work clock pressed the confirm button of the game's wait window, which left the game in a broken state. The clock now only shows the window. Opening the book is lighter too: its pages are ready before it opens.
+- **The clock's numbers** no longer climb while you work.
+- **The innkeeper of Troskowitz** talks about work with the new character even while she is angry with Henry.
+
 ## 0.1.2
 
 Henry's prologue with the mods installed.

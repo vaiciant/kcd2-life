@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="us-ascii"?>
 <database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="barbora" xsi:noNamespaceSchemaLocation="../database.xsd">
-	<!-- Roles that let the dialogs of the mod reach vanilla NPCs. -->
+	<!-- Roles that let the dialogs of the mod reach vanilla NPCs. Every NPC has the metaroles NPC and
+	     NPC_IN_ENCLOSED_QUEST (Libs/Storm/roles/world/base.xml), and a quest of Henry's takes NPC away from its people
+	     with the context speech_removeNPCMetarole while it needs them (12 quests). The employer is under the other one,
+	     as the game's own roles in those quests: its dialogs are only for the new character, who is not in Henry's
+	     quests. So Betty, angry at Henry after the pillory, still talks to the new character about work. -->
 	<roles version="1">
-		<role _locked="false" _role_string_name="role_ml_employer" metarole_name="NPC" role_name="role_ml_employer" />
+		<role _locked="false" _role_string_name="role_ml_employer" metarole_name="NPC_IN_ENCLOSED_QUEST" role_name="role_ml_employer" />
 		<role _locked="false" _role_string_name="role_ml_host" metarole_name="NPC" role_name="role_ml_host" />
 	</roles>
 </database>

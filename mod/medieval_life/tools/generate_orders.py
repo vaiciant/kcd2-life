@@ -15,6 +15,7 @@ follows, and writes:
   ml_casual_dialog.xml and ml_work_dialog.xml.
 - Libs/Tables/item/item__medieval_life.xml: the tokens of each order (accepted, done and run out).
 - localization/*_xml/text__medieval_life.xml: the texts, in English and Spanish.
+- Scripts/MedievalLife/book_text_data.lua: the letters of each text of the book of trades, for its pages.
 
 The texts come from templates, with the names of the people as the game writes them (text_ui_soul.xml) and the
 gender of their Skald character. Looks up each business in jobs.toml and each item in the game tables, and stops if
@@ -23,6 +24,7 @@ tools/install_mod.py runs it before packing.
 
 Usage: python -I -X utf8 mod/medieval_life/tools/generate_orders.py mod/medieval_life
 """
+import html
 import math
 import os
 import pathlib
@@ -41,6 +43,11 @@ ITEMS = TABLES / "item"
 GAME_PLACES = (r"C:\Program Files (x86)\Steam\steamapps\common\KingdomComeDeliverance2", r"E:\SteamLibrary\steamapps\common\KingdomComeDeliverance2")
 GAME = pathlib.Path(os.environ.get("KCD2_GAME") or next((p for p in GAME_PLACES if os.path.isfile(os.path.join(p, "Data", "Tables.pak"))), GAME_PLACES[0]))
 LANGUAGES = (("English_xml", "en"), ("Spanish_xml", "es"))
+# The options of the mod go on top of the others. The engine registers the priorities of a decision in this
+# order: MainQuestAssignment, MainQuestSubmission, MainQuestAdditionals, SideQuestAssignment, SideQuestSubmission,
+# SideQuestAdditionals, Default, General, QuestGiver, SkillTraining, Shop, Repair (WHGame.dll). The game uses no Default:
+# it is the first one after those of the quests, which show their icon.
+ROOT_PRIORITY = "Default"
 # Each order has a token to accept it, and each business, the ones that end them, shared by all its objectives:
 # an If only lets them through to the active objective. The game goes through every token when loading, recursively,
 # and with 1393 it ran out of stack. send_* are for delivering, and need_* for fetching or
@@ -138,6 +145,22 @@ TEXTS = {
     "ml_order_book_deliver_many": ("delivery errands", "encargos de entrega"),
     "ml_order_book_fetch_one": ("pickup errand", "encargo de recogida"),
     "ml_order_book_fetch_many": ("pickup errands", "encargos de recogida"),
+    # The errands of the businesses the character knows, in the book of trades: when each gives its next one.
+    # Only the businesses of the region the character is in: Trosky or Kuttenberg.
+    "ml_order_book_title": ("Errands", "Encargos"),
+    "ml_order_book_title_trosky": ("Errands in Trosky", "Encargos en Trosky"),
+    "ml_order_book_title_kuttenberg": ("Errands in Kuttenberg", "Encargos en Kuttenberg"),
+    "ml_order_book_none": ("No business of this region knows you yet. Talk to one, and its hours are written here.",
+                           "Ningún negocio de esta región te conoce todavía. Habla con uno, y aquí se anotan sus horas."),
+    "ml_order_book_deliver": ("Delivery:", "Entrega:"),
+    "ml_order_book_fetch": ("Pickup:", "Recogida:"),
+    "ml_order_book_buy": ("Shopping:", "Compra:"),
+    "ml_order_book_need": ("Pickup or shopping:", "Recogida o compra:"),
+    "ml_order_book_today": ("today", "hoy"),
+    "ml_order_book_tomorrow": ("tomorrow", "mañana"),
+    "ml_order_book_in": ("in", "en"),
+    "ml_order_book_days": ("days", "días"),
+    "ml_order_book_owed": ("You owe it", "Le debes"),
     "ml_order_book_buy_one": ("shopping errand", "encargo de compra"),
     "ml_order_book_buy_many": ("shopping errands", "encargos de compra"),
     # The slip of an order: orders.lua builds its pages with these parts.
@@ -964,11 +987,12 @@ def write_dialog(mod_dir, data, orders):
     top = []
     for tag, which, offers, kinds in (("", f"{custom} != 1", {t: groups[t] + data["economy_groups"][t] for t in ("send", "need")}, {}),
                                       ("_plain", f"{custom} == 1", data["plain_groups"], data["plain_kinds"])):
+        # Asking for errands teaches the character the days of that business, for the book of trades.
         top.append(sequence(f"seq_order_ask{tag}", f"{asked} & gvar('ml_send_state') > 0 & {which}", "Decision", "ui_ml_order_ask",
-                            elements=[response("HENRY", *HENRY_ASK)],
+                            script="MedievalLife.Orders.Asked()", elements=[response("HENRY", *HENRY_ASK)],
                             decision=decision(f"dec_send_open{tag}", turn_sequences("send", data, offers["send"], tag, kinds.get("send")), autoselect=True)))
         top.append(sequence(f"seq_need_ask{tag}", f"{asked} & gvar('ml_need_state') > 0 & {which}", "Decision", "ui_ml_order_need_ask",
-                            elements=[response("HENRY", *HENRY_NEED)],
+                            script="MedievalLife.Orders.Asked()", elements=[response("HENRY", *HENRY_NEED)],
                             decision=decision(f"dec_need_open{tag}", turn_sequences("need", data, offers["need"], tag, kinds.get("need")), autoselect=True)))
     # Handing over: to the destination when delivering, and to the business when fetching or buying. Picking up: where it
     # is picked up, when fetching. One option per text, and Lua knows which order it is.
@@ -1009,7 +1033,7 @@ def write_dialog(mod_dir, data, orders):
             top.append(sequence(f"seq_order_pickup_{i}", condition, "Decision", prompt, elements=[response("HENRY")], decision=pick))
         else:
             top.append(sequence(f"seq_order_pickup_{i}", condition, "GoTo", prompt, elements=[response("HENRY")], goto="dec_order_pick"))
-    body = indent(decision("dec_order", top).replace('<Decision Name="dec_order"', '<Decision Name="dec_order" Priority="General"', 1), 4)
+    body = indent(decision("dec_order", top).replace('<Decision Name="dec_order"', f'<Decision Name="dec_order" Priority="{ROOT_PRIORITY}"', 1), 4)
     text = f'''<?xml version="1.0" encoding="utf-8"?>
 <Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
 	<!-- Generated by tools/generate_orders.py from mod/medieval_life/orders.toml. Edit that file, not this one.
@@ -1033,13 +1057,15 @@ def write_dialog(mod_dir, data, orders):
 '''
     (mod_dir / QUESTS / "ml_work/nebakovObrana/ml_order_dialog.xml").write_bytes(text.encode("utf-8"))
 
+    # Before ml_casual_dialog: the game lists the dialogs of the gameplay in the reverse of their order, so the errands
+    # come after casual work.
     def change(text):
         if "ml_order_dialog" in text:
             return text
         text = text.replace('\t\t\t\t<Definition File="nebakovObrana/ml_casual_dialog.xml" />\n',
-                            '\t\t\t\t<Definition File="nebakovObrana/ml_casual_dialog.xml" />\n\t\t\t\t<Definition File="nebakovObrana/ml_order_dialog.xml" />\n')
-        return text.replace('\t\t\t\t<ml_casual_dialog Name="dialog" PositionY="0" PositionX="0" />\n',
-                            '\t\t\t\t<ml_casual_dialog Name="dialog" PositionY="0" PositionX="0" />\n\t\t\t\t<ml_order_dialog Name="orders" PositionY="200" PositionX="0" />\n')
+                            '\t\t\t\t<Definition File="nebakovObrana/ml_order_dialog.xml" />\n\t\t\t\t<Definition File="nebakovObrana/ml_casual_dialog.xml" />\n')
+        return text.replace('\t\t\t\t<ml_casual_dialog Name="dialog" PositionY="400" PositionX="0" />\n',
+                            '\t\t\t\t<ml_order_dialog Name="orders" PositionY="200" PositionX="0" />\n\t\t\t\t<ml_casual_dialog Name="dialog" PositionY="400" PositionX="0" />\n')
 
     edit(mod_dir / QUESTS / "ml_work/nebakovObrana.xml", change)
     # Asking a business that is owed for day labor or a steady job leads to the same debt.
@@ -1127,6 +1153,37 @@ def write_text(mod_dir, data, orders):
         edit(mod_dir / "localization" / folder / "text__medieval_life.xml", change)
 
 
+BOOK_PREFIXES = ("ml_book_", "ml_order_book_", "ml_order_slip_", "ml_month_")
+
+
+def write_book_lengths(mod_dir):
+    """Scripts/MedievalLife/book_text_data.lua: the letters of each text that the book of trades shows, in its longest
+    language. Flash translates the keys after Lua, so work_book.lua lays out the pages by these. It reads the
+    texts as they end up, after generate_jobs.py and write_text."""
+    lengths = {}
+    for folder, _ in LANGUAGES:
+        text = read(mod_dir / "localization" / folder / "text__medieval_life.xml")
+        for key, value in re.findall(r"<Row><Cell>([^<]+)</Cell><Cell>[^<]*</Cell><Cell>([^<]*)</Cell></Row>", text):
+            value = html.unescape(value)
+            if key.startswith(BOOK_PREFIXES) and "<" not in value:
+                lengths[key] = max(lengths.get(key, 0), len(value))
+    rows = "".join(f"\t{key} = {length},\n" for key, length in sorted(lengths.items()))
+    (mod_dir / "data/Scripts/MedievalLife/book_text_data.lua").write_bytes(
+        ("-- Generated by tools/generate_orders.py from the texts in localization/*_xml. Edit those, not this one.\n"
+         "-- The letters of each text of the book of trades in its longest language, for laying out its pages (work_book.lua).\n"
+         f"MedievalLife.BOOK_TEXT = {{\n{rows}}}\n").encode("utf-8"))
+    return len(lengths)
+
+
+def run_voice(mod_dir):
+    """The text-only twins of the setting Voice (generate_voice.py), after this tool wrote its dialogs."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("generate_voice", pathlib.Path(__file__).with_name("generate_voice.py"))
+    voice = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(voice)
+    voice.main(mod_dir)
+
+
 def main(mod_dir):
     data, orders = load(mod_dir)
     keys = [b["key"] for b in data["business"]]
@@ -1138,7 +1195,9 @@ def main(mod_dir):
     write_tokens(mod_dir, data, orders)
     write_slips(mod_dir, data)
     write_text(mod_dir, data, orders)
-    print(f"{len(keys)} businesses, {len(orders)} orders")
+    texts = write_book_lengths(mod_dir)
+    print(f"{len(keys)} businesses, {len(orders)} orders, {texts} texts of the book measured")
+    run_voice(mod_dir)
 
 
 if __name__ == "__main__":

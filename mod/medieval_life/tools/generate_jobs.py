@@ -202,12 +202,13 @@ def write_lua(mod_dir, data, sites, stats):
 
     items = food()
 
+    # Each food of a meal with how many of it: { id, health, count }.
     def meal(field, health):
         for name in data[field]:
             if name not in items:
                 raise SystemExit(f"jobs.toml, {field}: {name} does not exist")
-        print(f"{field}:", sum(float(items[name]["NutritionBenefit"]) for name in data[field]))
-        return ", ".join(f'{{ "{items[name]["Id"]}", {health(name)} }}' for name in data[field])
+        print(f"{field}:", sum(float(items[name]["NutritionBenefit"]) * count for name, count in data[field].items()))
+        return ", ".join(f'{{ "{items[name]["Id"]}", {health(name)}, {count} }}' for name, count in data[field].items())
 
     steady_meal = meal("steady_meal", lambda name: 1)
     casual_meal = meal("casual_meal", lambda name: 1 if name in data["casual_meal_fresh"] else data["casual_meal_health"])
@@ -455,21 +456,32 @@ RENT_DIALOGS = {
 RENT_ROOT_OPTIONS = 2
 # life.lua sets it to 1 on every tick while the new character plays, and to 0 while Henry plays or after ml_uninstall.
 HENRY_ONLY = " AND gvar('ml_new_life') != 1"
+# Grudges of the game's people against Henry, which the new character must not inherit, each with its root options. The
+# innkeeper of Troskowitz, Betty, says only "Have you come to break some more stuff?" while a timer of the quest of the
+# Cumans at Trosky runs, so the new character could not talk to her about work (screenshot of 2026-11-11). Its
+# module also takes the metarole NPC from her, so role_ml_employer is under NPC_IN_ENCLOSED_QUEST (role__medieval_life.xml).
+GRUDGE_DIALOGS = {
+    "Quests/Final/Barbora/trosecko/kumaniNaTrosecku/refusal_hibernation/refusal_hospodske_behem_timeru.xml":
+        ("be3b22100723f65580c877e67f019f906cd8f784d717a7c9ed32a16372ba7c57", 1),
+}
 
 
 def write_rent_dialogs(mod_dir):
-    """The hashes are those of game 1.5.6. If an update changes a dialog, the old copy would hide the change, so the tool
-    stops until someone reads the new file and updates its hash."""
+    """The rent dialogs and the grudges, each root option only while Henry plays. The hashes are those of game 1.5.6. If
+    an update changes a dialog, the old copy would hide the change, so the tool stops until someone reads the new file
+    and updates its hash."""
+    dialogs = {path: (sha, RENT_ROOT_OPTIONS) for path, sha in RENT_DIALOGS.items()} | GRUDGE_DIALOGS
     with zipfile.ZipFile(GAME / "Data" / "Scripts.pak") as z:
-        for path, sha in RENT_DIALOGS.items():
+        for path, (sha, expected) in dialogs.items():
             raw = z.read(path)
             found = hashlib.sha256(raw).hexdigest()
             if found != sha:
-                raise SystemExit(f"{path} changed in the game (sha256 {found}). Check its root options, then update RENT_DIALOGS.")
+                raise SystemExit(f"{path} changed in the game (sha256 {found}). Check its root options, then update "
+                                 "RENT_DIALOGS or GRUDGE_DIALOGS.")
             text = raw.decode("utf-8-sig")
             roots = re.findall(r'\n\t{6}<Sequence EntryCondition="([^"]*)"', text)
-            if len(roots) != RENT_ROOT_OPTIONS:
-                raise SystemExit(f"{path}: {len(roots)} root options, not {RENT_ROOT_OPTIONS}. Did the game change?")
+            if len(roots) != expected:
+                raise SystemExit(f"{path}: {len(roots)} root options, not {expected}. Did the game change?")
             for condition in roots:
                 old = f'EntryCondition="{condition}"'
                 if text.count(old) != 1:
@@ -514,6 +526,15 @@ def write_horse_copies(mod_dir):
             dest.write_text(text.replace(PLAYER_ALIAS, PLAYING_ALIAS), encoding="utf-8-sig", newline="")
 
 
+def run_voice(mod_dir):
+    """The text-only twins of the setting Voice (generate_voice.py), after this tool wrote its dialogs."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("generate_voice", pathlib.Path(__file__).with_name("generate_voice.py"))
+    voice = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(voice)
+    voice.main(mod_dir)
+
+
 def main(mod_dir):
     data = tomllib.loads((mod_dir / "jobs.toml").read_text("utf-8"))
     # The economy mod that the pay follows (economy.toml): the summaries of work say its amounts too.
@@ -525,8 +546,9 @@ def main(mod_dir):
     write_terms_dialog(mod_dir, data)
     write_rent_dialogs(mod_dir)
     write_horse_copies(mod_dir)
-    print(f"{len(sites)} sites, {len(RENT_DIALOGS)} rent dialogs of the game for Henry only, "
-          f"{len(HORSE_COPIES)} horse buying files of the game for whoever plays")
+    print(f"{len(sites)} sites, {len(RENT_DIALOGS)} rent dialogs and {len(GRUDGE_DIALOGS)} grudge of the game for Henry "
+          f"only, {len(HORSE_COPIES)} horse buying files of the game for whoever plays")
+    run_voice(mod_dir)
 
 
 if __name__ == "__main__":

@@ -14,9 +14,9 @@
 					<SelectedSoul Role="HENRY" Voice="tomMcKay" Type="Wave" Language="ENG" />
 					<SelectedSoul Role="role_ml_employer" Voice="bobBordeaux" Type="Wave" Language="ENG" />
 				</SelectedSouls>
-				<Decision Name="dec_order" Priority="General" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
+				<Decision Name="dec_order" Priority="Default" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
 					<Sequences>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_send_state') &gt; 0 &amp; gvar('ml_order_pay_custom') != 1" EndType="Decision" Name="seq_order_ask">
+						<Sequence EntryCondition="(gvar('ml_new_life') == 1 &amp; gvar('ml_send_state') &gt; 0 &amp; gvar('ml_order_pay_custom') != 1) &amp; gvar('ml_text_only') == 0" EndType="Decision" ExitScript="MedievalLife.Orders.Asked()" Name="seq_order_ask">
 							<UiPrompt StringName="ui_ml_order_ask" />
 							<Elements>
 								<Response Role="HENRY" ReferenceLength="2.8">
@@ -982,7 +982,7 @@
 										</Elements>
 										<Decision Name="dec_send_take" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
 											<Sequences>
-												<Sequence EntryCondition="gvar('ml_send_due') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_0">
+												<Sequence EntryCondition="(gvar('ml_send_due') == 0) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_0">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -997,7 +997,22 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_send_due') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_1">
+												<Sequence EntryCondition="(gvar('ml_send_due') == 0) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_0_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_this" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_send_due') == 1) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_1">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -1012,7 +1027,22 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_send_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_2">
+												<Sequence EntryCondition="(gvar('ml_send_due') == 1) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_1_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_this_tomorrow" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_send_due') == 2) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_2">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -1027,11 +1057,41 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_send_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_3">
+												<Sequence EntryCondition="(gvar('ml_send_due') == 2) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_2_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_this_later" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_send_due') &gt;= 3) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_3">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
 															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_this_days" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_send_due') &gt;= 3) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_accept_deliver_3_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
 														</Response>
 														<Response Role="role_ml_employer">
 															<Text StringName="ml_order_take_this_days" />
@@ -2265,7 +2325,15 @@
 								</Sequences>
 							</Decision>
 						</Sequence>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_need_state') &gt; 0 &amp; gvar('ml_order_pay_custom') != 1" EndType="Decision" Name="seq_need_ask">
+						<Sequence EntryCondition="(gvar('ml_new_life') == 1 &amp; gvar('ml_send_state') &gt; 0 &amp; gvar('ml_order_pay_custom') != 1) &amp; gvar('ml_text_only') == 1" EndType="GoTo" GoToDecision="dec_send_open" ExitScript="MedievalLife.Orders.Asked()" Name="seq_order_ask_text">
+							<UiPrompt StringName="ui_ml_order_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.8">
+									<Text StringName="ml_text_doml_henry_jenze_mne_na_t_72lu" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="(gvar('ml_new_life') == 1 &amp; gvar('ml_need_state') &gt; 0 &amp; gvar('ml_order_pay_custom') != 1) &amp; gvar('ml_text_only') == 0" EndType="Decision" ExitScript="MedievalLife.Orders.Asked()" Name="seq_need_ask">
 							<UiPrompt StringName="ui_ml_order_need_ask" />
 							<Elements>
 								<Response Role="HENRY" ReferenceLength="3.17">
@@ -3245,7 +3313,7 @@
 										</Elements>
 										<Decision Name="dec_need_take" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
 											<Sequences>
-												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_0">
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 0) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_0">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -3253,7 +3321,15 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_1">
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 0) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_0_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 1) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_1">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -3264,7 +3340,18 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_2">
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 1) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_1_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_fetch_tomorrow" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 2) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_2">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -3275,7 +3362,18 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_3">
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 2) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_2_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_fetch_later" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') &gt;= 3) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_3">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -3286,7 +3384,18 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_0">
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') &gt;= 3) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_fetch_3_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_fetch_days" />
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 0) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_0">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -3301,7 +3410,22 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_1">
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 0) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_0_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_money" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 1) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_1">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -3316,7 +3440,22 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_2">
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 1) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_1_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_money_tomorrow" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 2) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_2">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
@@ -3331,11 +3470,41 @@
 														</Response>
 													</Elements>
 												</Sequence>
-												<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_3">
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 2) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_2_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_money_later" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') &gt;= 3) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_3">
 													<UiPrompt StringName="ui_ml_order_accept" />
 													<Elements>
 														<Response Role="HENRY" ReferenceLength="1.85">
 															<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+														</Response>
+														<Response Role="role_ml_employer">
+															<Text StringName="ml_order_take_money_days" />
+															<Commands>
+																<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+															</Commands>
+														</Response>
+													</Elements>
+												</Sequence>
+												<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') &gt;= 3) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_accept_buy_3_text">
+													<UiPrompt StringName="ui_ml_order_accept" />
+													<Elements>
+														<Response Role="HENRY" ReferenceLength="1.85">
+															<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
 														</Response>
 														<Response Role="role_ml_employer">
 															<Text StringName="ml_order_take_money_days" />
@@ -4583,7 +4752,15 @@
 								</Sequences>
 							</Decision>
 						</Sequence>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_send_state') &gt; 0 &amp; gvar('ml_order_pay_custom') == 1" EndType="Decision" Name="seq_order_ask_plain">
+						<Sequence EntryCondition="(gvar('ml_new_life') == 1 &amp; gvar('ml_need_state') &gt; 0 &amp; gvar('ml_order_pay_custom') != 1) &amp; gvar('ml_text_only') == 1" EndType="GoTo" GoToDecision="dec_need_open" ExitScript="MedievalLife.Orders.Asked()" Name="seq_need_ask_text">
+							<UiPrompt StringName="ui_ml_order_need_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="3.17">
+									<Text StringName="ml_text_os_k_henry_proste_bych_ra_SqDb" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="(gvar('ml_new_life') == 1 &amp; gvar('ml_send_state') &gt; 0 &amp; gvar('ml_order_pay_custom') == 1) &amp; gvar('ml_text_only') == 0" EndType="Decision" ExitScript="MedievalLife.Orders.Asked()" Name="seq_order_ask_plain">
 							<UiPrompt StringName="ui_ml_order_ask" />
 							<Elements>
 								<Response Role="HENRY" ReferenceLength="2.8">
@@ -5557,7 +5734,7 @@
 													</Elements>
 													<Decision Name="dec_send_plain_take" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
 														<Sequences>
-															<Sequence EntryCondition="gvar('ml_send_due') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_0">
+															<Sequence EntryCondition="(gvar('ml_send_due') == 0) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_0">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
@@ -5572,7 +5749,22 @@
 																	</Response>
 																</Elements>
 															</Sequence>
-															<Sequence EntryCondition="gvar('ml_send_due') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_1">
+															<Sequence EntryCondition="(gvar('ml_send_due') == 0) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_0_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_take_this" />
+																		<Commands>
+																			<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																			<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+																		</Commands>
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_send_due') == 1) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_1">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
@@ -5587,7 +5779,22 @@
 																	</Response>
 																</Elements>
 															</Sequence>
-															<Sequence EntryCondition="gvar('ml_send_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_2">
+															<Sequence EntryCondition="(gvar('ml_send_due') == 1) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_1_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_take_this_tomorrow" />
+																		<Commands>
+																			<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																			<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+																		</Commands>
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_send_due') == 2) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_2">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
@@ -5602,11 +5809,41 @@
 																	</Response>
 																</Elements>
 															</Sequence>
-															<Sequence EntryCondition="gvar('ml_send_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_3">
+															<Sequence EntryCondition="(gvar('ml_send_due') == 2) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_2_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_take_this_later" />
+																		<Commands>
+																			<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																			<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+																		</Commands>
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_send_due') &gt;= 3) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_3">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
 																		<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_take_this_days" />
+																		<Commands>
+																			<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																			<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+																		</Commands>
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_send_due') &gt;= 3) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeSend()" Name="seq_send_plain_accept_deliver_3_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
 																	</Response>
 																	<Response Role="role_ml_employer">
 																		<Text StringName="ml_order_take_this_days" />
@@ -6500,7 +6737,15 @@
 								</Sequences>
 							</Decision>
 						</Sequence>
-						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_need_state') &gt; 0 &amp; gvar('ml_order_pay_custom') == 1" EndType="Decision" Name="seq_need_ask_plain">
+						<Sequence EntryCondition="(gvar('ml_new_life') == 1 &amp; gvar('ml_send_state') &gt; 0 &amp; gvar('ml_order_pay_custom') == 1) &amp; gvar('ml_text_only') == 1" EndType="GoTo" GoToDecision="dec_send_open_plain" ExitScript="MedievalLife.Orders.Asked()" Name="seq_order_ask_plain_text">
+							<UiPrompt StringName="ui_ml_order_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="2.8">
+									<Text StringName="ml_text_doml_henry_jenze_mne_na_t_72lu" />
+								</Response>
+							</Elements>
+						</Sequence>
+						<Sequence EntryCondition="(gvar('ml_new_life') == 1 &amp; gvar('ml_need_state') &gt; 0 &amp; gvar('ml_order_pay_custom') == 1) &amp; gvar('ml_text_only') == 0" EndType="Decision" ExitScript="MedievalLife.Orders.Asked()" Name="seq_need_ask_plain">
 							<UiPrompt StringName="ui_ml_order_need_ask" />
 							<Elements>
 								<Response Role="HENRY" ReferenceLength="3.17">
@@ -7488,7 +7733,7 @@
 													</Elements>
 													<Decision Name="dec_need_plain_take" VoiceoverFallbackLevel="2" VoiceoverFallbackLevelRoles="role_ml_employer HENRY">
 														<Sequences>
-															<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_0">
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 0) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_0">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
@@ -7496,7 +7741,15 @@
 																	</Response>
 																</Elements>
 															</Sequence>
-															<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_1">
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 0) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_0_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 1) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_1">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
@@ -7507,7 +7760,18 @@
 																	</Response>
 																</Elements>
 															</Sequence>
-															<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_2">
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 1) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_1_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_fetch_tomorrow" />
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 2) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_2">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
@@ -7518,7 +7782,18 @@
 																	</Response>
 																</Elements>
 															</Sequence>
-															<Sequence EntryCondition="gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_3">
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') == 2) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_2_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_fetch_later" />
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') &gt;= 3) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_3">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
@@ -7529,7 +7804,18 @@
 																	</Response>
 																</Elements>
 															</Sequence>
-															<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_0">
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 1 &amp; gvar('ml_need_due') &gt;= 3) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_fetch_3_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_fetch_days" />
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 0) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_0">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
@@ -7544,7 +7830,22 @@
 																	</Response>
 																</Elements>
 															</Sequence>
-															<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_1">
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 0) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_0_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_take_money" />
+																		<Commands>
+																			<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																			<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+																		</Commands>
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 1) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_1">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
@@ -7559,7 +7860,22 @@
 																	</Response>
 																</Elements>
 															</Sequence>
-															<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 2" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_2">
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 1) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_1_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_take_money_tomorrow" />
+																		<Commands>
+																			<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																			<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+																		</Commands>
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 2) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_2">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
@@ -7574,11 +7890,41 @@
 																	</Response>
 																</Elements>
 															</Sequence>
-															<Sequence EntryCondition="gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') &gt;= 3" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_3">
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') == 2) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_2_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_take_money_later" />
+																		<Commands>
+																			<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																			<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+																		</Commands>
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') &gt;= 3) &amp; gvar('ml_text_only') == 0" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_3">
 																<UiPrompt StringName="ui_ml_order_accept" />
 																<Elements>
 																	<Response Role="HENRY" ReferenceLength="1.85">
 																		<Text StringName="bejk_henry_dobre_neco_s_t_25zt" />
+																	</Response>
+																	<Response Role="role_ml_employer">
+																		<Text StringName="ml_order_take_money_days" />
+																		<Commands>
+																			<AnimationCommand FragmentId="ADLG_Give" Guid="00ebf610-b3ea-9950-e27a-18618ccae1a3" Variant="0" />
+																			<AnimationCommand Role="HENRY" FragmentId="ADLG_Take" Guid="8f890737-6b10-2c51-77d5-c6d0ccf58c77" Variant="0" />
+																		</Commands>
+																	</Response>
+																</Elements>
+															</Sequence>
+															<Sequence EntryCondition="(gvar('ml_need_kind') == 2 &amp; gvar('ml_need_due') &gt;= 3) &amp; gvar('ml_text_only') == 1" EndType="EndDialogue" ExitScript="MedievalLife.Orders.TakeNeed()" Name="seq_need_plain_accept_buy_3_text">
+																<UiPrompt StringName="ui_ml_order_accept" />
+																<Elements>
+																	<Response Role="HENRY" ReferenceLength="1.85">
+																		<Text StringName="ml_text_bejk_henry_dobre_neco_s_t_25zt" />
 																	</Response>
 																	<Response Role="role_ml_employer">
 																		<Text StringName="ml_order_take_money_days" />
@@ -8499,6 +8845,14 @@
 									</Sequence>
 								</Sequences>
 							</Decision>
+						</Sequence>
+						<Sequence EntryCondition="(gvar('ml_new_life') == 1 &amp; gvar('ml_need_state') &gt; 0 &amp; gvar('ml_order_pay_custom') == 1) &amp; gvar('ml_text_only') == 1" EndType="GoTo" GoToDecision="dec_need_open_plain" ExitScript="MedievalLife.Orders.Asked()" Name="seq_need_ask_plain_text">
+							<UiPrompt StringName="ui_ml_order_need_ask" />
+							<Elements>
+								<Response Role="HENRY" ReferenceLength="3.17">
+									<Text StringName="ml_text_os_k_henry_proste_bych_ra_SqDb" />
+								</Response>
+							</Elements>
 						</Sequence>
 						<Sequence EntryCondition="gvar('ml_new_life') == 1 &amp; gvar('ml_order_bring') == 1" EndType="Decision" Name="seq_order_bring_1">
 							<UiPrompt StringName="ui_ml_order_bring_tavern" />
