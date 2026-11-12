@@ -54,7 +54,7 @@ Settings for work and errands, the rented beds, and horses.
 The first release.
 
 - **A new life.** After the pillory, a wayfarer in Troskowitz offers a new life: a man or a woman of the common folk, with a face, a name and a family of peasants, innkeepers or burghers. Attributes start at 0, skills at 1, with no recipes, and the map is hidden again.
-- **First steps.** Five short notes, in the voice of the world, tell the new character how to get by.
+- **First steps.** Five short notes tell the new character how to get by.
 - **Work across the Trosky region.** Casual work by the hour in every town and village, in each place's own hours, and a steady job with a shift, a meal and a bed. The book of trades keeps the record.
 - **Errands.** Every business asks for deliveries, pickups and shopping on its own day of the week, with a slip, a deadline in working hours, trust to earn, debts and the guards for those who steal.
 - **A calendar of its own,** from 1 June 1403, with 7-day months, or 14-day months or the real calendar with Mod Configuration Menu.

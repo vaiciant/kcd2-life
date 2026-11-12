@@ -48,7 +48,6 @@ Every business asks for errands on its own day of the week, never farther than t
 - **In a new game,** Henry's playthrough works as usual.
 - **Keep a save from before the new life.** It is the safest way back to Henry.
 - **Kuttenberg** opens to you once Henry's story reaches it.
-- Women speak with Henry's voice.
 - Mods that change the game's own alchemy recipes can clash with it. Mods that add new potions, like ldpotions, work.
 
 ## Played with other mods
