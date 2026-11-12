@@ -70,7 +70,13 @@
   <Row><Cell>ui_ml_settings_work_xp</Cell><Cell>ui_ml_settings_work_xp</Cell><Cell>Experiencia</Cell></Row>
   <Row><Cell>ui_ml_settings_work_xp_tip</Cell><Cell>ui_ml_settings_work_xp_tip</Cell><Cell>La experiencia que da una hora de trabajo, en porcentaje: 100 son 6 puntos en la habilidad principal del oficio y 2 en la otra.</Cell></Row>
   <Row><Cell>ui_ml_settings_work_cost</Cell><Cell>ui_ml_settings_work_cost</Cell><Cell>Hambre y cansancio</Cell></Row>
-  <Row><Cell>ui_ml_settings_work_cost_tip</Cell><Cell>ui_ml_settings_work_cost_tip</Cell><Cell>Cuánta hambre y cansancio deja una hora de trabajo, en porcentaje: 100 es el doble de lo que quita el juego solo, 50 lo mismo que el juego, 0 nada.</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_cost_tip</Cell><Cell>ui_ml_settings_work_cost_tip</Cell><Cell>Cuánta hambre y cansancio deja una hora de trabajo, en porcentaje: con 100, el hambre baja el doble de rápido que en el juego solo, y el cansancio una vez y media. 0: nada.</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_reputation</Cell><Cell>ui_ml_settings_work_reputation</Cell><Cell>Reputación que da</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_reputation_tip</Cell><Cell>ui_ml_settings_work_reputation_tip</Cell><Cell>La reputación con la gente del negocio que da una hora de trabajo, en porcentaje: 100 es una décima de punto por hora. Se detiene en 80.</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_min_casual</Cell><Cell>ui_ml_settings_work_min_casual</Cell><Cell>Reputación para trabajar por horas</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_min_casual_tip</Cell><Cell>ui_ml_settings_work_min_casual_tip</Cell><Cell>La reputación con la gente del negocio que necesitas para que te den trabajo por horas. 0: cualquiera.</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_min_steady</Cell><Cell>ui_ml_settings_work_min_steady</Cell><Cell>Reputación para el empleo fijo</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_min_steady_tip</Cell><Cell>ui_ml_settings_work_min_steady_tip</Cell><Cell>La reputación con la gente del negocio que necesitas para que te contraten en un empleo fijo. 0: cualquiera.</Cell></Row>
   <Row><Cell>ui_ml_settings_orders</Cell><Cell>ui_ml_settings_orders</Cell><Cell>Encargos</Cell></Row>
   <Row><Cell>ui_ml_settings_orders_tip</Cell><Cell>ui_ml_settings_orders_tip</Cell><Cell>Entregas, recogidas y compras para los negocios.</Cell></Row>
   <Row><Cell>ui_ml_settings_order_pay</Cell><Cell>ui_ml_settings_order_pay</Cell><Cell>Paga</Cell></Row>
@@ -87,6 +93,10 @@
   <Row><Cell>ui_ml_settings_order_fail_points_tip</Cell><Cell>ui_ml_settings_order_fail_points_tip</Cell><Cell>Puntos de reputación con el negocio cuando vence uno de sus encargos.</Cell></Row>
   <Row><Cell>ui_ml_settings_order_guard</Cell><Cell>ui_ml_settings_order_guard</Cell><Cell>Encargos impagos antes de la guardia</Cell></Row>
   <Row><Cell>ui_ml_settings_order_guard_tip</Cell><Cell>ui_ml_settings_order_guard_tip</Cell><Cell>Con tantos encargos vencidos y sin pagar en un pueblo, sus negocios te denuncian a la guardia. 0: nunca.</Cell></Row>
+  <Row><Cell>ui_ml_settings_dialogs</Cell><Cell>ui_ml_settings_dialogs</Cell><Cell>Diálogos</Cell></Row>
+  <Row><Cell>ui_ml_settings_dialogs_tip</Cell><Cell>ui_ml_settings_dialogs_tip</Cell><Cell>Las conversaciones del personaje nuevo sobre trabajo, encargos y camas.</Cell></Row>
+  <Row><Cell>ui_ml_settings_voice</Cell><Cell>ui_ml_settings_voice</Cell><Cell>Voz</Cell></Row>
+  <Row><Cell>ui_ml_settings_voice_tip</Cell><Cell>ui_ml_settings_voice_tip</Cell><Cell>Activada, el personaje nuevo dice en voz alta sus líneas en las conversaciones de KCD2 Life. Desactivada, salen solo como texto abajo en la pantalla, sin voz y sin mover los labios.</Cell></Row>
   <Row><Cell>ml_month_days_refused</Cell><Cell>ml_month_days_refused</Cell><Cell>El mes sigue igual: hoy no cabría en uno más corto.</Cell></Row>
   <Row><Cell>ml_month_1</Cell><Cell>ml_month_1</Cell><Cell>de enero de</Cell></Row>
   <Row><Cell>ml_month_2</Cell><Cell>ml_month_2</Cell><Cell>de febrero de</Cell></Row>
@@ -2189,6 +2199,19 @@
   <Row><Cell>ml_order_book_deliver_many</Cell><Cell>ml_order_book_deliver_many</Cell><Cell>encargos de entrega</Cell></Row>
   <Row><Cell>ml_order_book_fetch_one</Cell><Cell>ml_order_book_fetch_one</Cell><Cell>encargo de recogida</Cell></Row>
   <Row><Cell>ml_order_book_fetch_many</Cell><Cell>ml_order_book_fetch_many</Cell><Cell>encargos de recogida</Cell></Row>
+  <Row><Cell>ml_order_book_title</Cell><Cell>ml_order_book_title</Cell><Cell>Encargos</Cell></Row>
+  <Row><Cell>ml_order_book_title_trosky</Cell><Cell>ml_order_book_title_trosky</Cell><Cell>Encargos en Trosky</Cell></Row>
+  <Row><Cell>ml_order_book_title_kuttenberg</Cell><Cell>ml_order_book_title_kuttenberg</Cell><Cell>Encargos en Kuttenberg</Cell></Row>
+  <Row><Cell>ml_order_book_none</Cell><Cell>ml_order_book_none</Cell><Cell>Ningún negocio de esta región te conoce todavía. Habla con uno, y aquí se anotan sus horas.</Cell></Row>
+  <Row><Cell>ml_order_book_deliver</Cell><Cell>ml_order_book_deliver</Cell><Cell>Entrega:</Cell></Row>
+  <Row><Cell>ml_order_book_fetch</Cell><Cell>ml_order_book_fetch</Cell><Cell>Recogida:</Cell></Row>
+  <Row><Cell>ml_order_book_buy</Cell><Cell>ml_order_book_buy</Cell><Cell>Compra:</Cell></Row>
+  <Row><Cell>ml_order_book_need</Cell><Cell>ml_order_book_need</Cell><Cell>Recogida o compra:</Cell></Row>
+  <Row><Cell>ml_order_book_today</Cell><Cell>ml_order_book_today</Cell><Cell>hoy</Cell></Row>
+  <Row><Cell>ml_order_book_tomorrow</Cell><Cell>ml_order_book_tomorrow</Cell><Cell>mañana</Cell></Row>
+  <Row><Cell>ml_order_book_in</Cell><Cell>ml_order_book_in</Cell><Cell>en</Cell></Row>
+  <Row><Cell>ml_order_book_days</Cell><Cell>ml_order_book_days</Cell><Cell>días</Cell></Row>
+  <Row><Cell>ml_order_book_owed</Cell><Cell>ml_order_book_owed</Cell><Cell>Le debes</Cell></Row>
   <Row><Cell>ml_order_book_buy_one</Cell><Cell>ml_order_book_buy_one</Cell><Cell>encargo de compra</Cell></Row>
   <Row><Cell>ml_order_book_buy_many</Cell><Cell>ml_order_book_buy_many</Cell><Cell>encargos de compra</Cell></Row>
   <Row><Cell>ml_order_slip_title</Cell><Cell>ml_order_slip_title</Cell><Cell>Boleta de encargo</Cell></Row>
@@ -5256,4 +5279,10 @@
   <Row><Cell>ml_order_pay_fetch_413</Cell><Cell>ml_order_pay_fetch_413</Cell><Cell>Ve a buscarlo y tráemelo, y te pagaré 41,3 groschen.</Cell></Row>
   <Row><Cell>ml_order_pay_fetch_450</Cell><Cell>ml_order_pay_fetch_450</Cell><Cell>Ve a buscarlo y tráemelo, y te pagaré 45 groschen.</Cell></Row>
   <Row><Cell>ml_order_pay_fetch_slip</Cell><Cell>ml_order_pay_fetch_slip</Cell><Cell>Ve a buscarlo y tráemelo, y te pagaré lo que dice la boleta.</Cell></Row>
+  <Row><Cell>ml_text_bejk_henry_dobre_neco_s_t_25zt</Cell><Cell>ml_text_bejk_henry_dobre_neco_s_t_25zt</Cell><Cell>De acuerdo; veré qué puedo hacer.</Cell></Row>
+  <Row><Cell>ml_text_bejk_henry_potrebujes_s_n_2i4e</Cell><Cell>ml_text_bejk_henry_potrebujes_s_n_2i4e</Cell><Cell>¿Necesitáis ayuda con algo?</Cell></Row>
+  <Row><Cell>ml_text_cele_henry_hledam_praci_n_SI9N</Cell><Cell>ml_text_cele_henry_hledam_praci_n_SI9N</Cell><Cell>Busco trabajo. ¿Sabéis adónde podría acudir?</Cell></Row>
+  <Row><Cell>ml_text_doml_henry_jenze_mne_na_t_72lu</Cell><Cell>ml_text_doml_henry_jenze_mne_na_t_72lu</Cell><Cell>¿Hay algo que pueda hacer por vos? Lo que sea.</Cell></Row>
+  <Row><Cell>ml_text_odev_henry_kdo_jsem_ja_ab_NCYz</Cell><Cell>ml_text_odev_henry_kdo_jsem_ja_ab_NCYz</Cell><Cell>¡Trato hecho!</Cell></Row>
+  <Row><Cell>ml_text_os_k_henry_proste_bych_ra_SqDb</Cell><Cell>ml_text_os_k_henry_proste_bych_ra_SqDb</Cell><Cell>Haré con gusto lo que necesitéis, tan solo decídmelo.</Cell></Row>
 </Table>

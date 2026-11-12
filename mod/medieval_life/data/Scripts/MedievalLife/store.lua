@@ -28,6 +28,10 @@ local function counter()
 	return ML.Try("store counter", function() return player.inventory:GetCountOfClass(Store.COUNTER_ITEM) end) or 0
 end
 
+-- Goes up with each change of the values, also when a load brings others: the book of trades writes its pages again
+-- when it changes (work_book.lua).
+Store.serial = 0
+
 local function keep(version)
 	Store.version = version
 	entity().health = { version = version, values = Store.values }
@@ -50,6 +54,7 @@ local function sync()
 		end
 		Store.values = hasSaved and saved.values or {}
 	end
+	Store.serial = Store.serial + 1
 	keep(version)
 end
 
@@ -68,6 +73,7 @@ function Store.Set(key, value)
 		return
 	end
 	Store.values[key] = value
+	Store.serial = Store.serial + 1
 	ML.Try("store counter", function() player.inventory:CreateItem(Store.COUNTER_ITEM, 1, 1) end)
 	keep(counter())
 end

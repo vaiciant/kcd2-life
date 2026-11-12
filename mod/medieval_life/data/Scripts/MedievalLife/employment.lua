@@ -312,7 +312,7 @@ local function publish()
 			offer = Employment.OFFER_WAIT
 		elseif ML.Orders.Owed(nearest) then
 			offer = Employment.OFFER_OWED
-		elseif not ML.Reputation.Accepts(nearest, ML.JOB_RULES.steady_min_reputation) then
+		elseif not ML.Reputation.Accepts(nearest, ML.Settings.Get("work_min_steady")) then
 			offer = Employment.OFFER_DISTRUST
 		elseif not ML.WorkBook.Has() then
 			offer = Employment.OFFER_NO_BOOK
@@ -334,7 +334,7 @@ local function publish()
 	-- A casual job takes it the same way, and only the words change.
 	Variables.SetGlobal(Employment.DRUNK_VARIABLE, (drunk or naked) and 1 or 0)
 	Variables.SetGlobal(Employment.NAKED_VARIABLE, naked and 1 or 0)
-	local distrust = started and nearest and not ML.Reputation.Accepts(nearest, ML.JOB_RULES.casual_min_reputation)
+	local distrust = started and nearest and not ML.Reputation.Accepts(nearest, ML.Settings.Get("work_min_casual"))
 	Variables.SetGlobal(Employment.DISTRUST_VARIABLE, distrust and 1 or 0)
 end
 

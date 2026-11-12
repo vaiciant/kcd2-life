@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="brambora">
 	<!-- The engine looks for the voice and the lips of a line in a folder named after the level and the nodes with VoiceNamespace.
-	     This Gameplay has the name of the quest of the game where Henry recorded the line of this dialog, so nothing is copied. -->
+	     This Gameplay has the name of the quest of the game where Henry recorded the line of this dialog, so nothing is copied.
+	     The game lists the options of these dialogs in the reverse of their order here, and the higher PositionY first,
+	     which agree: casual work, then the errands, then the beds (screenshot of the tavern of Troskowitz). -->
 	<Skald>
 		<Gameplay Name="nebakovObrana" VoiceNamespace="true">
 			<Definitions>
-				<Definition File="nebakovObrana/ml_casual_dialog.xml" />
+				<Definition File="nebakovObrana/ml_rent_dialog.xml" />
 				<Definition File="nebakovObrana/ml_order_dialog.xml" />
+				<Definition File="nebakovObrana/ml_casual_dialog.xml" />
 			</Definitions>
 			<Nodes>
-				<ml_casual_dialog Name="dialog" PositionY="0" PositionX="0" />
+				<ml_rent_dialog Name="rent" PositionY="0" PositionX="0" />
 				<ml_order_dialog Name="orders" PositionY="200" PositionX="0" />
+				<ml_casual_dialog Name="dialog" PositionY="400" PositionX="0" />
 			</Nodes>
 			<Text Text="nebakovObrana" />
 		</Gameplay>

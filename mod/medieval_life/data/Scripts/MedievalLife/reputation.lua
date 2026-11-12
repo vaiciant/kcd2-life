@@ -30,8 +30,8 @@ Reputation.DONE_KEY = "reputation_reset"
 Reputation.UNKNOWN_REGION = "unknown"
 -- Shows once if a change reaches the faction above and the one below within the same call.
 Reputation.PROBE = "trosecko_settlements_troskovice_commonFolk"
--- Each hour of work is 0.1 points, up to 80.
-Reputation.WORK_ROW = "ml_rep_up_001"
+-- Each hour of work is 0.1 points with the setting work_reputation at 100%, up to 80.
+Reputation.WORK_PER_HOUR = 0.001
 Reputation.WORK_CAP = 0.8
 
 local seenGen
@@ -213,12 +213,11 @@ function Reputation.Work(site, hours)
 		return
 	end
 	ML.Try("reputation work", function()
-		local value = faction:GetReputation()
-		for _ = 1, hours do
-			if value >= Reputation.WORK_CAP then
-				break
-			end
-			value = faction:AddReputation(Reputation.WORK_ROW) or value
+		local gain = hours * Reputation.WORK_PER_HOUR * ML.Settings.Factor("work_reputation")
+		gain = math.min(gain, Reputation.WORK_CAP - faction:GetReputation())
+		-- The rows go in thousandths, a tenth of a point: less than half of one is nothing.
+		if gain >= 0.0005 then
+			moveBy(faction, gain)
 		end
 	end)
 end

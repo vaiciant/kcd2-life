@@ -384,6 +384,89 @@ local function dueOf(taken)
 	return taken.due or taken.taken + ML.ORDER_RULES.deadline_hours * Orders.HOUR_SECONDS
 end
 
+-- For the book of trades: when each turn of a business gives its next order, and what it is. One of:
+--   { days = 0, kind, from = hour or nil }  today, until it closes, or from that hour if it has not opened yet
+--   { days = n, kind }                      in n days, 1 tomorrow; with one taken, its next one, as the slip says the rest
+--   { blocked = true }                      too few points, or not trusted for pickups and shopping: the book says ?
+-- A business that is owed gives no order at all: Schedule says so for the whole business.
+local function kindOn(key, day, turn)
+	local id = offerToday(key, day, turn)
+	return id and byId[id] and byId[id].kind or (turn == Orders.SEND and "deliver" or nil)
+end
+
+local function turnSchedule(site, day, hour, turn)
+	local state, value = stateFor(site, day, turn)
+	local first = ML.Jobs.Day(site)
+	if state == Orders.STATE_ACTIVE then
+		local days = daysToNext(slotOf(site.key, turn), day)
+		return { days = days, kind = kindOn(site.key, day + days, turn) }
+	elseif state == Orders.STATE_OFFER then
+		return { days = 0, kind = byId[value].kind }
+	elseif state == Orders.STATE_CLOSED and hour < first then
+		return { days = 0, kind = kindOn(site.key, day, turn), from = first }
+	elseif state == Orders.STATE_CLOSED or state == Orders.STATE_LATE then
+		-- Today's is gone: after closing, or too late to fetch it. The next comes a cycle later.
+		local every = Orders.Every()
+		return { days = every, kind = kindOn(site.key, day + every, turn) }
+	elseif state == Orders.STATE_WAIT then
+		return { days = value, kind = kindOn(site.key, day + value, turn) }
+	elseif state == Orders.STATE_LOW_POINTS or state == Orders.STATE_UNTRUSTED or state == Orders.STATE_LOST_TRUST then
+		return { blocked = true, kind = turn == Orders.SEND and "deliver" or nil }
+	end
+	return nil
+end
+
+-- The businesses of these keys that give orders, with their working hours, what is owed to them, in whole groschen,
+-- and each turn as turnSchedule says. The ones with an order taken or a debt come in too, if they are not among them.
+-- From the dialog, when the character asks the nearest business for errands: its book of trades learns its days
+-- (work_book.lua).
+function Orders.Asked()
+	local site = ML.Try("order site", ML.Jobs.NearestSite)
+	if site then
+		ML.WorkBook.Learn(site.key)
+	end
+end
+
+function Orders.Schedule(keys)
+	local day, hour = ML.Days.Current(), Calendar.GetWorldHourOfDay()
+	local wanted, list = {}, {}
+	local function want(key)
+		if not wanted[key] then
+			wanted[key] = true
+			list[#list + 1] = key
+		end
+	end
+	for _, key in ipairs(keys) do
+		want(key)
+	end
+	for slot in pairs(ML.Store.Get(Orders.ACTIVE_KEY, {})) do
+		want((string.gsub(slot, Orders.NEED_SUFFIX .. "$", "")))
+	end
+	for key in pairs(ML.Store.Get(Orders.DEBTS_KEY, {})) do
+		want(key)
+	end
+	local result = {}
+	for _, key in ipairs(list) do
+		local site = siteByKey(key)
+		if site and ML.ORDER_BUSINESSES[key] then
+			local first, last = ML.Jobs.Day(site)
+			local owed = Orders.Owed(site)
+			local entry = { key = key, first = first, last = last, owed = owed and math.ceil(owed / 10), turns = {} }
+			if not owed then
+				for _, turn in ipairs({ Orders.SEND, Orders.NEED }) do
+					local planned = turnSchedule(site, day, hour, turn)
+					if planned then
+						planned.turn = turn
+						entry.turns[#entry.turns + 1] = planned
+					end
+				end
+			end
+			result[#result + 1] = entry
+		end
+	end
+	return result
+end
+
 -- The money to buy, with the profit of the setting.
 local function profit()
 	return ML.Economy.Money(ML.ORDER_RULES.buy_profit * ML.Settings.Factor("order_pay"))
@@ -609,6 +692,9 @@ local function place(parts, key)
 	parts[#parts + 1] = "@" .. business.name
 	parts[#parts + 1] = ", "
 	parts[#parts + 1] = "@ml_order_town_" .. business.town
+	-- Its working hours: a delivery or a pickup has to reach both places while they are open.
+	local first, last = ML.Jobs.Day(siteByKey(key))
+	parts[#parts + 1] = string.format(" (%d-%dh)", first, last)
 end
 
 local function slipLine(parts, label, ...)
@@ -719,12 +805,17 @@ local function accept(turn)
 	local site, day = ML.Try("order site", ML.Jobs.NearestSite), ML.Days.Current()
 	local state, id = Orders.STATE_NONE, 0
 	if site then
+		ML.WorkBook.Learn(site.key)
 		state, id = stateFor(site, day, turn)
 	end
 	local order = byId[id]
 	if state ~= Orders.STATE_OFFER or not order then
 		ML.Log("ERROR order accept", turn, site and site.key)
 		return
+	end
+	-- The slip says the hours of the other place too: the book knows them from now on.
+	if order.kind == "deliver" or order.kind == "fetch" then
+		ML.WorkBook.Talked(order.kind == "deliver" and order.to or order.from)
 	end
 	-- Which goods and how many: one of what the business sells or needs, and between its least
 	-- and its most. To buy, the order says which.
@@ -1092,7 +1183,20 @@ local function checkDeadlines()
 	end
 end
 
+-- Talking to the person of a business teaches its hours. The dialog of the mod talks to the nearest employer,
+-- and so does this. Once a second, and only with the character of a new life, who has the book.
+local function noticeTalk()
+	if not ML.Life.IsStarted() or not ML.Try("in dialog", function() return player.human:IsInDialog() end) then
+		return
+	end
+	local site = ML.Try("talk site", ML.Jobs.NearestSite)
+	if site then
+		ML.WorkBook.Talked(site.key)
+	end
+end
+
 ML.TickHandlers[#ML.TickHandlers + 1] = checkDeadlines
+ML.TickHandlers[#ML.TickHandlers + 1] = noticeTalk
 ML.TickHandlers[#ML.TickHandlers + 1] = function() ML.Try("order crimes", reportCrimes) end
 ML.TickHandlers[#ML.TickHandlers + 1] = publish
 

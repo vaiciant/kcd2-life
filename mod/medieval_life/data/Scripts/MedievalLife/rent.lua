@@ -1,7 +1,7 @@
 -- =============================================================================
 -- A bed for the night. The game rents beds in seven places of the Trosky region, but its rental gives the bed to
 -- Henry: the new character pays and is thrown out of it. So the owners there, who are employers of the mod, rent their
--- own: the dialog of work has the option (ml_casual_dialog.xml). The bed is the one of the game, where it is: the mod
+-- own: the dialog of every employer has the option (ml_rent_dialog.xml, apart from ml_casual_dialog.xml since). The bed is the one of the game, where it is: the mod
 -- hides its prompt and puts in its place a bed of its own that nobody claims, as the bed of the steady job, unseen, on the
 -- same mattress. Its place, its prompt and the door of the room come from the level (tools/generate_jobs.py). It is the
 -- character's until rent_until_hour of the next morning, or for a week, rent_week_days nights for the price of

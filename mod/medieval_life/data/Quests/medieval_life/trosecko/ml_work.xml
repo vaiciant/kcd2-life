@@ -8,12 +8,12 @@
 				<Port Name="quit" Direction="Out" Type="trigger" />
 			</Ports>
 			<Definitions>
-				<Definition File="ml_work/zavodniPodkovy.xml" />
 				<Definition File="ml_work/nebakovObrana.xml" />
+				<Definition File="ml_work/zavodniPodkovy.xml" />
 			</Definitions>
 			<Nodes>
-				<zavodniPodkovy Name="steady" PositionY="0" PositionX="0" />
-				<nebakovObrana Name="casual" PositionY="200" PositionX="0" />
+				<nebakovObrana Name="casual" PositionY="0" PositionX="0" />
+				<zavodniPodkovy Name="steady" PositionY="200" PositionX="0" />
 				<Output Name="Output">
 					<Edge From="steady.hired" To="hired" />
 					<Edge From="steady.quit" To="quit" />

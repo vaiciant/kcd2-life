@@ -25,8 +25,10 @@ Script.LoadScript("Scripts/MedievalLife/jobs.lua")
 Script.LoadScript("Scripts/MedievalLife/employment.lua")
 Script.LoadScript("Scripts/MedievalLife/orders_data.lua")
 Script.LoadScript("Scripts/MedievalLife/orders.lua")
+Script.LoadScript("Scripts/MedievalLife/book_text_data.lua")
 Script.LoadScript("Scripts/MedievalLife/rent.lua")
 Script.LoadScript("Scripts/MedievalLife/nutrition.lua")
+Script.LoadScript("Scripts/MedievalLife/eating.lua")
 Script.LoadScript("Scripts/MedievalLife/bed_marker.lua")
 Script.LoadScript("Scripts/MedievalLife/woman_test.lua")
 Script.LoadScript("Scripts/MedievalLife/woman_clothes_data.lua")
@@ -46,7 +48,7 @@ Script.LoadScript("Scripts/MedievalLife/commands.lua")
 
 local ML = MedievalLife
 
-if not (ML.Log and ML.Store and ML.Economy and ML.Days and ML.Reputation and ML.Settings and ML.Screen and ML.Names and ML.Typing and ML.Look and ML.Origins and ML.Life and ML.WorkBook and ML.EmployeeBed and ML.Jobs and ML.Employment and ML.Orders and ML.Rent and ML.Nutrition and ML.BedMarker and ML.WomanTest and ML.Female and ML.Selector and ML.Host and ML.MapMarks and ML.FastTravel and ML.Story and ML.HenryRecipes and ML.Tutorial and ML.Stash and ML.Switch and ML.Uninstall and ML.Commands) then
+if not (ML.Log and ML.Store and ML.Economy and ML.Days and ML.Reputation and ML.Settings and ML.Screen and ML.Names and ML.Typing and ML.Look and ML.Origins and ML.Life and ML.WorkBook and ML.EmployeeBed and ML.Jobs and ML.Employment and ML.Orders and ML.Rent and ML.Nutrition and ML.Eating and ML.BedMarker and ML.WomanTest and ML.Female and ML.Selector and ML.Host and ML.MapMarks and ML.FastTravel and ML.Story and ML.HenryRecipes and ML.Tutorial and ML.Stash and ML.Switch and ML.Uninstall and ML.Commands) then
 	System.LogAlways("[ML] ERROR a module did not load")
 	return
 end
@@ -55,6 +57,8 @@ end
 function ML:OnGameplayStarted(actionName, eventName, argTable)
 	ML.gen = ML.gen + 1
 	ML.Log("gameplay started gen=", ML.gen)
+	-- Before anything else: the book can be opened as soon as the game is on.
+	ML.Try("eating", ML.Eating.Exclude)
 	-- Without both frameworks nothing of the mod starts: no tick, no wayfarer, no work.
 	if ML.Try("frameworks", ML.Life.CheckFrameworks) == false then
 		return
@@ -84,6 +88,7 @@ end
 ML.Try("listener", function()
 	UIAction.RegisterEventSystemListener(ML, "System", "OnGameplayStarted", "OnGameplayStarted")
 	ML.WorkBook.Listen()
+	ML.Tutorial.Listen()
 end)
 ML.Try("settings", ML.Settings.Register)
 

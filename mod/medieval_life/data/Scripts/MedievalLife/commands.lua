@@ -15,7 +15,7 @@ local function stripQuotes(line)
 end
 
 function Commands.Status()
-	ML.Log("status gen=", ML.gen, "region=", ML.Region(), "state=", ML.Store.Get("state"), "origin=", ML.Store.Get("origin"), "name=", ML.Typing.Load(), "book=", ML.WorkBook.Has(), "jobs=", ML.Store.Get("book_jobs", {}), "known points=", ML.FastTravel.KnownCount(), "known marks=", ML.MapMarks.KnownCount(), "woman in men's clothes=", ML.Store.Get("woman_in_mens_clothes", 0), "day=", ML.Days.Current(), "date=", table.concat({ ML.Days.Date() }, " "), "month days=", ML.Days.MonthDays(), "world day=", Calendar.GetWorldDay(), "world time=", Calendar.GetWorldTime(), "hour=", Calendar.GetWorldHourOfDay(), "economy=", ML.Economy.active and ML.ECONOMY.name or "game")
+	ML.Log("status gen=", ML.gen, "region=", ML.Region(), "state=", ML.Store.Get("state"), "origin=", ML.Store.Get("origin"), "name=", ML.Typing.Load(), "book=", ML.WorkBook.Has(), "jobs=", (ML.WorkBook.BookRecord() or {}).jobs, "known points=", ML.FastTravel.KnownCount(), "known marks=", ML.MapMarks.KnownCount(), "woman in men's clothes=", ML.Store.Get("woman_in_mens_clothes", 0), "day=", ML.Days.Current(), "date=", table.concat({ ML.Days.Date() }, " "), "month days=", ML.Days.MonthDays(), "world day=", Calendar.GetWorldDay(), "world time=", Calendar.GetWorldTime(), "hour=", Calendar.GetWorldHourOfDay(), "economy=", ML.Economy.active and ML.ECONOMY.name or "game")
 	ML.Story.Report()
 end
 
@@ -457,6 +457,12 @@ Commands.DEVELOPER = {
 	{ "ml_w_dress", "MedievalLife.WomanTest.Dress()", "Test M1: puts women's clothes on the character" },
 	{ "ml_w_gear", "MedievalLife.WomanTest.Gear()", "Test M4: gives men's clothing and armor of every type, with open and closed helmets" },
 	{ "ml_w_shop", "MedievalLife.WomanTest.Shop()", "Test: gives one women's item of the game per mesh, as if bought" },
+	{ "ml_w_actor", "MedievalLife.WomanTest.Actor(%line)", "Test 210: puts a cutscene double in front, with the look of a soul: player, injured, wet, dream or an id" },
+	{ "ml_w_actor_set", "MedievalLife.WomanTest.ActorSet(%line)", "Test 210: the last double gets another soul, like ml_w_actor_set player, and resets" },
+	{ "ml_w_actor_copy", "MedievalLife.WomanTest.ActorCopy(%line)", "Test 210: the engine copies the player's look onto the last double; ml_w_actor_copy reverse, the other way round" },
+	{ "ml_w_actor_hook", "MedievalLife.WomanTest.ActorHook()", "Test 210: until the game closes, a double with a soul of Henry's own spawns with the player's soul" },
+	{ "ml_w_actor_find", "MedievalLife.WomanTest.ActorFind()", "Test 210: the doubles of Henry that exist now, and their souls" },
+	{ "ml_w_actor_remove", "MedievalLife.WomanTest.ActorRemove()", "Test 210: takes the test doubles away" },
 	{ "ml_money", "MedievalLife.Commands.Money(%line)", "Test shortcut: gives that many groschen" },
 	{ "ml_rep", "MedievalLife.Commands.Rep()", "Test S4: reputation with the nearest NPC" },
 	{ "ml_rep_add", "MedievalLife.Commands.RepAdd(%line)", "Test S4: applies a row of reputation_change, like ml_rep_add ml_rep_up_010 5" },

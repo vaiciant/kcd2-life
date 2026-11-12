@@ -40,10 +40,11 @@ steady_rehire_fired_days = 7    # And after a dismissal, also for leaving the re
 casual_min_reputation = 35      # Points of the reputation panel, with the faction of the employer. Below this, no casual work.
 steady_min_reputation = 50      # And below this, no steady job.
 steady_area = 5                 # Metres around the bed where the employee may be, private or not.
-# What a shift gives to eat, by item name. Together they feed as much as a bread: 19.
-steady_meal = ["breadroll", "water", "plums", "parsnip", "egg"]
-# A day of work of at least casual_meal_min_hours gives a poorer meal: less food, and not fresh.
-casual_meal = ["pretzel", "water", "peaches", "leek", "egg"]
+# What a shift gives to eat, by item name, with how many of each. Bread, water, fruit, vegetable and an egg: 35 of
+# nourishment (it was one of each, 19, as much as a bread).
+steady_meal = { breadroll = 2, water = 1, plums = 3, parsnip = 2, egg = 1 }
+# A day of work of at least casual_meal_min_hours gives a poorer meal: less food, and not fresh. 22, as 12 was to 19.
+casual_meal = { pretzel = 2, water = 1, peaches = 3, leek = 3, egg = 1 }
 casual_meal_min_hours = 6
 casual_meal_health = 0.6
 casual_meal_fresh = ["water"]   # These stay as they are.

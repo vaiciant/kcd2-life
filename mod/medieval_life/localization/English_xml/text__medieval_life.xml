@@ -70,7 +70,13 @@
   <Row><Cell>ui_ml_settings_work_xp</Cell><Cell>ui_ml_settings_work_xp</Cell><Cell>Experience</Cell></Row>
   <Row><Cell>ui_ml_settings_work_xp_tip</Cell><Cell>ui_ml_settings_work_xp_tip</Cell><Cell>The experience an hour of work gives, in percent: 100 is 6 points in the main skill of the trade and 2 in the other.</Cell></Row>
   <Row><Cell>ui_ml_settings_work_cost</Cell><Cell>ui_ml_settings_work_cost</Cell><Cell>Hunger and tiredness</Cell></Row>
-  <Row><Cell>ui_ml_settings_work_cost_tip</Cell><Cell>ui_ml_settings_work_cost_tip</Cell><Cell>How hungry and tired an hour of work leaves you, in percent: 100 is twice what the game takes on its own, 50 the same as the game, 0 nothing.</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_cost_tip</Cell><Cell>ui_ml_settings_work_cost_tip</Cell><Cell>How hungry and tired an hour of work leaves you, in percent: at 100, hunger goes twice as fast as on its own in the game, and tiredness one and a half times. 0: nothing.</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_reputation</Cell><Cell>ui_ml_settings_work_reputation</Cell><Cell>Reputation gained</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_reputation_tip</Cell><Cell>ui_ml_settings_work_reputation_tip</Cell><Cell>The reputation with the people of the business that an hour of work gives, in percent: 100 is a tenth of a point per hour. It stops at 80.</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_min_casual</Cell><Cell>ui_ml_settings_work_min_casual</Cell><Cell>Reputation for day work</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_min_casual_tip</Cell><Cell>ui_ml_settings_work_min_casual_tip</Cell><Cell>The reputation with the people of the business you need for them to give you work by the hour. 0: anyone.</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_min_steady</Cell><Cell>ui_ml_settings_work_min_steady</Cell><Cell>Reputation for a steady job</Cell></Row>
+  <Row><Cell>ui_ml_settings_work_min_steady_tip</Cell><Cell>ui_ml_settings_work_min_steady_tip</Cell><Cell>The reputation with the people of the business you need for them to hire you for a steady job. 0: anyone.</Cell></Row>
   <Row><Cell>ui_ml_settings_orders</Cell><Cell>ui_ml_settings_orders</Cell><Cell>Errands</Cell></Row>
   <Row><Cell>ui_ml_settings_orders_tip</Cell><Cell>ui_ml_settings_orders_tip</Cell><Cell>Deliveries, pickups and shopping for the businesses.</Cell></Row>
   <Row><Cell>ui_ml_settings_order_pay</Cell><Cell>ui_ml_settings_order_pay</Cell><Cell>Pay</Cell></Row>
@@ -87,6 +93,10 @@
   <Row><Cell>ui_ml_settings_order_fail_points_tip</Cell><Cell>ui_ml_settings_order_fail_points_tip</Cell><Cell>Points of reputation with the business when one of its errands runs out.</Cell></Row>
   <Row><Cell>ui_ml_settings_order_guard</Cell><Cell>ui_ml_settings_order_guard</Cell><Cell>Unpaid errands before the guard</Cell></Row>
   <Row><Cell>ui_ml_settings_order_guard_tip</Cell><Cell>ui_ml_settings_order_guard_tip</Cell><Cell>This many errands run out and unpaid in a town, and its businesses report you to the guard. 0: never.</Cell></Row>
+  <Row><Cell>ui_ml_settings_dialogs</Cell><Cell>ui_ml_settings_dialogs</Cell><Cell>Dialogs</Cell></Row>
+  <Row><Cell>ui_ml_settings_dialogs_tip</Cell><Cell>ui_ml_settings_dialogs_tip</Cell><Cell>The talks of the new character about work, errands and beds.</Cell></Row>
+  <Row><Cell>ui_ml_settings_voice</Cell><Cell>ui_ml_settings_voice</Cell><Cell>Voice</Cell></Row>
+  <Row><Cell>ui_ml_settings_voice_tip</Cell><Cell>ui_ml_settings_voice_tip</Cell><Cell>On, the new character speaks their lines in the talks of KCD2 Life. Off, the lines show only as text at the bottom of the screen, with no voice and no lips moving.</Cell></Row>
   <Row><Cell>ml_month_days_refused</Cell><Cell>ml_month_days_refused</Cell><Cell>The month stays as it was: today would not fit in a shorter one.</Cell></Row>
   <Row><Cell>ml_month_1</Cell><Cell>ml_month_1</Cell><Cell>January</Cell></Row>
   <Row><Cell>ml_month_2</Cell><Cell>ml_month_2</Cell><Cell>February</Cell></Row>
@@ -2189,6 +2199,19 @@
   <Row><Cell>ml_order_book_deliver_many</Cell><Cell>ml_order_book_deliver_many</Cell><Cell>delivery errands</Cell></Row>
   <Row><Cell>ml_order_book_fetch_one</Cell><Cell>ml_order_book_fetch_one</Cell><Cell>pickup errand</Cell></Row>
   <Row><Cell>ml_order_book_fetch_many</Cell><Cell>ml_order_book_fetch_many</Cell><Cell>pickup errands</Cell></Row>
+  <Row><Cell>ml_order_book_title</Cell><Cell>ml_order_book_title</Cell><Cell>Errands</Cell></Row>
+  <Row><Cell>ml_order_book_title_trosky</Cell><Cell>ml_order_book_title_trosky</Cell><Cell>Errands in Trosky</Cell></Row>
+  <Row><Cell>ml_order_book_title_kuttenberg</Cell><Cell>ml_order_book_title_kuttenberg</Cell><Cell>Errands in Kuttenberg</Cell></Row>
+  <Row><Cell>ml_order_book_none</Cell><Cell>ml_order_book_none</Cell><Cell>No business of this region knows you yet. Talk to one, and its hours are written here.</Cell></Row>
+  <Row><Cell>ml_order_book_deliver</Cell><Cell>ml_order_book_deliver</Cell><Cell>Delivery:</Cell></Row>
+  <Row><Cell>ml_order_book_fetch</Cell><Cell>ml_order_book_fetch</Cell><Cell>Pickup:</Cell></Row>
+  <Row><Cell>ml_order_book_buy</Cell><Cell>ml_order_book_buy</Cell><Cell>Shopping:</Cell></Row>
+  <Row><Cell>ml_order_book_need</Cell><Cell>ml_order_book_need</Cell><Cell>Pickup or shopping:</Cell></Row>
+  <Row><Cell>ml_order_book_today</Cell><Cell>ml_order_book_today</Cell><Cell>today</Cell></Row>
+  <Row><Cell>ml_order_book_tomorrow</Cell><Cell>ml_order_book_tomorrow</Cell><Cell>tomorrow</Cell></Row>
+  <Row><Cell>ml_order_book_in</Cell><Cell>ml_order_book_in</Cell><Cell>in</Cell></Row>
+  <Row><Cell>ml_order_book_days</Cell><Cell>ml_order_book_days</Cell><Cell>days</Cell></Row>
+  <Row><Cell>ml_order_book_owed</Cell><Cell>ml_order_book_owed</Cell><Cell>You owe it</Cell></Row>
   <Row><Cell>ml_order_book_buy_one</Cell><Cell>ml_order_book_buy_one</Cell><Cell>shopping errand</Cell></Row>
   <Row><Cell>ml_order_book_buy_many</Cell><Cell>ml_order_book_buy_many</Cell><Cell>shopping errands</Cell></Row>
   <Row><Cell>ml_order_slip_title</Cell><Cell>ml_order_slip_title</Cell><Cell>Errand slip</Cell></Row>
@@ -5256,4 +5279,10 @@
   <Row><Cell>ml_order_pay_fetch_413</Cell><Cell>ml_order_pay_fetch_413</Cell><Cell>Pick it up and bring it here, and I'll pay you 41.3 groschen.</Cell></Row>
   <Row><Cell>ml_order_pay_fetch_450</Cell><Cell>ml_order_pay_fetch_450</Cell><Cell>Pick it up and bring it here, and I'll pay you 45 groschen.</Cell></Row>
   <Row><Cell>ml_order_pay_fetch_slip</Cell><Cell>ml_order_pay_fetch_slip</Cell><Cell>Pick it up and bring it here, and I'll pay you what the slip says.</Cell></Row>
+  <Row><Cell>ml_text_bejk_henry_dobre_neco_s_t_25zt</Cell><Cell>ml_text_bejk_henry_dobre_neco_s_t_25zt</Cell><Cell>Alright, I'll see what I can do.</Cell></Row>
+  <Row><Cell>ml_text_bejk_henry_potrebujes_s_n_2i4e</Cell><Cell>ml_text_bejk_henry_potrebujes_s_n_2i4e</Cell><Cell>Do you need help with anything?</Cell></Row>
+  <Row><Cell>ml_text_cele_henry_hledam_praci_n_SI9N</Cell><Cell>ml_text_cele_henry_hledam_praci_n_SI9N</Cell><Cell>I'm looking for work, do you know about any?</Cell></Row>
+  <Row><Cell>ml_text_doml_henry_jenze_mne_na_t_72lu</Cell><Cell>ml_text_doml_henry_jenze_mne_na_t_72lu</Cell><Cell>Is there something I can do for you? Anything?</Cell></Row>
+  <Row><Cell>ml_text_odev_henry_kdo_jsem_ja_ab_NCYz</Cell><Cell>ml_text_odev_henry_kdo_jsem_ja_ab_NCYz</Cell><Cell>Agreed!</Cell></Row>
+  <Row><Cell>ml_text_os_k_henry_proste_bych_ra_SqDb</Cell><Cell>ml_text_os_k_henry_proste_bych_ra_SqDb</Cell><Cell>I'll gladly do anything you need, just tell me.</Cell></Row>
 </Table>

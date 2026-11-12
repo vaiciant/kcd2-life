@@ -11,6 +11,7 @@ Some of them change the same systems as KCD2 Life, and that is expected, not a f
 - **enhancedbohemiancreatures** adds beards and hair to the barber's list that only fit Henry's head. The new character, and Henry with a look of KCD2 Male Framework, choose in a talk among what fits the face, and Henry with his own face keeps the game's barber with those of EBCO.
 - **checkerealtime** runs the clock in real time, so a working day of KCD2 Life lasts real hours.
 - The mods of food, wounds and crime change hunger, damage and the law for the new character as they do for Henry. With **The Nutrition Mod**, the hours of work use up food and drink, as time would.
+- **Immersive Eating** plays an animation when an item is used, and reading a document counts. KCD2 Life adds its book of trades and its errand slips to the documents that mod leaves alone, as the game's books are: reading them plays nothing.
 
 | Mod | Author | Version tested | Where |
 |---|---|---|---|
