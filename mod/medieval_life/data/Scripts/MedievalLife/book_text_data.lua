@@ -90,6 +90,7 @@ MedievalLife.BOOK_TEXT = {
 	ml_order_book_buy = 9,
 	ml_order_book_buy_many = 18,
 	ml_order_book_buy_one = 17,
+	ml_order_book_closed = 8,
 	ml_order_book_days = 4,
 	ml_order_book_deliver = 9,
 	ml_order_book_deliver_many = 19,

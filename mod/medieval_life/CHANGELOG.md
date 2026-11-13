@@ -2,6 +2,20 @@
 
 Every release is listed here, as it went out on Steam Workshop, Nexus Mods and GitHub. The builds made while working on one are not listed.
 
+## 0.1.4
+
+Errands follow Henry's story and who is still alive. Use it with KCD2 Female Framework and KCD2 Male Framework 0.5.0.
+
+### New
+
+- **Closed businesses in the book of trades.** A business the story has closed, or whose person is dead, says "Closed." instead of its days. What you owe it stays written.
+- **An errand to someone who dies is called off.** You owe nothing, lose no reputation or trust, and keep what you carry.
+
+### Fixes
+
+- **Errands to closed places.** A business no longer sends you to Trosky castle while the story keeps it closed, or to the manor of Semine without its people.
+- **Errands to the dead.** No errand goes to a business whose person is dead.
+
 ## 0.1.3
 
 The book of trades keeps track of errands, the talks of work come first, and the work clock is steadier. A crash when opening a book after working is gone. Use it with KCD2 Female Framework and KCD2 Male Framework 0.4.0.

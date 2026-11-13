@@ -111,6 +111,9 @@ TEXTS = {
     "ml_order_failed_buy": ("You didn't bring it in time. Now you owe the money you were given.",
                             "No cumpliste a tiempo. Ahora debes el dinero que te dieron."),
     "ml_order_failed_lost": ("You didn't pick up the order in time.", "No recogiste el pedido a tiempo."),
+    # The person at the other end of a taken errand died.
+    "ml_order_called_off": ("The errand is off: nobody is left there to take it. You owe nothing.",
+                            "El encargo se cancela: ya no queda nadie allí para recibirlo. No debes nada."),
     "ml_order_log_picked": ("I have the order. Now to take it back.", "Ya tengo el pedido. Ahora hay que llevarlo de vuelta."),
     "ml_order_log_lost": ("I didn't get there in time. At least I owe nothing.", "No llegué a tiempo. Al menos no debo nada."),
     "ml_order_log_buy": ("I took the money. The slip says by when I must bring what was asked.",
@@ -156,6 +159,7 @@ TEXTS = {
     "ml_order_book_fetch": ("Pickup:", "Recogida:"),
     "ml_order_book_buy": ("Shopping:", "Compra:"),
     "ml_order_book_need": ("Pickup or shopping:", "Recogida o compra:"),
+    "ml_order_book_closed": ("Closed.", "Cerrado."),
     "ml_order_book_today": ("today", "hoy"),
     "ml_order_book_tomorrow": ("tomorrow", "mañana"),
     "ml_order_book_in": ("in", "en"),

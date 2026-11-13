@@ -240,6 +240,46 @@ local function startOnScreen(site, hours, steady)
 	ML.Try("work screen", ML.Screen.Show, site.text)
 end
 
+-- Whether a site still has someone there: one of its NPC alive, as the game asks, entity.actor:IsDead(). The game
+-- takes a body away after a while, so in the site's own region an NPC it does not find is gone too. Out of that region
+-- nothing is known, and the site counts as there. region is ML.Region(), given by a caller that asks for many sites.
+function Jobs.Staffed(site, region)
+	region = region or ML.Region()
+	local here = (site.region or "trosky") == region
+	for _, name in ipairs(site.npcs or {}) do
+		local entity = System.GetEntityByName(name)
+		if entity then
+			if not ML.Try("npc dead", function() return entity.actor and entity.actor:IsDead() end) then
+				return true
+			end
+		elseif not here then
+			return true
+		end
+	end
+	return false
+end
+
+-- Sure that a site lost its person: one of its NPC found dead, and none alive. An errand already taken is called
+-- off only then: a body the game took away, or an NPC not there yet right after a load, must not call it off.
+function Jobs.Dead(site)
+	local dead = false
+	for _, name in ipairs(site.npcs or {}) do
+		local entity = System.GetEntityByName(name)
+		if entity then
+			if not ML.Try("npc dead", function() return entity.actor and entity.actor:IsDead() end) then
+				return false
+			end
+			dead = true
+		end
+	end
+	return dead
+end
+
+-- Whether a site gives work and errands now: the story has it in the world, and someone is there.
+function Jobs.Open(site, region)
+	return ML.Story.Open(site.requires) and Jobs.Staffed(site, region)
+end
+
 function Jobs.NearestSite()
 	local position, best, bestDistance = player:GetWorldPos(), nil, Jobs.TALK_RANGE
 	for _, site in ipairs(ML.JOB_SITES) do
