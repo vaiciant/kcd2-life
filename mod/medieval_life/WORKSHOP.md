@@ -6,6 +6,8 @@ Henry goes back to Rattay, and you stay behind as a nobody in the Trosky region:
 
 *Requires KCD2 Female Framework and KCD2 Male Framework.*
 
+*For a woman's voice, add [KCD2 Female Voice](https://www.nexusmods.com/kingdomcomedeliverance2/mods/4006). While it is installed, your character speaks with it, even a man.*
+
 ## A new life
 
 - **A new start.** In Troskowitz, a wayfarer by the tavern wall offers you a new life, from 08:00 to 20:00.
@@ -48,22 +50,21 @@ Every business asks for errands on its own day of the week, never farther than t
 - **In a new game,** Henry's playthrough works as usual.
 - **Keep a save from before the new life.** It is the safest way back to Henry.
 - **Kuttenberg** opens to you once Henry's story reaches it.
-- Mods that change the game's own alchemy recipes can clash with it. Mods that add new potions, like ldpotions, work.
+- Mods that change the game's own alchemy recipes can clash with it.
 
 ## Played with other mods
 
 KCD2 Life has been played together with 47 other mods at once. These make a new life better:
 
-- **Mercenaries:** hire your own company and make camp with them. Start with nothing, earn your groschen, and one day lead men of your own.
+- **Mercenaries:** hire your own company and make camp with them, and one day lead men of your own.
 - **The KCD2 Camping Mod:** pitch a camp wherever you are. A nobody with no home always has a bed, and every bed saves the game.
 - **Realish Economy:** prices and money closer to the real thing. Your wages and errands follow it, so every groschen you earn counts.
 - **The Nutrition Mod:** fruit, meat, vegetables and water, not just a full belly. A working life with meals to plan, and your hours of work count.
 - **The KCD2 Cooking Mod:** cook your own meals. Buy the food with your wages and feed yourself.
 - **Realish Wounds and Realish Crime:** wounds and the law closer to the real thing, so a fight or a theft costs a nobody dearly.
 - **ldpotions:** more potions to brew, and more recipes for your new character to learn.
-- **Mod Configuration Menu:** settings for the calendar, work, errands and voice.
 
-The full list is on [GitHub](https://github.com/vaiciant/kcd2-life/blob/main/mod/medieval_life/TESTED_MODS.md). Others should work too.
+The full list is on [GitHub](https://github.com/vaiciant/kcd2-life/blob/main/mod/medieval_life/TESTED_MODS.md).
 
 ## Playing Henry again
 
