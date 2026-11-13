@@ -418,7 +418,13 @@ local function errandSections(record)
 			end
 		end
 		local rows = { { "<accent>", "@ml_book_place_" .. entry.key, "</accent>" } }
-		if entry.owed then
+		if entry.gone then
+			-- Out of the story's world, or its person dead. What is owed stays written.
+			rows[2] = { "@ml_order_book_closed" }
+			if entry.owed then
+				rows[3] = { "@ml_order_book_owed", " " .. entry.owed .. " ", "@ml_order_slip_gr" }
+			end
+		elseif entry.owed then
 			rows[2] = { hours, "@ml_order_book_owed", " " .. entry.owed .. " ", "@ml_order_slip_gr" }
 		else
 			rows[2] = turnRow({ hours }, "@ml_order_book_deliver", send, known)

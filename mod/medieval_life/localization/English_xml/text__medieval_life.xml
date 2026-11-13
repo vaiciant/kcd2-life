@@ -2172,6 +2172,7 @@
   <Row><Cell>ml_order_buy</Cell><Cell>ml_order_buy</Cell><Cell>Buy</Cell></Row>
   <Row><Cell>ml_order_failed_buy</Cell><Cell>ml_order_failed_buy</Cell><Cell>You didn't bring it in time. Now you owe the money you were given.</Cell></Row>
   <Row><Cell>ml_order_failed_lost</Cell><Cell>ml_order_failed_lost</Cell><Cell>You didn't pick up the order in time.</Cell></Row>
+  <Row><Cell>ml_order_called_off</Cell><Cell>ml_order_called_off</Cell><Cell>The errand is off: nobody is left there to take it. You owe nothing.</Cell></Row>
   <Row><Cell>ml_order_log_picked</Cell><Cell>ml_order_log_picked</Cell><Cell>I have the order. Now to take it back.</Cell></Row>
   <Row><Cell>ml_order_log_lost</Cell><Cell>ml_order_log_lost</Cell><Cell>I didn't get there in time. At least I owe nothing.</Cell></Row>
   <Row><Cell>ml_order_log_buy</Cell><Cell>ml_order_log_buy</Cell><Cell>I took the money. The slip says by when I must bring what was asked.</Cell></Row>
@@ -2207,6 +2208,7 @@
   <Row><Cell>ml_order_book_fetch</Cell><Cell>ml_order_book_fetch</Cell><Cell>Pickup:</Cell></Row>
   <Row><Cell>ml_order_book_buy</Cell><Cell>ml_order_book_buy</Cell><Cell>Shopping:</Cell></Row>
   <Row><Cell>ml_order_book_need</Cell><Cell>ml_order_book_need</Cell><Cell>Pickup or shopping:</Cell></Row>
+  <Row><Cell>ml_order_book_closed</Cell><Cell>ml_order_book_closed</Cell><Cell>Closed.</Cell></Row>
   <Row><Cell>ml_order_book_today</Cell><Cell>ml_order_book_today</Cell><Cell>today</Cell></Row>
   <Row><Cell>ml_order_book_tomorrow</Cell><Cell>ml_order_book_tomorrow</Cell><Cell>tomorrow</Cell></Row>
   <Row><Cell>ml_order_book_in</Cell><Cell>ml_order_book_in</Cell><Cell>in</Cell></Row>

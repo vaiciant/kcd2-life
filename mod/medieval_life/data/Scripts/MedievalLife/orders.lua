@@ -62,6 +62,7 @@ Orders.NEED_SUFFIX = "_need"
 Orders.FAILED_TEXT = "@ml_order_failed"
 Orders.FAILED_BUY_TEXT = "@ml_order_failed_buy"
 Orders.FAILED_LOST_TEXT = "@ml_order_failed_lost"
+Orders.CALLED_OFF_TEXT = "@ml_order_called_off"
 Orders.OWE_TEXT = "@ml_order_owe %d @ml_order_groschen"
 -- What to buy: "Buy cheap wine (12)". The name of the goods is a text of the generator.
 Orders.BUY_TEXT = "@ml_order_buy @%s (%d)"
@@ -114,6 +115,29 @@ local function siteByKey(key)
 			return site
 		end
 	end
+end
+
+-- Whether the other place of an order, where a delivery goes or a pickup is fetched from, is open (ML.Jobs.Open): Henry's
+-- story has it in the world, as for the work there (story.lua, jobs.toml requires), so Trosky castle while it is closed,
+-- or Semine's manor without its people, gets no errand; and its person is alive. Shopping has no other
+-- place.
+local function reachable(id, region)
+	local order = byId[id]
+	local place = order and (order.kind == "deliver" and order.to or order.kind == "fetch" and order.from)
+	local site = place and siteByKey(place)
+	return not site or ML.Jobs.Open(site, region)
+end
+
+-- One of a list of orders, by the seed, among those whose other place is open. With every place open, the same one as
+-- before.
+local function pick(list, seed)
+	local open, region = {}, ML.Region()
+	for _, id in ipairs(list) do
+		if reachable(id, region) then
+			open[#open + 1] = id
+		end
+	end
+	return open[1] and open[seed % #open + 1]
 end
 
 local function nextRandom(seed)
@@ -215,7 +239,7 @@ end
 -- half and half among what it trusts the character with, and the kind can be forced.
 local function choose(business, key, turn, seed, kind)
 	if turn == Orders.SEND then
-		return business.delivers[seed % #business.delivers + 1]
+		return pick(business.delivers, seed)
 	end
 	local fetch, buy = allowed(key)
 	if kind then
@@ -224,11 +248,12 @@ local function choose(business, key, turn, seed, kind)
 	if not fetch and not buy then
 		return nil
 	end
-	local list = business.fetches
-	if buy and (not fetch or mix(seed) % 2 == 1) then
-		list = business.buys
+	-- A pickup whose places are all out of the world leaves shopping, if it is trusted.
+	local fetches, buys = fetch and pick(business.fetches, seed), buy and pick(business.buys, seed)
+	if buys and (not fetches or mix(seed) % 2 == 1) then
+		return buys
 	end
-	return list[seed % #list + 1]
+	return fetches or nil
 end
 
 -- The order that a turn of a business gives today, if it is its day. A forced one does not ask
@@ -428,7 +453,7 @@ function Orders.Asked()
 end
 
 function Orders.Schedule(keys)
-	local day, hour = ML.Days.Current(), Calendar.GetWorldHourOfDay()
+	local day, hour, region = ML.Days.Current(), Calendar.GetWorldHourOfDay(), ML.Region()
 	local wanted, list = {}, {}
 	local function want(key)
 		if not wanted[key] then
@@ -452,7 +477,9 @@ function Orders.Schedule(keys)
 			local first, last = ML.Jobs.Day(site)
 			local owed = Orders.Owed(site)
 			local entry = { key = key, first = first, last = last, owed = owed and math.ceil(owed / 10), turns = {} }
-			if not owed then
+			-- Out of the story's world, or with its person dead, the book says it is closed.
+			entry.gone = not ML.Jobs.Open(site, region)
+			if not owed and not entry.gone then
 				for _, turn in ipairs({ Orders.SEND, Orders.NEED }) do
 					local planned = turnSchedule(site, day, hour, turn)
 					if planned then
@@ -1170,12 +1197,39 @@ local function fail(slot, taken)
 	notice(text)
 end
 
+-- Where a taken order must go now: where a delivery goes, where a pickup is fetched from until it is picked, and the
+-- business itself after that and to bring what was bought.
+local function goingTo(order, taken)
+	if order.kind == "fetch" and taken.picked then
+		return order.business
+	end
+	return goesTo(order)
+end
+
+-- A taken order whose place lost its person, found dead, is called off: no debt, no points and no trust lost. The
+-- character keeps what they carry.
+local function callOff(slot, taken, order)
+	local active = ML.Store.Get(Orders.ACTIVE_KEY, {})
+	active[slot] = nil
+	ML.Store.Set(Orders.ACTIVE_KEY, active)
+	dropSlip(taken.slip)
+	tell(order, "lost")
+	notice(Orders.CALLED_OFF_TEXT)
+	ML.Log("order called off", order.business, order.kind, taken.id, "nobody at", goingTo(order, taken))
+end
+
 local function checkDeadlines()
 	if not ML.Life.IsStarted() then
 		return
 	end
 	local now = Calendar.GetWorldTime()
 	for slot, taken in pairs(ML.Store.Get(Orders.ACTIVE_KEY, {})) do
+		local order = byId[taken.id]
+		local site = order and siteByKey(goingTo(order, taken))
+		if site and ML.Jobs.Dead(site) then
+			callOff(slot, taken, order)
+			return
+		end
 		if now >= dueOf(taken) then
 			fail(slot, taken)
 			return

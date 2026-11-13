@@ -2172,6 +2172,7 @@
   <Row><Cell>ml_order_buy</Cell><Cell>ml_order_buy</Cell><Cell>Compra</Cell></Row>
   <Row><Cell>ml_order_failed_buy</Cell><Cell>ml_order_failed_buy</Cell><Cell>No cumpliste a tiempo. Ahora debes el dinero que te dieron.</Cell></Row>
   <Row><Cell>ml_order_failed_lost</Cell><Cell>ml_order_failed_lost</Cell><Cell>No recogiste el pedido a tiempo.</Cell></Row>
+  <Row><Cell>ml_order_called_off</Cell><Cell>ml_order_called_off</Cell><Cell>El encargo se cancela: ya no queda nadie allí para recibirlo. No debes nada.</Cell></Row>
   <Row><Cell>ml_order_log_picked</Cell><Cell>ml_order_log_picked</Cell><Cell>Ya tengo el pedido. Ahora hay que llevarlo de vuelta.</Cell></Row>
   <Row><Cell>ml_order_log_lost</Cell><Cell>ml_order_log_lost</Cell><Cell>No llegué a tiempo. Al menos no debo nada.</Cell></Row>
   <Row><Cell>ml_order_log_buy</Cell><Cell>ml_order_log_buy</Cell><Cell>Recibí el dinero. La boleta dice para cuándo tengo que traer lo pedido.</Cell></Row>
@@ -2207,6 +2208,7 @@
   <Row><Cell>ml_order_book_fetch</Cell><Cell>ml_order_book_fetch</Cell><Cell>Recogida:</Cell></Row>
   <Row><Cell>ml_order_book_buy</Cell><Cell>ml_order_book_buy</Cell><Cell>Compra:</Cell></Row>
   <Row><Cell>ml_order_book_need</Cell><Cell>ml_order_book_need</Cell><Cell>Recogida o compra:</Cell></Row>
+  <Row><Cell>ml_order_book_closed</Cell><Cell>ml_order_book_closed</Cell><Cell>Cerrado.</Cell></Row>
   <Row><Cell>ml_order_book_today</Cell><Cell>ml_order_book_today</Cell><Cell>hoy</Cell></Row>
   <Row><Cell>ml_order_book_tomorrow</Cell><Cell>ml_order_book_tomorrow</Cell><Cell>mañana</Cell></Row>
   <Row><Cell>ml_order_book_in</Cell><Cell>ml_order_book_in</Cell><Cell>en</Cell></Row>
