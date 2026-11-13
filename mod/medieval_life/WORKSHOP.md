@@ -44,7 +44,7 @@ Every business asks for errands on its own day of the week, never farther than t
 ## Good to know
 
 - **From the pillory on.** The new life is there once Henry has been through the pillory in Troskowitz, early in the story. You do not need to finish the game.
-- **Any save will do.** Add it to the save you are playing: no new game needed. Henry's alchemy recipes are hidden while the mod is installed, since your new character starts with none, except the two he needs in the prologue. They come back when you remove the mods.
+- **Any save will do.** Add it to the save you are playing: no new game needed. Henry's alchemy recipes are hidden while the mod is installed, except the two he needs in the prologue. They come back when you remove the mods.
 - **In a new game,** Henry's playthrough works as usual.
 - **Keep a save from before the new life.** It is the safest way back to Henry.
 - **Kuttenberg** opens to you once Henry's story reaches it.
@@ -84,7 +84,7 @@ Do it when Henry is ready to hand over: save next to the wayfarer by the tavern 
 - Kingdom Come: Deliverance II 1.5
 - KCD2 Female Framework
 - KCD2 Male Framework
-- Optional: [Mod Configuration Menu](https://www.nexusmods.com/kingdomcomedeliverance2/mods/1423), for the settings of the calendar, work, errands and voice
+- Optional: [Mod Configuration Menu](https://www.nexusmods.com/kingdomcomedeliverance2/mods/1423), for the settings
 
 ## Source
 
